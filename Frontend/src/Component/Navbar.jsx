@@ -8,7 +8,7 @@ export default function Navbar() {
     <nav className="bg-gray-900 text-white shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-center items-center h-16">
-          <div className="justify-center items-center"> Site Audits</div>
+          <div className="justify-center items-center text-4xl"> Site Audits</div>
    
         </div>
       </div>

@@ -27,14 +27,14 @@ export default function Sidebar() {
   ];
 
   return (
-    <div className="flex">
+    <div className="flex min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
       {/* Sidebar */}
       <aside
         className={`fixed top-0 left-0 h-screen w-64 bg-gray-900 text-white shadow-lg transform transition-transform duration-300 z-40
         ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
       >
         {/* Logo / Header */}
-        <div className="mt-16 text-xl font-bold border-b border-gray-700 p-4">
+        <div className="mt-2 text-xl font-bold border-b border-gray-700 p-4">
           LOGO
         </div>
 
@@ -55,7 +55,7 @@ export default function Sidebar() {
       </aside>
 
       {/* Mobile Toggle Button */}
-      <div className="fixed md:hidden top-4 left-4 z-50">
+      <div className="fixed md:hidden top-4 left-4 z-50 ">
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="p-2 rounded-md bg-gray-900 text-white shadow-md focus:outline-none"
