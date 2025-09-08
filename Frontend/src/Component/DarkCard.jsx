@@ -37,11 +37,11 @@ export default function DarkCard() {
 
       {/* Info Paragraph */}
       <p className="text-gray-400 text-sm text-center">
-        Enter URL in the input below and click the Analy button. A loader will
+        Enter URL in the input below and click the Analyze button. A loader will
         appear while processing.
       </p>
 
-<div className="flex m-2">
+<form onSubmit={handleClick} className="flex m-2">
         {/* Input Field */}
         <input
         type="text"
@@ -62,7 +62,7 @@ export default function DarkCard() {
         ) : null}
         {loading ? "⏳ Analyzing website... Please wait." : "Analyze"}
       </button>
-</div>
+</form>
     </div>
   );
 }
