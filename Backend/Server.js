@@ -2,10 +2,15 @@ import express from "express";
 import axios from "axios";
 import cors from "cors";
 import * as cheerio from "cheerio";
+import crypto from "crypto";
 const PORT =2000;
 
 const app = express();
+app.use(express.json());
 app.use(cors());
+
+const API_KEY = 'AIzaSyCww7MhvCEUmHhlACNBqfbzL5PUraT8lkk';
+
 
 // Helper: normalize pass rate (0–100%) to 0–1 score
 const normalizeScore = (passRate, weight) => (passRate / 100) * weight;
@@ -67,8 +72,16 @@ function fleschReadingEase(text) {
   return score;
 }
 
-async function crawlabilityHygiene(url) {
-  let totalScore = 0;
+function getGrade(score) {
+  if (score >= 90) return "A";
+  if (score >= 80) return "B";
+  if (score >= 70) return "C";
+  if (score >= 60) return "D";
+  return "F";
+}
+
+async function technicalMetrics(url,data) {
+  let totalScore_A3 = 0;
   
   // --- Helper functions ---
   const scoreBrokenLinks = (percent) => {
@@ -105,7 +118,7 @@ async function crawlabilityHygiene(url) {
   } catch {
     sitemapScore = 0;
   }
-  totalScore += sitemapScore * 2;
+  totalScore_A3 += sitemapScore * 2;
 
   // --- 2️⃣ robots.txt validity ---
   let robotsScore = 0;
@@ -118,7 +131,7 @@ async function crawlabilityHygiene(url) {
   } catch {
     robotsScore = 0;
   }
-  totalScore += robotsScore * 2;
+  totalScore_A3 += robotsScore * 2;
 
   // --- 3️⃣ Broken links ---
   let brokenScore = 0;
@@ -147,7 +160,7 @@ async function crawlabilityHygiene(url) {
   } catch {
     brokenScore = 0;
   }
-  totalScore += brokenScore * 2;
+  totalScore_A3 += brokenScore * 2;
 
   // --- 4️⃣ Redirect chains ---
   let redirectScore = 0;
@@ -159,15 +172,41 @@ async function crawlabilityHygiene(url) {
   } catch {
     redirectScore = 0;
   }
-  totalScore += redirectScore * 2;
+  totalScore_A3 += redirectScore * 2;
+
+
+  const lcpScore = ((data?.lighthouseResult?.audits?.["largest-contentful-paint"]?.score || 1)*5)
+  const clsScore =  (data?.lighthouseResult?.audits?.["cumulative-layout-shift"]?.score || 1)*3
+  const inpScore = (data?.lighthouseResult?.audits?.["interactive"]?.score|| 1)*4
+  const total_A1 = parseFloat(lcpScore + clsScore + inpScore)
+  const ttfbScore = (data?.lighthouseResult?.audits?.["server-response-time"]?.score || 1)*3
+  const compressionScore = (data?.lighthouseResult?.audits?.["uses-text-compression"]?.score || 1)*2
+  const cachingscore = (data?.lighthouseResult?.audits?.["uses-long-cache-ttl"]?.score || 1)*2
+  const httpscore = (data?.lighthouseResult?.audits?.["uses-http2"]?.score || 1 )*1
+  const total_A2 = ttfbScore + compressionScore + cachingscore + httpscore
+
+  const total = total_A1 + total_A2 + totalScore_A3
+  // const colorContrastScore = audits["color-contrast"]?.score
+  // const ariaRolesScore = audits["aria-roles"]?.score
+  // const labelsScore = audits["label"]?.score
 
   // --- Return all scores ---
   return {
+    lcpScore:lcpScore,
+    clsScore:clsScore,
+    inpScore:inpScore,
+    total_A1:total_A1,
+    ttfbScore:ttfbScore,
+    compressionScore:compressionScore,
+    cachingscore:cachingscore,
+    httpscore:httpscore,
+    total_A2:total_A2,
     sitemapScore: sitemapScore * 2,
     robotsScore: robotsScore * 2,
     brokenLinksScore: brokenScore * 2,
     redirectChainsScore: redirectScore * 2,
-    totalScore: totalScore,
+    totalScore_A3: totalScore_A3,
+    totalScore: total
   };
 }
 
@@ -495,7 +534,6 @@ async function conversionLeadFlow(url) {
   return report;
 }
 
-// AIO Readiness (G) function
 async function aioReadiness(url) {
   const report = {};
 
@@ -511,7 +549,7 @@ async function aioReadiness(url) {
   const $ = cheerio.load(html);
 
   // -------------------
-  // G1: Entity & Organization Clarity (weight 4)
+  // G1: Entity & Organization Clarity (4)
   // -------------------
   const jsonLdScripts = $('script[type="application/ld+json"]')
     .map((i, el) => {
@@ -526,57 +564,96 @@ async function aioReadiness(url) {
 
   const orgSchemas = jsonLdScripts.filter((s) => s["@type"] === "Organization");
   let orgFieldScore = 0;
+  let orgValid = false;
+
   if (orgSchemas.length > 0) {
     const fields = ["name", "logo", "url", "contactPoint", "address", "sameAs"];
-    const presentFields = fields.reduce((acc, f) => acc + (orgSchemas[0][f] ? 1 : 0), 0);
-    orgFieldScore = normalizeScore((presentFields / fields.length) * 100, 2); // weight 2
+    const presentFields = fields.reduce(
+      (acc, f) => acc + (orgSchemas[0][f] ? 1 : 0),
+      0
+    );
+    const percent = (presentFields / fields.length) * 100;
+    orgFieldScore = normalizeScore(percent, 2);
+    orgValid = percent >= 80; // treat as valid if ≥80% fields present
   }
 
-  // Consistent NAP (weight 1) - placeholder: assume 100% consistent
-  const napScore = 1;
+  // Consistent NAP
+  const napScore = 1; // placeholder
 
-  // Humans/Policies (weight 1) - presence count normalized
+  // Humans/Policies
   const policies = ["About", "Contact", "Privacy", "Terms", "Returns", "Shipping"];
   const policyPresent = policies.filter((p) =>
     $("body").text().includes(p)
   ).length;
-  const policyScore = normalizeScore((policyPresent / policies.length) * 100, 1);
+  const policyScore = normalizeScore(
+    (policyPresent / policies.length) * 100,
+    1
+  );
 
   // -------------------
-  // G2: Content Answerability & Structure (weight 3)
+  // G2: Content Answerability & Structure (3)
   // -------------------
-  // FAQ/How-To JSON-LD presence
-  const faqSchemas = jsonLdScripts.filter((s) => s["@type"] === "FAQPage" || s["@type"] === "HowTo");
+  const faqSchemas = jsonLdScripts.filter(
+    (s) => s["@type"] === "FAQPage" || s["@type"] === "HowTo"
+  );
   const faqScore = normalizeScore(faqSchemas.length ? 100 : 0, 1.5);
 
-  // Section Anchors / TOC (ids for headings)
   const headingsWithId = $("h1[id],h2[id],h3[id]").length;
   const headingsTotal = $("h1,h2,h3").length || 1;
-  const tocScore = normalizeScore((headingsWithId / headingsTotal) * 100, 1);
+  const tocScore = normalizeScore(
+    (headingsWithId / headingsTotal) * 100,
+    1
+  );
 
-  // Descriptive media captions
   const imgWithFigcaption = $("figure figcaption").length;
   const mediaScore = normalizeScore(imgWithFigcaption ? 100 : 0, 0.5);
 
   // -------------------
-  // G3: Product/Inventory Schema & Feeds (weight 2)
+  // G3: Product/Inventory Schema & Feeds (2)
   // -------------------
   const productSchemas = jsonLdScripts.filter((s) =>
     ["Product", "Vehicle", "Offer", "AggregateRating"].includes(s["@type"])
   );
-  const productScore = normalizeScore(productSchemas.length ? 100 : 0, 1.5);
+  const productPercent = productSchemas.length > 0 ? 100 : 0; // placeholder
+  const productScore = normalizeScore(productPercent, 1.5);
+  const productValid = productPercent >= 70;
 
-  // Feed availability - placeholder
-  const feedScore = 1; // assume feed present, weight 0.5
-
-  // -------------------
-  // G4: Crawl Friendliness (weight 1)
-  // -------------------
-  const robotsScore = 1; // assume robots.txt allows mainstream knowledge crawlers
+  const feedScore = 1; // placeholder (0.5 weight)
 
   // -------------------
-  // Combine all G metrics
+  // G4: Crawl Friendliness (1)
   // -------------------
+  const robotsScore = 1; // placeholder (assume not blocking)
+  const robotsOk = robotsScore === 1;
+
+  // -------------------
+  // Totals
+  // -------------------
+  const totalGScore = parseFloat(
+    (
+      orgFieldScore +
+      napScore +
+      policyScore +
+      faqScore +
+      tocScore +
+      mediaScore +
+      productScore +
+      feedScore +
+      robotsScore
+    ).toFixed(2)
+  );
+
+  // -------------------
+  // Badge logic
+  // -------------------
+  const aioCompatible =
+    totalGScore >= 7.5 &&
+    orgValid &&
+    productValid &&
+    robotsOk
+      ? "Yes"
+      : "No";
+
   report.G = {
     orgFields: parseFloat(orgFieldScore.toFixed(2)),
     napConsistency: napScore,
@@ -587,19 +664,8 @@ async function aioReadiness(url) {
     productSchemas: parseFloat(productScore.toFixed(2)),
     feedAvailability: feedScore,
     crawlFriendliness: robotsScore,
-    totalGScore: parseFloat(
-      (
-        orgFieldScore +
-        napScore +
-        policyScore +
-        faqScore +
-        tocScore +
-        mediaScore +
-        productScore +
-        feedScore +
-        robotsScore
-      ).toFixed(2)
-    ),
+    totalGScore,
+    aioCompatibleBadge: aioCompatible,
   };
 
   return report;
@@ -607,63 +673,55 @@ async function aioReadiness(url) {
 
 
 app.post('/data', async (req, res) => {
-  const { message } = req.body;
+  const  message  = req.body;
   console.log(`URL Received: ${message}`);
+  console.log(message);
 
   try {
     const apiUrl =`https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${ encodeURIComponent(message)}&strategy=desktop&key=${API_KEY}`;
 
     const response = await fetch(apiUrl);
     const data = await response.json(); 
-    const lcpScore = data?.lighthouseResult?.audits?.["largest-contentful-paint"]?.score || 0
-    const clsScore =  data?.lighthouseResult?.audits?.["cumulative-layout-shift"]?.score || 0
-    const inpScore = data?.lighthouseResult?.audits?.["interactive"]?.score|| 0
-    const ttfbScore = data?.lighthouseResult?.audits?.["server-response-time"]?.score || 0
-    const compressionScore = data?.lighthouseResult?.audits?.["uses-text-compression"]?.score || 0
-    const cachingscore = data?.lighthouseResult?.audits?.["uses-long-cache-ttl"]?.score || 0
-    const httpscore = data?.lighthouseResult?.audits?.["uses-http2"]?.score || "1"
-    // const colorContrastScore = audits["color-contrast"]?.score
-    // const ariaRolesScore = audits["aria-roles"]?.score
-    // const labelsScore = audits["label"]?.score 
 
-  const scores = await crawlabilityHygiene({message});
-  const seoReport = await seoMetrics({message});
-  const accessibilityReport = await accessibilityMetrics({message});
-  const securityReport = await securityCompliance({message});
-  const uxReport = await uxContentStructure({message});
-  const conversionReport = await conversionLeadFlow({message});
-  const aioReport = await aioReadiness({message});
-  console.log("A3 Crawlability & Hygiene Scores:", scores)
-  console.log("SEO Report (B1+B2+B3):", seoReport);
-  console.log("Accessibility C Section Report:", accessibilityReport);
-  console.log("Security/Compliance D Section Report:", securityReport);
-  console.log("UX & Content Structure E Section Report:", uxReport);
-  console.log("Conversion & Lead Flow F Section Report:", conversionReport);
-  console.log("AIO G Section Report:", aioReport);
+  const technicalReport = await technicalMetrics(message,data);
+  const seoReport = await seoMetrics(message);
+  const accessibilityReport = await accessibilityMetrics(message);
+  const securityReport = await securityCompliance(message);
+  const uxReport = await uxContentStructure(message);
+  const conversionReport = await conversionLeadFlow(message);
+  const aioReport = await aioReadiness(message);
+  // console.log("Technical Report:", scores)
+  // console.log("SEO Report (B1+B2+B3):", seoReport);
+  // console.log("Accessibility C Section Report:", accessibilityReport);
+  // console.log("Security/Compliance D Section Report:", securityReport);
+  // console.log("UX & Content Structure E Section Report:", uxReport);
+  // console.log("Conversion & Lead Flow F Section Report:", conversionReport);
+  // console.log("AIO G Section Report:", aioReport);
 
     const jsonData = {
+      URL:message[0],
       A:{
         A1:{
-          LCP_Score:lcpScore*5,
-          CLS_Score:clsScore*3,
-          INP_Score:inpScore*4,
-          Total_Score_A1:LCP + CLS + INP
+          LCP_Score:technicalReport.lcpScore,
+          CLS_Score:technicalReport.clsScore,
+          INP_Score:technicalReport.inpScore,
+          Total_Score_A1:technicalReport.total_A1
         },
         A2:{
-          TTFB_Score:ttfbScore*3,
-          Compression_Score:compressionScore*2,
-          Caching_Score:cachingscore*2,
-          HTTP_Score:httpscore*1,
-          Total_Score_A2:TTFB + Compression + Caching + HTTP
+          TTFB_Score:technicalReport.ttfbScore,
+          Compression_Score:technicalReport.compressionScore,
+          Caching_Score:technicalReport.cachingscore,
+          HTTP_Score:technicalReport.httpscore,
+          Total_Score_A2:technicalReport.total_A2
         },
         A3:{
-          Sitemap_Score:scores.sitemapScore,
-          Robots_Score:scores.robotsScore,
-          Broken_Links_Score:scores.brokenLinksScore,
-          Redirect_Chains_Score:scores.redirectChainsScore,
-          Total_Score_A3:scores.totalScore
+          Sitemap_Score:technicalReport.sitemapScore,
+          Robots_Score:technicalReport.robotsScore,
+          Broken_Links_Score:technicalReport.brokenLinksScore,
+          Redirect_Chains_Score:technicalReport.redirectChainsScore,
+          Total_Score_A3:technicalReport.totalScore_A3
         },
-        Technical_Performance_Score_Total:A1 + A2 + A3
+        Technical_Performance_Score_Total:technicalReport.totalScore
       },
       B:{
         B1:{
@@ -680,12 +738,12 @@ app.post('/data', async (req, res) => {
           Total_Score_B2:seoReport.B2.total
         },
         B3:{
-          IURL_Slugs_Score:seoReport.B3.imageAlt,
-          Duplicate_Content_Score:seoReport.B3.headingHierarchy,
-          Pagination_Tags_Score:seoReport.B3.descriptiveLinks,
+          IURL_Slugs_Score:seoReport.B3.urlSlugs,
+          Duplicate_Content_Score:seoReport.B3.duplicateContent,
+          Pagination_Tags_Score:seoReport.B3.pagination,
           Total_Score_B3:seoReport.B3.total
         },
-        On_Page_SEO_Score_Total:B1 + B2 + B3
+        On_Page_SEO_Score_Total:seoReport.B1.total + seoReport.B2.total + seoReport.B3.total
       },
       C:{
         Color_Contrast_Score:accessibilityReport.C.colorContrast,
@@ -725,7 +783,7 @@ app.post('/data', async (req, res) => {
           Organization_JSON_LD_Score:aioReport.G.orgFields,
           Consistent_NAP_Score:aioReport.G.napConsistency,
           Humans_or_Policies_Score:aioReport.G.policies,
-          Total_Score_G1:Organization_JSON_LD_Score + Consistent_NAP_Score + Humans_or_Policies_Score
+          Total_Score_G1:aioReport.G.orgFields + aioReport.G.napConsistency + aioReport.G.policies
         },
         G2:{
           FAQ_or_How_To_JSON_LD_Score:aioReport.G.faqJsonLd,
@@ -733,6 +791,17 @@ app.post('/data', async (req, res) => {
           Descriptive_Media_Captions_or_Figcaptions_Score:aioReport.G.mediaCaptions,
           Total_Score_G2: aioReport.G.faqJsonLd + aioReport.G.sectionAnchors + aioReport.G.mediaCaptions
         },
+        G3:{
+          Correct_Schema_Types_Score:aioReport.G.productSchemas,
+          Feed_Availability_Score:aioReport.G.feedAvailability,
+          Total_Score_G3: aioReport.G.productSchemas + aioReport.G.feedAvailability
+        },
+        G4:{
+          Robots_Allowlist_Score: aioReport.G.feedAvailability,
+          Total_Score_G3: aioReport.G.crawlFriendliness
+        },
+        AIO_Readiness_Score_Total: aioReport.G.totalGScore,
+        AIO_Compatibility_Badge: aioReport.G.aioCompatibleBadge
       }
     }
 
