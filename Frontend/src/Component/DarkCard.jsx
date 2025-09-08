@@ -33,11 +33,11 @@ export default function DarkCard() {
   return (
     <div className="max-w-sm mx-auto mt-10 bg-gray-900 text-white rounded-2xl shadow-2xl p-6 space-y-4 border border-gray-700">
       {/* Heading */}
-      <h2 className="text-2xl font-bold text-center">Dark Theme Card</h2>
+      <h2 className="text-2xl font-bold text-center">Check your Page Audits and Performance </h2>
 
       {/* Info Paragraph */}
       <p className="text-gray-400 text-sm text-center">
-        Enter some text in the input below and click the button. A loader will
+        Enter URL in the input below and click the Analy button. A loader will
         appear while processing.
       </p>
 
@@ -59,7 +59,7 @@ export default function DarkCard() {
         {loading ? (
           <Loader2 className="animate-spin mr-2 h-5 w-5" />
         ) : null}
-        {loading ? "Processing..." : "Submit"}
+        {loading ? "⏳ Analyzing website... Please wait." : "Analyze"}
       </button>
     </div>
   );
