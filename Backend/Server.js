@@ -72,14 +72,6 @@ function fleschReadingEase(text) {
   return score;
 }
 
-function getGrade(score) {
-  if (score >= 90) return "A";
-  if (score >= 80) return "B";
-  if (score >= 70) return "C";
-  if (score >= 60) return "D";
-  return "F";
-}
-
 async function technicalMetrics(url,data) {
   let totalScore_A3 = 0;
   
@@ -671,6 +663,60 @@ async function aioReadiness(url) {
   return report;
 }
 
+function calculateFinalScore(jsonData) {
+  // Section totals
+  const totalA = jsonData.A.Technical_Performance_Score_Total || 0;
+  const totalB = jsonData.B.On_Page_SEO_Score_Total || 0;
+  const totalC = jsonData.C.Accessibility_Score_Total || 0;
+  const totalD = jsonData.D.Security_or_Compliance_Score_Total || 0;
+  const totalE = jsonData.E.UX_and_Content_Structure_Score_Total || 0;
+  const totalF = jsonData.F.Conversion_and_Lead_Flow_Score_Total || 0;
+  const totalG = jsonData.G.AIO_Readiness_Score_Total || 0;
+
+  const scores = [
+  { name: "Technical Performance", score: totalA },
+  { name: "On-Page SEO", score: totalB },
+  { name: "Accessibility", score: totalC },
+  { name: "Security/Compliance", score: totalD },
+  { name: "UX & Content", score: totalE },
+  { name: "Conversion & Lead Flow", score: totalF },
+  { name: "AIO Readiness", score: totalG }
+];
+
+  const totalScore = parseFloat(
+    (totalA + totalB + totalC + totalD + totalE + totalF + totalG).toFixed(2)
+  );
+
+  // Grade
+  let grade = "F";
+  if (totalScore >= 90) grade = "A";
+  else if (totalScore >= 80) grade = "B";
+  else if (totalScore >= 70) grade = "C";
+  else if (totalScore >= 60) grade = "D";
+
+  // ✅ Top 5 lowest scores (directly from already-prepared scores[])
+  const topFixes = [...scores]
+  .sort((a, b) => a.score - b.score)  // sort ascending
+  .slice(0, 5); 
+
+  return {
+    totalScore,
+    grade,
+    url:jsonData.URL,
+    sectionScores: {
+      A: totalA,
+      B: totalB,
+      C: totalC,
+      D: totalD,
+      E: totalE,
+      F: totalF,
+      G: totalG
+    },
+    badge: jsonData.G.AIO_Compatibility_Badge,
+    topFixes
+  };
+}
+
 
 app.post('/data', async (req, res) => {
   const  message  = req.body;
@@ -804,9 +850,10 @@ app.post('/data', async (req, res) => {
         AIO_Compatibility_Badge: aioReport.G.aioCompatibleBadge
       }
     }
-
-    res.json(jsonData);
-    console.log(jsonData);
+  const result = calculateFinalScore(jsonData);
+  res.json({jsonData,result});
+  console.log(jsonData);
+  console.log(result);
     
   } catch (error) {
     console.error("Error fetching PageSpeed data:", error);
