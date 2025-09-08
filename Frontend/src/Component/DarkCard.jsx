@@ -5,12 +5,29 @@ export default function DarkCard() {
   const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState("");
 
-  const handleClick = () => {
+  const handleClick =async (e) => {
+    e.preventDefault();
     setLoading(true);
-    setTimeout(() => {
+
+    try {
+      const response = await fetch("http://localhost:2000/data", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify([inputValue]),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log(result);
+      setInputValue("");
+    } catch (error) {
+      alert("Error: " + error.message);
+    } finally {
       setLoading(false);
-      alert(`You entered: ${inputValue}`);
-    }, 2000); // simulate loading
+    }
   };
 
   return (
