@@ -64,7 +64,7 @@ function fleschReadingEase(text) {
   const syllables = text.split(/[aeiouy]+/gi).length - 1;
   if (sentences === 0 || words === 0) return 0;
   const score = 206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words);
-  return score;
+   return score;
 }
 
 async function crawlabilityHygiene(url) {
