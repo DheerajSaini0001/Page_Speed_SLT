@@ -80,8 +80,8 @@ export default function DarkCard() {
         )}
 
         {/* Sidebar appears after result */}
-        {result && <Sidebar data={result} />}
-        <Dashboard2 data={result}/>
+        {result && <Sidebar  />}
+        <Dashboard2 data={result} />
       </div>
     </div>
   );

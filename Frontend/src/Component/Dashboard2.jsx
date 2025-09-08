@@ -1,7 +1,7 @@
 import React from "react";
 import {
-  LineChart,
-  Line,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   Tooltip,
@@ -11,20 +11,30 @@ import {
   Cell,
   Legend,
 } from "recharts";
+import CircularProgress from "./CircularProgress";
 
 export default function Dashboard2({ data }) {
-  if (!data) {
+  if (!data || !data.result) {
     return (
-      <div className="p-6 text-center text-gray-400">
+      <div className="flex justify-center items-center h-screen text-white">
         <p>Loading dashboard...</p>
       </div>
     );
   }
+  
+  const sectionLabels = {
+    A: "Technical Performance",
+    B: "On Page SEO",
+    C: "Accessibility",
+    D: "Security/Compliance",
+    E: "UX & Content",
+    F: "Conversion & Lead Flow",
+    G: "AIO Readiness",
+  };
+  const { sectionScores, topFixes, totalScore } = data.result;
 
-  const { sectionScores, topFixes, totalScore } = data;
-
-  const sectionData = Object.entries(sectionScores || {}).map(([key, value]) => ({
-    name: key,
+  const sectionData = Object.entries(sectionScores).map(([key, value]) => ({
+    name: sectionLabels[key], 
     score: value,
   }));
 
@@ -38,73 +48,78 @@ export default function Dashboard2({ data }) {
     "#d946ef",
   ];
 
+
   return (
-    <div className="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 text-white">
-      {/* Total Score Highlight */}
-      <div className="col-span-1 lg:col-span-3 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl shadow-xl p-6 text-center">
+    <div className="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 text-white bg-gradient-to-br from-gray-900 via-gray-800 to-black min-h-screen">
+      {/* Overall Score */}
+      <div className="col-span-1 lg:col-span-3 bg-gradient-to-r from-indigo-200 to-blue-700 rounded-2xl shadow-xl p-6 text-center">
         <h2 className="text-2xl font-bold">Overall Score</h2>
-        <p className="text-6xl font-extrabold mt-2">{totalScore.toFixed(1)}%</p>
+       <div className="flex gap-64 items-center justify-center">
+        <div> <CircularProgress value={totalScore} size={110} stroke={10} /></div>
+        <div>
+      <h1>Grade {data.result.grade}</h1>
+      <p>AIO Compatibility- {data.result.badge}</p>
+
+        </div>
+       </div>
         <p className="text-gray-200">Website Health Index</p>
       </div>
 
-      {/* Section Stat Cards */}
-      <div className="col-span-1 lg:col-span-2 grid grid-cols-2 md:grid-cols-3 gap-4">
-        {sectionData.map((item, index) => (
+      {/* Dynamic Section Score Cards */}
+      <div className="col-span-1 lg:col-span-3 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4">
+        {Object.entries(sectionScores).map(([key, value], index) => (
           <div
-            key={item.name}
+            key={key}
             className="bg-gray-900 rounded-xl p-4 shadow-lg border border-gray-700 text-center"
           >
-            <h3 className="text-sm text-gray-400">{item.name}</h3>
+            <h3 className="text-sm text-gray-400">{sectionLabels[key]} Score</h3>
             <p
               className="text-2xl font-bold"
               style={{ color: COLORS[index % COLORS.length] }}
             >
-              {item.score.toFixed(1)}
+              {value}
             </p>
           </div>
         ))}
       </div>
 
-      {/* Line Chart */}
-      <div className="bg-gray-900 rounded-xl p-4 shadow-lg border border-gray-700">
-        <h3 className="text-lg font-semibold mb-4">Section Score Trends</h3>
+      {/* Bar Chart */}
+      <div className="col-span-1 lg:col-span-3 bg-gray-900 rounded-xl p-4 shadow-lg border border-gray-700">
+        <h3 className="text-lg font-semibold mb-4">Section Scores</h3>
         <ResponsiveContainer width="100%" height={250}>
-          <LineChart data={sectionData}>
+          <BarChart data={sectionData}>
             <XAxis dataKey="name" stroke="#aaa" />
             <YAxis stroke="#aaa" />
             <Tooltip />
-            <Legend />
-            <Line
-              type="monotone"
-              dataKey="score"
-              stroke="#3b82f6"
-              strokeWidth={3}
-              dot={{ r: 5 }}
-            />
-          </LineChart>
+            <Bar dataKey="score">
+              {sectionData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Bar>
+          </BarChart>
         </ResponsiveContainer>
       </div>
 
-      {/* Donut Chart */}
+      {/* Pie Chart */}
       <div className="bg-gray-900 rounded-xl p-4 shadow-lg border border-gray-700">
-        <h3 className="text-lg font-semibold mb-4">Top Fixes</h3>
+        <h3 className="text-lg font-semibold mb-4">Top Fixes Needed</h3>
         <ResponsiveContainer width="100%" height={250}>
           <PieChart>
             <Pie
-              data={topFixes || []}
+              data={topFixes}
               dataKey="score"
               nameKey="name"
               cx="50%"
               cy="50%"
               outerRadius={90}
-              innerRadius={50}
               label
             >
-              {(topFixes || []).map((entry, index) => (
+              {topFixes.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
               ))}
             </Pie>
             <Tooltip />
+            <Legend />
           </PieChart>
         </ResponsiveContainer>
       </div>
