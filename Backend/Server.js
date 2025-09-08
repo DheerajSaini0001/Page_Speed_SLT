@@ -745,23 +745,28 @@ function calculateFinalScore(jsonData) {
 
 app.post('/data', async (req, res) => {
   const  message  = req.body;
-  console.log(`URL Received: ${message}`);
+  var url = message[0].trim();
+  // If it doesn't start with http:// or https://, add https://
+  if (!/^https?:\/\//i.test(url)) {
+    url = "https://" + url;
+  }
+  console.log(`URL Received: ${url}`);
   // console.log(message);
 
   try {
-    const apiUrl =`https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${ encodeURIComponent(message)}&strategy=desktop&key=${API_KEY}`;
+    const apiUrl =`https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${ encodeURIComponent(url)}&strategy=desktop&key=${API_KEY}`;
     // console.log(apiUrl);
     
     const response = await fetch(apiUrl);
     const data = await response.json(); 
 
-  const technicalReport = await technicalMetrics(message,data);
-  const seoReport = await seoMetrics(message);
-  const accessibilityReport = await accessibilityMetrics(message);
-  const securityReport = await securityCompliance(message);
-  const uxReport = await uxContentStructure(message);
-  const conversionReport = await conversionLeadFlow(message);
-  const aioReport = await aioReadiness(message);
+  const technicalReport = await technicalMetrics(url,data);
+  const seoReport = await seoMetrics(url);
+  const accessibilityReport = await accessibilityMetrics(url);
+  const securityReport = await securityCompliance(url);
+  const uxReport = await uxContentStructure(url);
+  const conversionReport = await conversionLeadFlow(url);
+  const aioReport = await aioReadiness(url);
   // console.log("Technical Report:", scores)
   // console.log("SEO Report (B1+B2+B3):", seoReport);
   // console.log("Accessibility C Section Report:", accessibilityReport);
@@ -771,7 +776,7 @@ app.post('/data', async (req, res) => {
   // console.log("AIO G Section Report:", aioReport);
 
     const jsonData = {
-      URL:message[0],
+      URL:url,
       A:{
         A1:{
           LCP_Score:technicalReport.lcpScore,
