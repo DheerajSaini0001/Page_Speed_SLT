@@ -54,6 +54,7 @@ export default function Dashboard2({ data }) {
       {/* Overall Score */}
       <div className="col-span-1 lg:col-span-3 bg-gradient-to-r from-indigo-200 to-blue-700 rounded-2xl shadow-xl p-6 text-center">
         <h2 className="text-2xl font-bold">Overall Score</h2>
+
        <div className="flex gap-64 items-center justify-center">
         <div> <CircularProgress value={totalScore} size={110} stroke={10} /></div>
         <div>
@@ -62,6 +63,9 @@ export default function Dashboard2({ data }) {
 
         </div>
        </div>
+
+        <p className="text-6xl font-extrabold mt-2">{totalScore}%</p>
+
         <p className="text-gray-200">Website Health Index</p>
       </div>
 

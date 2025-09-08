@@ -45,14 +45,13 @@ export default function DarkCard() {
             <h2 className="text-2xl font-bold text-center">
               Check your Page Audits and Performance
             </h2>
-
             {/* Info Paragraph */}
             <p className="text-gray-400 text-sm text-center">
               Enter URL in the input below and click the Analyze button. A loader will
               appear while processing.
             </p>
 
-            <div className="flex m-2">
+            <form className="flex m-2" onSubmit={handleClick}>
               {/* Input Field */}
               <input
                 type="text"
@@ -75,7 +74,7 @@ export default function DarkCard() {
                   ? "⏳ Analyzing website... Please wait."
                   : "Analyze"}
               </button>
-            </div>
+            </form>
           </div>
         )}
 
