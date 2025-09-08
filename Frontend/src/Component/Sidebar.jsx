@@ -27,7 +27,7 @@ export default function Sidebar() {
   ];
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+    <div className="flex ">
       {/* Sidebar */}
       <aside
         className={`fixed top-0 left-0 h-screen w-64 bg-gray-900 text-white shadow-lg transform transition-transform duration-300 z-40
@@ -66,7 +66,7 @@ export default function Sidebar() {
 
       {/* Main Content */}
       <main className="flex-1 md:ml-64 p-6">
-      <DarkCard/>
+    
       </main>
     </div>
   );
