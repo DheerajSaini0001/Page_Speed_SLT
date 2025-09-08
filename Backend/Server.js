@@ -699,6 +699,30 @@ function calculateFinalScore(jsonData) {
   .sort((a, b) => a.score - b.score)  // sort ascending
   .slice(0, 5); 
 
+  const recommendations = {
+  Technical_Performance: totalA < 20 
+    ? "Improve Technical Performance (optimize LCP, CLS, INP, and fix sitemap/robots)." 
+    : null,
+  On_Page_SEO: totalB < 15 
+    ? "Work on On-Page SEO (titles, meta descriptions, headings, image alts)." 
+    : null,
+  Accessibility: totalC < 8 
+    ? "Accessibility is weak – fix ARIA labels, color contrast, and alt text." 
+    : null,
+  Security_Compliance: totalD < 5 
+    ? "Security is low – add HTTPS, HSTS, and required security headers." 
+    : null,
+  UX_Content: totalE < 6 
+    ? "UX & Content need improvements – check mobile friendliness, readability, navigation depth." 
+    : null,
+  Conversion_LeadFlow: totalF < 6 
+    ? "Conversion & Lead Flow is weak – ensure CTAs, forms, and tracking work properly." 
+    : null,
+  AIO_Readiness: totalG < 6 
+    ? "AI-Optimization readiness is low – add structured data (Organization, Product, FAQ)." 
+    : null
+  };
+
   return {
     totalScore,
     grade,
@@ -713,7 +737,8 @@ function calculateFinalScore(jsonData) {
       G: totalG
     },
     badge: jsonData.G.AIO_Compatibility_Badge,
-    topFixes
+    topFixes,
+    recommendations
   };
 }
 
@@ -721,11 +746,12 @@ function calculateFinalScore(jsonData) {
 app.post('/data', async (req, res) => {
   const  message  = req.body;
   console.log(`URL Received: ${message}`);
-  console.log(message);
+  // console.log(message);
 
   try {
     const apiUrl =`https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${ encodeURIComponent(message)}&strategy=desktop&key=${API_KEY}`;
-
+    // console.log(apiUrl);
+    
     const response = await fetch(apiUrl);
     const data = await response.json(); 
 
