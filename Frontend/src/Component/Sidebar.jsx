@@ -42,7 +42,7 @@ export default function Sidebar({ children }) {
         </div>
 
         {/* Menu */}
-        <nav className="flex-1 p-2 space-y-2 overflow-y-auto">
+        <nav className="flex-1 p-2 space-y-2 overflow-y-auto ">
           {menuItems.map((item) => (
            <a href="/" className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition">{item.icon} {item.name}</a>
           ))}

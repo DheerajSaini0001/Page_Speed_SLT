@@ -15,7 +15,7 @@ function App() {
     <>
     
    <DarkCard/>
-   {/* <Technical_Performance/> */}
+   <Technical_Performance/>
    {/* <On_Page_SEO/> */}
     </>
   )

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Loader2, Menu, X } from "lucide-react";
 import Sidebar from "./Sidebar";
 import Dashboard2 from "./Dashboard2";
+import Technical_Performance from "./Technical_Performance";
 
 export default function DarkCard() {
   const [loading, setLoading] = useState(false);
@@ -12,6 +13,7 @@ export default function DarkCard() {
   const handleClick = async (e) => {
     e.preventDefault();
     setLoading(true);
+    console.log(result);
 
     try {
       const response = await fetch("http://localhost:2000/data", {
@@ -35,7 +37,7 @@ export default function DarkCard() {
   };
 
   return (
-    <div className="m-0 min-h-screen min-w-full bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
+    <div className="m-0 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white overflow-x-hidden">
       {/* ✅ Navbar */}
       <nav className="fixed top-0 left-0 w-full bg-gray-900 border-b border-gray-700 flex items-center justify-between px-4 py-3 z-50">
         {/* Hamburger button (mobile only) */}
@@ -59,7 +61,7 @@ export default function DarkCard() {
       </nav>
 
       <div className="flex flex-col min-h-screen pt-16 items-center">
-        {/* ✅ Input Section */}
+        {/* ✅ Input Section (show only before result) */}
         {!result && (
           <div className="w-full mt-10 max-w-sm mx-auto bg-gray-900 rounded-2xl shadow-2xl p-6 space-y-4 border border-gray-700">
             <h2 className="text-2xl font-bold text-center">
@@ -93,32 +95,35 @@ export default function DarkCard() {
           </div>
         )}
 
-        {/* ✅ Sidebar + Dashboard layout */}
-        {result && (
-          <div className="grid grid-cols-1 lg:grid-cols-[250px_1fr] w-full min-h-screen relative">
-            {/* Sidebar */}
-            <div
-              className={`fixed lg:static top-16 left-0 w-64 bg-gray-900 border-r border-gray-700 transform ${
-                sidebarOpen ? "translate-x-0" : "-translate-x-full"
-              } lg:translate-x-0 transition-transform duration-300 ease-in-out z-40 h-[calc(100vh-4rem)] overflow-y-auto pb-4`}
-            >
-              <Sidebar />
-            </div>
+        {/* ✅ Sidebar + Dashboard layout (only when result exists) */}
+        {/* ✅ Sidebar + Dashboard layout (only when result exists) */}
+{result && (
+  <div className="relative w-full min-h-screen flex">
+    {/* Sidebar */}
+    <div
+      className={`fixed top-16 left-0 z-40 w-64 h-[calc(100vh-4rem)] bg-gray-900 border-r border-gray-700 transform 
+      ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} 
+      lg:translate-x-0 transition-transform duration-300 ease-in-out overflow-y-auto pb-4`}
+    >
+      <Sidebar />
+    </div>
 
-            {/* Mobile overlay */}
-            {sidebarOpen && (
-              <div
-                className="fixed inset-0 bg-black/50 z-30 lg:hidden"
-                onClick={() => setSidebarOpen(false)}
-              />
-            )}
+    {/* Mobile overlay */}
+    {sidebarOpen && (
+      <div
+        className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+        onClick={() => setSidebarOpen(false)}
+      />
+    )}
 
-            {/* Main Dashboard */}
-            <div className="p-4 sm:p-6 w-full mt-0 lg:mt-0">
-              <Dashboard2 data={result} />
-            </div>
-          </div>
-        )}
+    {/* Main Dashboard (takes remaining width) */}
+    <div className="flex-1 lg:ml-64 p-4 sm:p-6">
+      <Dashboard2 data={result} />
+      <Technical_Performance data={result} />
+    </div>
+  </div>
+)}
+
       </div>
     </div>
   );
