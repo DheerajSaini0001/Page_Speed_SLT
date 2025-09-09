@@ -9,65 +9,55 @@ import {
   Menu,
   Brain,
   X,
-  Search, // you forgot to import X
 } from "lucide-react";
-import DarkCard from "./DarkCard";
 
-export default function Sidebar() {
-  const [isOpen, setIsOpen] = useState(false);
+export default function Sidebar({ children }) {
+  const [isOpen, setIsOpen] = useState(true);
 
   const menuItems = [
     { name: "Technical Performance", link: "#TechnicalPerformance", icon: <Gauge size={20} /> },
     { name: "On Page SEO", link: "#OnPageSEO", icon: <Image size={20} /> },
     { name: "Accessibility", link: "#accessibility", icon: <Accessibility size={20} /> },
-    { name: "Security/Compliance", link: "#Security/Compliance", icon: <Shield size={20} /> },
-    { name: "UX & Content Structure", link: "#UX&ContentStructure", icon: <Layout size={20} /> },
-    { name: "Conversion & Lead Flow", link: "#Conversion&LeadFlow", icon: <TrendingUp size={20} /> },
-    { name: "AIO (AI-Optimization) Readiness", link: "#AIO(AI-Optimization)Readiness", icon: <Brain size={20} /> },
+    { name: "Security/Compliance", link: "#SecurityCompliance", icon: <Shield size={20} /> },
+    { name: "UX & Content Structure", link: "#UXContentStructure", icon: <Layout size={20} /> },
+    { name: "Conversion & Lead Flow", link: "#ConversionLeadFlow", icon: <TrendingUp size={20} /> },
+    { name: "AIO (AI-Optimization) Readiness", link: "#AIOReadiness", icon: <Brain size={20} /> },
   ];
 
   return (
-    <div className="flex ">
+    <div className="flex">
+      {/* Top Navbar */}
+   
+
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-screen w-64 bg-gray-900 text-white shadow-lg transform transition-transform duration-300 z-40
-        ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
+        className={`fixed top-12 left-0 h-[calc(100%-3rem)] w-64 bg-gray-900 text-white shadow-lg transform transition-transform duration-300
+          ${isOpen ? "translate-x-0" : "-translate-x-full"} 
+          sm:translate-x-0 sm:static sm:top-0 sm:h-full
+        `}
       >
-        {/* Logo / Header */}
-        <div className="mt-2 text-xl font-bold border-b border-gray-700 p-4">
-          LOGO
+        {/* Logo */}
+        <div className="mt-16 flex flex-col justify-center items-center text-2xl py-4 border-b border-gray-700">
+          Logo
         </div>
 
-        {/* Navigation Items */}
-        <nav className="flex-1 p-4 space-y-2">
+        {/* Menu */}
+        <nav className="flex-1 p-2 space-y-2 overflow-y-auto">
           {menuItems.map((item) => (
-            <a
-              key={item.name}
-              href={item.link}
-              className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-700 transition"
-              onClick={() => setIsOpen(false)} // close menu on mobile click
-            >
-              {item.icon}
-              <span>{item.name}</span>
-            </a>
+           <a href="/" className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition">{item.icon} {item.name}</a>
           ))}
         </nav>
       </aside>
 
-      {/* Mobile Toggle Button */}
-      <div className="fixed md:hidden top-4 left-4 z-50 ">
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="p-2 rounded-md bg-gray-900 text-white shadow-md focus:outline-none"
-        >
-          {isOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-      </div>
+      {/* Mobile Overlay */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 sm:hidden z-10"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
 
-      {/* Main Content */}
-      <main className="flex-1 md:ml-64 p-6">
     
-      </main>
     </div>
   );
 }

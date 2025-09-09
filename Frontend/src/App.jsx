@@ -2,7 +2,7 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import Navbar from './Component/Navbar'
+
 import Sidebar from './Component/Sidebar'
 import DarkCard from './Component/DarkCard'
 import Technical_Performance from './Component/Technical_Performance'
@@ -13,7 +13,7 @@ function App() {
 
   return (
     <>
-    <Navbar/>
+    
    <DarkCard/>
    {/* <Technical_Performance/> */}
    {/* <On_Page_SEO/> */}
