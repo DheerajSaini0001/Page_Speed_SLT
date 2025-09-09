@@ -16,8 +16,7 @@ import CircularProgress from "./CircularProgress";
 export default function Dashboard2({ data }) {
   if (!data || !data.result) {
     return (
-      <div className="flex justify-center items-center h-screen text-white">
-        <p>Loading dashboard...</p>
+      <div>
       </div>
     );
   }

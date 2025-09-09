@@ -5,6 +5,8 @@ import './App.css'
 import Navbar from './Component/Navbar'
 import Sidebar from './Component/Sidebar'
 import DarkCard from './Component/DarkCard'
+import Technical_Performance from './Component/Technical_Performance'
+import On_Page_SEO from './Component/On_Page_SEO'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -13,6 +15,8 @@ function App() {
     <>
     <Navbar/>
    <DarkCard/>
+   {/* <Technical_Performance/> */}
+   {/* <On_Page_SEO/> */}
     </>
   )
 }
