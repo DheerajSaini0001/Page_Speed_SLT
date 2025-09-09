@@ -35,35 +35,39 @@ export default function DarkCard() {
   };
 
   return (
-    <div className="min-h-screen min-w-full bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
-      {/* ✅ Navbar (always visible) */}
+    <div className="m-0 min-h-screen min-w-full bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
+      {/* ✅ Navbar */}
       <nav className="fixed top-0 left-0 w-full bg-gray-900 border-b border-gray-700 flex items-center justify-between px-4 py-3 z-50">
         {/* Hamburger button (mobile only) */}
-      {result && ( <span> <button
-          className="lg:hidden p-2 rounded-lg bg-gray-800"
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-        >
-          {sidebarOpen ? (
-            <X className="h-6 w-6 text-white" />
-          ) : (
-            <Menu className="h-6 w-6 text-white" />
-          )}
-        </button></span>)}
+        {result && (
+          <button
+            className="lg:hidden p-2 rounded-lg bg-gray-800"
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+          >
+            {sidebarOpen ? (
+              <X className="h-6 w-6 text-white" />
+            ) : (
+              <Menu className="h-6 w-6 text-white" />
+            )}
+          </button>
+        )}
 
         {/* Logo / Title */}
-       <div className="flex flex-col justify-center items-center text-4xl"> Site Audits </div>
+        <div className="flex flex-col justify-center items-center text-2xl sm:text-4xl font-bold">
+          Site Audits
+        </div>
       </nav>
 
-      <div className="flex flex-col min-h-screen pt-10 items-center">
-        {/* ✅ Input Section (centered on mobile + desktop) */}
+      <div className="flex flex-col min-h-screen pt-16 items-center">
+        {/* ✅ Input Section */}
         {!result && (
           <div className="w-full mt-10 max-w-sm mx-auto bg-gray-900 rounded-2xl shadow-2xl p-6 space-y-4 border border-gray-700">
             <h2 className="text-2xl font-bold text-center">
               Check your Page Audits and Performance
             </h2>
             <p className="text-gray-400 text-sm text-center">
-              Enter URL in the input below and click the Analyze button. A loader will
-              appear while processing.
+              Enter URL in the input below and click the Analyze button. A loader
+              will appear while processing.
             </p>
 
             <form
@@ -82,9 +86,7 @@ export default function DarkCard() {
                 disabled={loading}
                 className="flex items-center justify-center bg-blue-600 hover:bg-blue-700 disabled:opacity-50 transition rounded-lg px-4 py-2 font-semibold"
               >
-                {loading ? (
-                  <Loader2 className="animate-spin mr-2 h-5 w-5" />
-                ) : null}
+                {loading && <Loader2 className="animate-spin mr-2 h-5 w-5" />}
                 {loading ? "⏳ Analyzing..." : "Analyze"}
               </button>
             </form>
@@ -94,25 +96,25 @@ export default function DarkCard() {
         {/* ✅ Sidebar + Dashboard layout */}
         {result && (
           <div className="grid grid-cols-1 lg:grid-cols-[250px_1fr] w-full min-h-screen relative">
-            {/* Sidebar (mobile slide-in + desktop fixed) */}
+            {/* Sidebar */}
             <div
-              className={`fixed lg:static top-0 left-0 h-full w-64 bg-gray-900 border-r border-gray-700 transform ${
+              className={`fixed lg:static top-16 left-0 w-64 bg-gray-900 border-r border-gray-700 transform ${
                 sidebarOpen ? "translate-x-0" : "-translate-x-full"
-              } lg:translate-x-0 transition-transform duration-300 ease-in-out z-40 `}
+              } lg:translate-x-0 transition-transform duration-300 ease-in-out z-40 h-[calc(100vh-4rem)] overflow-y-auto pb-4`}
             >
               <Sidebar />
             </div>
 
-            {/* ✅ Mobile overlay (click to close) */}
+            {/* Mobile overlay */}
             {sidebarOpen && (
               <div
-                className=" bg-opacity-50 z-30 lg:hidden"
+                className="fixed inset-0 bg-black/50 z-30 lg:hidden"
                 onClick={() => setSidebarOpen(false)}
               />
             )}
 
             {/* Main Dashboard */}
-            <div className="p-4 sm:p-6 w-full mt-16 lg:mt-0">
+            <div className="p-4 sm:p-6 w-full mt-0 lg:mt-0">
               <Dashboard2 data={result} />
             </div>
           </div>

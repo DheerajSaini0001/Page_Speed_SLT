@@ -25,7 +25,7 @@ export default function Sidebar({ children }) {
   ];
 
   return (
-    <div className="flex">
+    <div className="flex fixed">
       {/* Top Navbar */}
    
 
@@ -37,7 +37,7 @@ export default function Sidebar({ children }) {
         `}
       >
         {/* Logo */}
-        <div className="mt-16 flex flex-col justify-center items-center text-2xl py-4 border-b border-gray-700">
+        <div className="  flex flex-col justify-center items-center text-2xl py-4 border-b border-gray-700">
           Logo
         </div>
 
@@ -52,7 +52,7 @@ export default function Sidebar({ children }) {
       {/* Mobile Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 sm:hidden z-10"
+          className="h-fit"
           onClick={() => setIsOpen(false)}
         />
       )}
