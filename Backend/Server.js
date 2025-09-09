@@ -699,29 +699,35 @@ function calculateFinalScore(jsonData) {
   .sort((a, b) => a.score - b.score)  // sort ascending
   .slice(0, 5); 
 
-  const recommendations = {
-  Technical_Performance: totalA < 20 
-    ? "Improve Technical Performance (optimize LCP, CLS, INP, and fix sitemap/robots)." 
-    : null,
-  On_Page_SEO: totalB < 15 
-    ? "Work on On-Page SEO (titles, meta descriptions, headings, image alts)." 
-    : null,
-  Accessibility: totalC < 8 
-    ? "Accessibility is weak – fix ARIA labels, color contrast, and alt text." 
-    : null,
-  Security_Compliance: totalD < 5 
-    ? "Security is low – add HTTPS, HSTS, and required security headers." 
-    : null,
-  UX_Content: totalE < 6 
-    ? "UX & Content need improvements – check mobile friendliness, readability, navigation depth." 
-    : null,
-  Conversion_LeadFlow: totalF < 6 
-    ? "Conversion & Lead Flow is weak – ensure CTAs, forms, and tracking work properly." 
-    : null,
-  AIO_Readiness: totalG < 6 
-    ? "AI-Optimization readiness is low – add structured data (Organization, Product, FAQ)." 
-    : null
-  };
+const recommendations = [];
+
+if (totalA < 20) {
+  recommendations.push("Improve Technical Performance (optimize LCP, CLS, INP, and fix sitemap/robots).");
+}
+
+if (totalB < 15) {
+  recommendations.push("Work on On-Page SEO (titles, meta descriptions, headings, image alts).");
+}
+
+if (totalC < 8) {
+  recommendations.push("Accessibility is weak – fix ARIA labels, color contrast, and alt text.");
+}
+
+if (totalD < 5) {
+  recommendations.push("Security is low – add HTTPS, HSTS, and required security headers.");
+}
+
+if (totalE < 6) {
+  recommendations.push("UX & Content need improvements – check mobile friendliness, readability, navigation depth.");
+}
+
+if (totalF < 6) {
+  recommendations.push("Conversion & Lead Flow is weak – ensure CTAs, forms, and tracking work properly.");
+}
+
+if (totalG < 6) {
+  recommendations.push("AI-Optimization readiness is low – add structured data (Organization, Product, FAQ).");
+}
 
   return {
     totalScore,
