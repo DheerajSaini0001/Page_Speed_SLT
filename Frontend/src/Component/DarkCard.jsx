@@ -6,6 +6,9 @@ import Technical_Performance from "./Technical_Performance";
 import On_Page_SEO from "./On_Page_SEO";
 import Accessibility from "./Accessibility";
 import Security_Compilance from "./Security_Compilance";
+import UX_Content_Structure from "./UX_Content_Structure";
+import Conversion_Lead_Flow from "./Conversion_Lead_Flow";
+import AIO from "./AIO";
 
 export default function DarkCard() {
   const [loading, setLoading] = useState(false);
@@ -130,6 +133,9 @@ export default function DarkCard() {
     <On_Page_SEO data={result} />
     <Accessibility data={result} />
     <Security_Compilance data={result} />
+    <UX_Content_Structure data={result} />
+    <Conversion_Lead_Flow data={result} />
+    <AIO data={result} />
     
     </div>
   </div>

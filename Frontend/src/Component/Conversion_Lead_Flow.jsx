@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-export default function Security_Compilance({ data }) {
+export default function Conversion_Lead_Flow({ data }) {
   if (!data || !data.jsonData) {
     return (
       <div >
@@ -27,9 +27,9 @@ export default function Security_Compilance({ data }) {
   return (
     <div id="TechnicalPerformance" className="min-h-screen bg-inherit flex flex-col items-center justify-start p-6 space-y-6">
       <h1 className="text-3xl font-extrabold text-amber-100 mb-6">
-        Security/Compilance{" "}
+        Conversion Lead Flow{" "}
         <span className="text-gray-100">
-          ({data.jsonData?.D?.Security_or_Compliance_Score_Total.toFixed(1)} out of 8)
+          ({data.jsonData?.F?.Conversion_and_Lead_Flow_Score_Total.toFixed(1)} out of 10)
         </span>
       </h1>
 
@@ -38,24 +38,24 @@ export default function Security_Compilance({ data }) {
  hover:scale-105 transition-transform duration-300">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
-            <span>HTTPS Score</span>
-            <ScoreBadge score={data.jsonData?.D.HTTPS_Score.toFixed(1) ?? 0} />
+            <span> Primary CTAs Score</span>
+            <ScoreBadge score={data.jsonData?.F. Primary_CTAs_Score.toFixed(1) ?? 0} />
           </div>
           <div className="flex justify-between items-center">
-            <span>HSTS Score</span>
-            <ScoreBadge score={data.jsonData?.D.HSTS_Score ?? 0} />
+            <span>Forms Score</span>
+            <ScoreBadge score={data.jsonData?.F.Forms_Score ?? 0} />
           </div>
           <div className="flex justify-between items-center">
-            <span>Security Headers Score</span>
-            <ScoreBadge score={data.jsonData?.D.Security_Headers_Score ?? 0} />
+            <span>Thank-You/Success State Score</span>
+            <ScoreBadge score={data.jsonData?.F.Thank_You_or_Success_State_Score ?? 0} />
           </div>
           <div className="flex justify-between items-center">
-            <span>Cookie Banner & Consent Mode Score</span>
-            <ScoreBadge score={data.jsonData?.D.Cookie_Banner_and_Consent_Mode_Score ?? 0} />
+            <span>Tracking of Form Submits/Events Score</span>
+            <ScoreBadge score={data.jsonData?.F.Tracking_Of_Form_Submits_or_Events_Score ?? 0} />
           </div>
           <div className="flex justify-between items-center">
-            <span>404/500 handling Score</span>
-            <ScoreBadge score={data.jsonData?.D.Error_Pages_Score ?? 0} />
+            <span>Contact Info Score</span>
+            <ScoreBadge score={data.jsonData?.F.Contact_Info_Score ?? 0} />
           </div>
         </div>
       </div>
