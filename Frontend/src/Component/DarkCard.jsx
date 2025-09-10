@@ -71,7 +71,7 @@ export default function DarkCard() {
       <div className="flex flex-col min-h-screen items-center">
         {/* ✅ Input Section (show only before result) */}
         {!result && (
-          <div className="w-full max-w-2xl mx-auto bg-gray-900 rounded-2xl shadow-2xl p-6 space-y-4 border border-gray-700">
+          <div className="w-full mt-40 max-w-2xl mx-auto bg-gray-900 rounded-2xl shadow-2xl p-6 space-y-4 border border-gray-700">
             <h2 className="text-2xl font-bold text-center">
               Check your Page Audits and Performance
             </h2>
@@ -97,8 +97,8 @@ export default function DarkCard() {
                   disabled={loading}
                   className="flex items-center justify-center bg-blue-600 hover:bg-blue-700 disabled:opacity-50 transition rounded-lg font-semibold px-4"
                 >
-                  {loading && <Loader2 className="animate-spin mr-2 h-5 w-5" />}
-                  {loading ? "⏳ Analyzing..." : "Analyze"}
+                  {loading && <Loader2 className="animate-spin m-2 mr-4 h-fit w-fit" />}
+                  {loading ? " Analyzing... Please Wait" : "Analyze"}
                 </button>
               </form>
             </div>
