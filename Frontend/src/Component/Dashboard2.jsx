@@ -66,7 +66,7 @@ console.log(data);
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white p-4 sm:p-6 grid grid-cols-1 gap-6">
-      
+      <div className="text-3xl text-bold flex">URL:- <a href={`${data.jsonData.URL}`} target="-blank" className="text-blue-500">{data.jsonData.URL}</a> </div>
       {/* Overall Score */}
       <div className="bg-gradient-to-r from-indigo-500 to-blue-600 rounded-2xl shadow-xl p-6 text-center flex flex-col sm:flex-row sm:justify-center sm:items-center gap-30">
         <CircularProgress value={totalScore} size={120} stroke={10} />
