@@ -68,7 +68,7 @@ console.log(data);
     <div className="min-h-screen w-full  text-white p-4 sm:p-6 grid grid-cols-1 gap-6">
      
 <div class="flex justify-between items-center bg-gray-900 p-4 rounded-lg">
-  <p class="text-white text-3xl">
+  <p class="text-white text-xl">
     URL:- <a href={`${data.jsonData.URL}`} target="-blank" class="text-blue-400 hover:underline">{data.jsonData.URL}</a>
   </p>
  <a href="/"> <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition">
