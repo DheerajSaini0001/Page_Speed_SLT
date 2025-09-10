@@ -25,7 +25,7 @@ export default function On_Page_SEO({ data }) {
   );
 
   return (
-    <div id="TechnicalPerformance" className="min-h-screen bg-inherit flex flex-col items-center justify-start p-6 space-y-6">
+    <div id="OnPageSEO" className="min-h-screen bg-inherit flex flex-col items-center justify-start p-6 space-y-6">
       <h1 className="text-3xl font-extrabold text-amber-100 mb-6">
         On-Page SEO{" "}
         <span className="text-gray-100">

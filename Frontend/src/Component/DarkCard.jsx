@@ -84,7 +84,7 @@ export default function DarkCard() {
               onSubmit={handleClick}
             >
               <input
-                type="text"
+                type="url"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="Type here..."
