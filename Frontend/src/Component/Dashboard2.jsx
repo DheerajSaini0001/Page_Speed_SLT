@@ -17,6 +17,7 @@ export default function Dashboard2({ data }) {
 
   if (!data || !data.result) return <div />;
 
+
   if (!data || !data.result) {
     return (
       <div>
