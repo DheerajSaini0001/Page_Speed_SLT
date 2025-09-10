@@ -105,18 +105,7 @@ console.log(data);
               <XAxis dataKey="name" stroke="#aaa" tick={{ fontSize: 10 }} />
               <YAxis stroke="#aaa" tick={{ fontSize: 10 }} />
               <Tooltip />
-              <Legend
-                layout="horizontal"
-                verticalAlign="bottom"
-                align="center"
-                wrapperStyle={{ fontSize: "12px" }}
-                payload={sectionData.map((entry, index) => ({
-                  id: entry.name,
-                  type: "square",
-                  value: entry.name,
-                  color: COLORS[index % COLORS.length],
-                }))}
-              />
+              
               <Bar dataKey="score">
                 {sectionData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -156,6 +145,14 @@ console.log(data);
             </PieChart>
           </ResponsiveContainer>
         </div>
+      </div>
+      <div className="bg-gray-900 rounded-xl p-4 shadow-lg border border-gray-700">
+         <h3 className=" sm:text-2xl font-semibold text-bold text-green-500 text-2xl mb-4 ">👉 Recommendations to improve Webite Performance :-</h3>
+        {data.result.recommendations.map((val,index)=>(
+          <div className="text-base sm:text-lg p-2 pl-6 font-semibold mb-4">
+            {index+1} - {val}
+          </div>
+        ))}
       </div>
     </div>
   );

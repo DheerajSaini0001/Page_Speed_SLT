@@ -25,7 +25,7 @@ export default function UX_Content_Structure({ data }) {
   );
 
   return (
-    <div id="TechnicalPerformance" className="min-h-screen bg-inherit flex flex-col items-center justify-start p-6 space-y-6">
+    <div id="UXContentStructure" className="min-h-fit pt-20 pb-16 bg-gray-900 border border-gray-700 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300  m-4 flex flex-col items-center justify-start p-6 space-y-6">
       <h1 className="text-3xl font-extrabold text-amber-100 mb-6">
         UX Content Structure{" "}
         <span className="text-gray-100">
