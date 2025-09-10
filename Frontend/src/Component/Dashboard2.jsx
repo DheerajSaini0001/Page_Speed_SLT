@@ -157,6 +157,14 @@ console.log(data);
           </ResponsiveContainer>
         </div>
       </div>
+      <div className="bg-gray-900 rounded-xl p-4 shadow-lg border border-gray-700">
+         <h3 className="text-base sm:text-lg font-semibold mb-4">Recommendations to improve Webite Performance</h3>
+        {data.result.recommendations.map((val,index)=>(
+          <div className="text-base sm:text-lg font-semibold mb-4">
+            {index+1} - {val}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
