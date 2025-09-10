@@ -69,10 +69,10 @@ console.log(data);
      
 <div class="flex justify-between items-center bg-gray-900 p-4 rounded-lg">
   <p class="text-white text-3xl">
-    URL:- <a href={`${data.jsonData.URL}`} target="-blank" class="text-blue-400 hover:underline">{data.jsonData.URL}</a>
+    URL - <a href={`${data.jsonData.URL}`} target="-blank" class="text-blue-400 hover:underline">{data.jsonData.URL}</a>
   </p>
  <a href="/"> <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition">
-    Check for More
+    Check for Other
   </button></a>
 </div>
 
@@ -156,7 +156,7 @@ console.log(data);
         </div>
       </div>
       <div className="bg-gray-900 rounded-xl p-4 shadow-lg border border-gray-700">
-         <h3 className=" sm:text-2xl font-semibold text-bold text-green-500 text-2xl mb-4 ">👉 Recommendations to improve Webite Performance :-</h3>
+         <h3 className=" sm:text-2xl font-semibold text-bold text-green-500 text-2xl mb-4 ">👉 Recommendations to improve Webite Performance -</h3>
         {data.result.recommendations.map((val,index)=>(
           <div className="text-base sm:text-lg p-2 pl-6 font-semibold mb-4">
             {index+1} - {val}
