@@ -24,26 +24,27 @@ export default function Technical_Performance({ data }) {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 flex flex-col items-center justify-start p-6 space-y-6">
-      <h1 className="text-3xl font-extrabold text-gray-800 mb-6">
+    <div id="TechnicalPerformance" className="min-h-screen bg-inherit flex flex-col items-center justify-start p-6 space-y-6">
+      <h1 className="text-3xl font-extrabold text-amber-100 mb-6">
         Technical Performance{" "}
-        <span className="text-gray-500">
+        <span className="text-gray-100">
           ({data.jsonData?.A?.Technical_Performance_Score_Total.toFixed(1)} out of 28)
         </span>
       </h1>
 
       {/* Core Web Vitals */}
-      <div className="w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-indigo-500 bg-gradient-to-r from-indigo-100 to-indigo-50 hover:scale-105 transition-transform duration-300">
-        <h2 className="text-xl font-bold text-gray-800 mb-4">
+      <div className="w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-indigo-500 bg-gradient-to-br from-blue-900 via-gray-900 to-black
+ hover:scale-105 transition-transform duration-300">
+        <h2 className="text-xl font-bold text-white mb-4">
           Core Web Vitals{" "}
-          <span className="text-gray-500">
+          <span className="text-white">
             ({data.jsonData?.A?.A1?.Total_Score_A1 || 0} out of 12)
           </span>
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>LCP Score</span>
-            <ScoreBadge score={data.jsonData?.A?.A1?.LCP_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.A?.A1?.LCP_Score.toFixed(1) ?? 0} />
           </div>
           <div className="flex justify-between items-center">
             <span>CLS Score</span>
@@ -57,10 +58,11 @@ export default function Technical_Performance({ data }) {
       </div>
 
       {/* Delivery & Render */}
-      <div className="w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-purple-500 bg-gradient-to-r from-purple-100 to-purple-50 hover:scale-105 transition-transform duration-300">
-        <h2 className="text-xl font-bold text-gray-800 mb-4">
+      <div className="w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-purple-500 bg-gradient-to-br from-blue-900 via-gray-900 to-black
+ hover:scale-105 transition-transform duration-300">
+        <h2 className="text-xl font-bold text-white mb-4">
           Delivery & Render{" "}
-          <span className="text-gray-500">
+          <span className="text-white">
             ({data.jsonData?.A?.A2?.Total_Score_A2 || 0} out of 8)
           </span>
         </h2>
@@ -85,10 +87,11 @@ export default function Technical_Performance({ data }) {
       </div>
 
       {/* Crawlability & Hygiene */}
-      <div className="w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-pink-500 bg-gradient-to-r from-pink-100 to-pink-50 hover:scale-105 transition-transform duration-300">
-        <h2 className="text-xl font-bold text-gray-800 mb-4">
+      <div className="w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-pink-500 bg-gradient-to-br from-blue-900 via-gray-900 to-black
+ hover:scale-105 transition-transform duration-300">
+        <h2 className="text-xl font-bold text-white mb-4">
           Crawlability & Hygiene{" "}
-          <span className="text-gray-500">
+          <span className="text-white">
             ({data.jsonData?.A?.A3?.Total_Score_A3 || 0} out of 8)
           </span>
         </h2>

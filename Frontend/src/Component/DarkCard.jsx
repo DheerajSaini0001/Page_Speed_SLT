@@ -3,6 +3,7 @@ import { Loader2, Menu, X } from "lucide-react";
 import Sidebar from "./Sidebar";
 import Dashboard2 from "./Dashboard2";
 import Technical_Performance from "./Technical_Performance";
+import On_Page_SEO from "./On_Page_SEO";
 
 export default function DarkCard() {
   const [loading, setLoading] = useState(false);
@@ -37,7 +38,7 @@ export default function DarkCard() {
   };
 
   return (
-    <div className="m-0 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white overflow-x-hidden">
+    <div className="scroll-smooth m-0 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white overflow-x-hidden">
       {/* ✅ Navbar */}
       <nav className="fixed top-0 left-0 w-full bg-gray-900 border-b border-gray-700 flex items-center justify-between px-4 py-3 z-50">
         {/* Hamburger button (mobile only) */}
@@ -119,7 +120,11 @@ export default function DarkCard() {
     {/* Main Dashboard (takes remaining width) */}
     <div className="flex-1 lg:ml-64 p-4 sm:p-6">
       <Dashboard2 data={result} />
-      <Technical_Performance data={result} />
+
+
+      <Technical_Performance  data={result} />
+    <On_Page_SEO data={result} />
+    
     </div>
   </div>
 )}

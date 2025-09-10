@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function On_Page_SEO() {
+export default function On_Page_SEO({data}) {
   const scores = {
     LCP: 8,
     CLS: 10,
@@ -28,7 +28,7 @@ export default function On_Page_SEO() {
   );
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 flex flex-col items-center justify-start p-6 space-y-6'>
+    <div id='#OnPageSEO' className='min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 flex flex-col items-center justify-start p-6 space-y-6'>
       <h1 className="text-3xl font-extrabold text-gray-800 mb-6">On-Page SEO <span className='text-gray-500'>(out of 22)</span></h1>
 
       {/* Core Web Vitals */}
