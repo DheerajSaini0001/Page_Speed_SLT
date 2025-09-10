@@ -27,12 +27,22 @@ export default function Dashboard2({ data }) {
     F: "Conversion & Lead Flow",
     G: "AIO Readiness",
   };
+  const sectionOutOf = {
+    A: 28,
+    B: 22,
+    C: 12,
+    D: 8,
+    E: 10,
+    F: 10,
+    G: 10,
+  };
 
   const { sectionScores, topFixes, totalScore } = data.result;
 
   const sectionData = Object.entries(sectionScores).map(([key, value]) => ({
     name: sectionLabels[key],
     score: value,
+    outOf: sectionOutOf[key]
   }));
 
   const COLORS = [
@@ -71,7 +81,7 @@ export default function Dashboard2({ data }) {
           >
             <h3 className="text-xs sm:text-sm text-gray-400">{sectionLabels[key]} Score</h3>
             <p className="text-lg sm:text-xl lg:text-2xl font-bold" style={{ color: COLORS[index % COLORS.length] }}>
-              {value.toFixed(1)}
+              {value.toFixed(1)}/{sectionOutOf[key]}
             </p>
           </div>
         ))}
