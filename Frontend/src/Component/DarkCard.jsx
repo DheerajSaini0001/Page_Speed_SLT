@@ -64,7 +64,7 @@ export default function DarkCard() {
       <div className="flex flex-col min-h-screen pt-16 items-center">
         {/* ✅ Input Section (show only before result) */}
         {!result && (
-          <div className="w-full mt-10 max-w-sm mx-auto bg-gray-900 rounded-2xl shadow-2xl p-6 space-y-4 border border-gray-700">
+          <div className="w-full mt-50 max-w-120 mx-auto bg-gray-900 rounded-2xl shadow-2xl p-6 space-y-4 border border-gray-700">
             <h2 className="text-2xl font-bold text-center">
               Check your Page Audits and Performance
             </h2>
@@ -73,7 +73,8 @@ export default function DarkCard() {
               will appear while processing.
             </p>
 
-            <form
+          <div className="w-96 flex flex-col justify-center items-center">
+          <form
               className="flex flex-col sm:flex-row gap-2"
               onSubmit={handleClick}
             >
@@ -93,6 +94,7 @@ export default function DarkCard() {
                 {loading ? "⏳ Analyzing..." : "Analyze"}
               </button>
             </form>
+          </div>
           </div>
         )}
 
