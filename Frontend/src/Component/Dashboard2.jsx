@@ -68,13 +68,11 @@ console.log(data);
     <div className="min-h-screen w-full  text-white p-4 sm:p-6 grid grid-cols-1 gap-6">
      
 <div class="flex justify-between items-center bg-gray-900 p-4 rounded-lg">
-<<<<<<< HEAD
-  <p class="text-white text-xl">
-    URL:- <a href={`${data.jsonData.URL}`} target="-blank" class="text-blue-400 hover:underline">{data.jsonData.URL}</a>
-=======
+
+
   <p class="text-white text-3xl">
     URL - <a href={`${data.jsonData.URL}`} target="-blank" class="text-blue-400 hover:underline">{data.jsonData.URL}</a>
->>>>>>> 9d7dff067465a7edd04a76b2697ed7fc08597f83
+
   </p>
  <a href="/"> <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition">
     Check for Other
