@@ -14,7 +14,7 @@ function App() {
   return (
     <>
     
-   {/* <DarkCard/> */}
+   <DarkCard/>
    {/* <Technical_Performance/> */}
    <On_Page_SEO/>
     </>

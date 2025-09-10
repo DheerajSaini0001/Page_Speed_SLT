@@ -24,6 +24,7 @@ export default function Dashboard2({ data }) {
     );
   }
 
+console.log(data);
 
   const sectionLabels = {
     A: "Technical Performance",
