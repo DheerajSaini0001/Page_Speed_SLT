@@ -9,7 +9,7 @@ export default function Technical_Performance({ data }) {
     );
   }
 
-  const ScoreBadge = ({ score }) => (
+  const ScoreBadge = ({ score , out }) => (
     <span
       className={`px-2 py-1 rounded-full text-white font-semibold text-xs ${
         score >= 8
@@ -19,7 +19,7 @@ export default function Technical_Performance({ data }) {
           : "bg-red-500"
       }`}
     >
-      {score}
+      {score}/{out}
     </span>
   );
 
@@ -44,15 +44,15 @@ export default function Technical_Performance({ data }) {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>LCP Score</span>
-            <ScoreBadge score={data.jsonData?.A?.A1?.LCP_Score.toFixed(1) ?? 0} />
+            <ScoreBadge score={data.jsonData?.A?.A1?.LCP_Score.toFixed(1) ?? 0} out={5} />
           </div>
           <div className="flex justify-between items-center">
             <span>CLS Score</span>
-            <ScoreBadge score={data.jsonData?.A?.A1?.CLS_Score.toFixed(1) ?? 0} />
+            <ScoreBadge score={data.jsonData?.A?.A1?.CLS_Score.toFixed(1) ?? 0} out={3} />
           </div>
           <div className="flex justify-between items-center">
             <span>INP Score</span>
-            <ScoreBadge score={data.jsonData?.A?.A1?.INP_Score.toFixed(1) ?? 0} />
+            <ScoreBadge score={data.jsonData?.A?.A1?.INP_Score.toFixed(1) ?? 0} out={4} />
           </div>
         </div>
       </div>
@@ -69,19 +69,19 @@ export default function Technical_Performance({ data }) {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>TTFB Score</span>
-            <ScoreBadge score={data.jsonData?.A?.A2?.TTFB_Score.toFixed(1) ?? 0} />
+            <ScoreBadge score={data.jsonData?.A?.A2?.TTFB_Score.toFixed(1) ?? 0} out={3} />
           </div>
           <div className="flex justify-between items-center">
             <span>Compression Score</span>
-            <ScoreBadge score={data.jsonData?.A?.A2?.Compression_Score.toFixed(1) ?? 0} />
+            <ScoreBadge score={data.jsonData?.A?.A2?.Compression_Score.toFixed(1) ?? 0} out={2} />
           </div>
           <div className="flex justify-between items-center">
             <span>Caching Score</span>
-            <ScoreBadge score={data.jsonData?.A?.A2?.Caching_Score.toFixed(1) ?? 0} />
+            <ScoreBadge score={data.jsonData?.A?.A2?.Caching_Score.toFixed(1) ?? 0} out={2} />
           </div>
           <div className="flex justify-between items-center">
             <span>HTTP/2 or HTTP/3 Score</span>
-            <ScoreBadge score={data.jsonData?.A?.A2?.HTTP_Score.toFixed(1) ?? 0} />
+            <ScoreBadge score={data.jsonData?.A?.A2?.HTTP_Score.toFixed(1) ?? 0} out={1} />
           </div>
         </div>
       </div>
@@ -98,19 +98,19 @@ export default function Technical_Performance({ data }) {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>Sitemap Score</span>
-            <ScoreBadge score={data.jsonData?.A?.A3?.Sitemap_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.A?.A3?.Sitemap_Score ?? 0} out={2} />
           </div>
           <div className="flex justify-between items-center">
             <span>Robots Score</span>
-            <ScoreBadge score={data.jsonData?.A?.A3?.Robots_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.A?.A3?.Robots_Score ?? 0} out={2} />
           </div>
           <div className="flex justify-between items-center">
             <span>Broken Links Score</span>
-            <ScoreBadge score={data.jsonData?.A?.A3?.BrokenLinks_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.A?.A3?.BrokenLinks_Score ?? 0} out={2} />
           </div>
           <div className="flex justify-between items-center">
             <span>Redirect Chains Score</span>
-            <ScoreBadge score={data.jsonData?.A?.A3?.RedirectChains_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.A?.A3?.RedirectChains_Score ?? 0} out={2} />
           </div>
         </div>
       </div>

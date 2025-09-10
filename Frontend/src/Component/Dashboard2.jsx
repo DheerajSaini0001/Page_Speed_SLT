@@ -68,11 +68,16 @@ console.log(data);
     <div className="min-h-screen w-full  text-white p-4 sm:p-6 grid grid-cols-1 gap-6">
      
 <div class="flex justify-between items-center bg-gray-900 p-4 rounded-lg">
+<<<<<<< HEAD
   <p class="text-white text-xl">
     URL:- <a href={`${data.jsonData.URL}`} target="-blank" class="text-blue-400 hover:underline">{data.jsonData.URL}</a>
+=======
+  <p class="text-white text-3xl">
+    URL - <a href={`${data.jsonData.URL}`} target="-blank" class="text-blue-400 hover:underline">{data.jsonData.URL}</a>
+>>>>>>> 9d7dff067465a7edd04a76b2697ed7fc08597f83
   </p>
  <a href="/"> <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition">
-    Check for More
+    Check for Other
   </button></a>
 </div>
 
@@ -156,7 +161,7 @@ console.log(data);
         </div>
       </div>
       <div className="bg-gray-900 rounded-xl p-4 shadow-lg border border-gray-700">
-         <h3 className=" sm:text-2xl font-semibold text-bold text-green-500 text-2xl mb-4 ">👉 Recommendations to improve Webite Performance :-</h3>
+         <h3 className=" sm:text-2xl font-semibold text-bold text-green-500 text-2xl mb-4 ">👉 Recommendations to improve Webite Performance -</h3>
         {data.result.recommendations.map((val,index)=>(
           <div className="text-base sm:text-lg p-2 pl-6 font-semibold mb-4">
             {index+1} - {val}
