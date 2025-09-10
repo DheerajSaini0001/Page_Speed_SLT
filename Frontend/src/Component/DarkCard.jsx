@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { Loader2, Menu, X } from "lucide-react";
 import Sidebar from "./Sidebar";
 import Dashboard2 from "./Dashboard2";
-import Technical_Performance from "./Technical_Performance";
-import On_Page_SEO from "./On_Page_SEO";
-import Accessibility from "./Accessibility";
-import Security_Compilance from "./Security_Compilance";
-import UX_Content_Structure from "./UX_Content_Structure";
-import Conversion_Lead_Flow from "./Conversion_Lead_Flow";
-import AIO from "./AIO";
+import Technical_Performance from "../Metrices/Technical_Performance";
+import On_Page_SEO from "../Metrices/On_Page_SEO";
+import Accessibility from "../Metrices/Accessibility";
+import Security_Compilance from "../Metrices/Security_Compilance";
+import UX_Content_Structure from "../Metrices/UX_Content_Structure";
+import Conversion_Lead_Flow from "../Metrices/Conversion_Lead_Flow";
+import AIO from "../Metrices/AIO";
 
 export default function DarkCard() {
   const [loading, setLoading] = useState(false);
