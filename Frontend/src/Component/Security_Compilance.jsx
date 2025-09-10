@@ -1,0 +1,65 @@
+import React from 'react';
+
+
+export default function Security_Compilance({ data }) {
+  if (!data || !data.jsonData) {
+    return (
+      <div >
+     
+      </div>
+    );
+  }
+
+  const ScoreBadge = ({ score }) => (
+    <span
+      className={`px-2 py-1 rounded-full text-white font-semibold text-xs ${
+        score >= 8
+          ? "bg-green-500"
+          : score >= 5
+          ? "bg-yellow-500"
+          : "bg-red-500"
+      }`}
+    >
+      {score}
+    </span>
+  );
+
+  return (
+    <div id="TechnicalPerformance" className="min-h-screen bg-inherit flex flex-col items-center justify-start p-6 space-y-6">
+      <h1 className="text-3xl font-extrabold text-amber-100 mb-6">
+        Security/Compilance{" "}
+        <span className="text-gray-100">
+          ({data.jsonData?.D?.Security_or_Compliance_Score_Total.toFixed(1)} out of 8)
+        </span>
+      </h1>
+
+      {/* Core Web Vitals */}
+      <div className="w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-indigo-500 bg-gradient-to-br from-blue-900 via-gray-900 to-black
+ hover:scale-105 transition-transform duration-300">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
+          <div className="flex justify-between items-center">
+            <span>HTTPS Score</span>
+            <ScoreBadge score={data.jsonData?.D.HTTPS_Score.toFixed(1) ?? 0} />
+          </div>
+          <div className="flex justify-between items-center">
+            <span>HSTS Score</span>
+            <ScoreBadge score={data.jsonData?.D.HSTS_Score ?? 0} />
+          </div>
+          <div className="flex justify-between items-center">
+            <span>Security Headers Score</span>
+            <ScoreBadge score={data.jsonData?.D.Security_Headers_Score ?? 0} />
+          </div>
+          <div className="flex justify-between items-center">
+            <span>Cookie Banner & Consent Mode Score</span>
+            <ScoreBadge score={data.jsonData?.D.Cookie_Banner_and_Consent_Mode_Score ?? 0} />
+          </div>
+          <div className="flex justify-between items-center">
+            <span>Error Pages Score</span>
+            <ScoreBadge score={data.jsonData?.D.Error_Pages_Score ?? 0} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+

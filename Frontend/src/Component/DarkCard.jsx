@@ -4,6 +4,8 @@ import Sidebar from "./Sidebar";
 import Dashboard2 from "./Dashboard2";
 import Technical_Performance from "./Technical_Performance";
 import On_Page_SEO from "./On_Page_SEO";
+import Accessibility from "./Accessibility";
+import Security_Compilance from "./Security_Compilance";
 
 export default function DarkCard() {
   const [loading, setLoading] = useState(false);
@@ -126,6 +128,8 @@ export default function DarkCard() {
 
       <Technical_Performance  data={result} />
     <On_Page_SEO data={result} />
+    <Accessibility data={result} />
+    <Security_Compilance data={result} />
     
     </div>
   </div>
