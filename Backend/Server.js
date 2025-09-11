@@ -3,6 +3,10 @@ import axios from "axios";
 import cors from "cors";
 import * as cheerio from "cheerio";
 import crypto from "crypto";
+import puppeteer from "puppeteer";
+import AxePuppeteer from "@axe-core/puppeteer";
+
+
 const PORT =2000;
 
 const app = express();
@@ -299,60 +303,62 @@ async function seoMetrics(url) {
 
 // Accessibility function (C section)
 async function accessibilityMetrics(url) {
-  const report = {};
+const report = {};
+  
+// --- Helper: Calculate pass rate for selected Axe rules ---
+function calculatePassRate(results, ruleIds) {
+  const total = ruleIds.length;
+  if (total === 0) return 1; // if no rules, consider pass
 
-  let html;
-  try {
-    const res = await axios.get(url);
-    html = res.data;
-  } catch (err) {
-    console.error("Failed to fetch page:", err.message);
-    return null;
-  }
+  const violations = results.violations.filter(v => ruleIds.includes(v.id)).length;
+  return (total - violations) / total; // pass rate: 1 = all pass, 0 = all fail
+}
 
-  const $ = cheerio.load(html);
+// --- Helper: Check for skip links or landmark elements ---
+async function hasSkipLinksOrLandmarks(page) {
+  // Look for common skip link pattern or landmark roles
+  const skipLink = await page.$('a[href^="#"]:not([hidden])'); // visible skip link
+  const landmarks = await page.$$('[role="banner"], [role="main"], [role="contentinfo"], [role="navigation"], [role="complementary"]');
+  return (skipLink || landmarks.length > 0) ? 1 : 0;
+}
 
-  // --- C Metrics ---
+const browser = await puppeteer.launch({ headless: true });
+  const page = await browser.newPage();
+  await page.goto(url, { waitUntil: "networkidle2" });
 
-  // 1️⃣ Color Contrast AA
-  // Placeholder: in real usage, use axe-core or Pa11y
-  const colorContrastPassRate = 95; // % of elements passing
-  const colorContrastScore = normalizeScore(colorContrastPassRate, 3);
+  // Run axe-core audit
+  const results = await new AxePuppeteer(page).analyze();
 
-  // 2️⃣ Focusable / Keyboard Navigation
-  const focusablePassRate = 90; // % of focusable elements correctly handled
-  const focusableScore = normalizeScore(focusablePassRate, 3);
+  // --- Calculate each category ---
+  const CC = calculatePassRate(results, ["color-contrast"]); // Color contrast AA
+  const KN = calculatePassRate(results, [
+    "focus-order",
+    "focusable-content",
+    "tabindex",
+    "interactive-element-affordance"
+  ]); // Keyboard navigation
+  const AL = calculatePassRate(results, [
+    "label",
+    "aria-allowed-attr",
+    "aria-roles",
+    "aria-hidden-focus"
+  ]); // ARIA/Labels
+  const TX = calculatePassRate(results, ["image-alt"]); // Alt/text equivalents
+  const SL = await hasSkipLinksOrLandmarks(page); // Skip links / landmarks
 
-  // 3️⃣ ARIA / Labeling
-  const ariaPassRate = 92; // % of form elements with proper labels/ARIA
-  const ariaScore = normalizeScore(ariaPassRate, 3);
+  await browser.close();
 
-  // 4️⃣ Alt / Text Equivalents
-  const images = $("img").toArray().filter((img) => !$(img).attr("decorative"));
-  const altPassCount = images.filter((img) => $(img).attr("alt")?.trim()).length;
-  const altPassRate = (altPassCount / (images.length || 1)) * 100;
-  const altScore = normalizeScore(altPassRate, 2);
-
-  // 5️⃣ Skip Links / Landmarks
-  const skipLinks = $("a[href^='#skip'], [role='main'], [role='navigation'], [role='contentinfo']");
-  const skipLinksScore = skipLinks.length ? 1 : 0;
+  // --- Weighted scoring ---
+  const score = (CC * 3) + (KN * 3) + (AL * 3) + (TX * 2) + (SL * 1);
 
   // Combine all C metrics
   report.C = {
-    colorContrast: parseFloat(colorContrastScore.toFixed(2)),
-    keyboardNavigation: parseFloat(focusableScore.toFixed(2)),
-    ariaLabeling: parseFloat(ariaScore.toFixed(2)),
-    altTextEquivalents: parseFloat(altScore.toFixed(2)),
-    skipLinksLandmarks: skipLinksScore,
-    totalCScore: parseFloat(
-      (
-        colorContrastScore +
-        focusableScore +
-        ariaScore +
-        altScore +
-        skipLinksScore
-      ).toFixed(2)
-    ),
+    colorContrast: parseFloat(CC.toFixed(2)),
+    keyboardNavigation: parseFloat(KN.toFixed(2)),
+    ariaLabeling: parseFloat(AL.toFixed(2)),
+    altTextEquivalents: parseFloat(TX.toFixed(2)),
+    skipLinksLandmarks: SL,
+    totalCScore: parseFloat(score.toFixed(2)),
   };
 
   return report;
