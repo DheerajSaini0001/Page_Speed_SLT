@@ -10,19 +10,16 @@ export default function On_Page_SEO({ data }) {
     );
   }
 
-  const ScoreBadge = ({ score , out }) => (
-    <span
-      className={`px-2 py-1 rounded-full text-white font-semibold text-xs ${
-        score >= 8
-          ? "bg-green-500"
-          : score >= 5
-          ? "bg-yellow-500"
-          : "bg-red-500"
-      }`}
-    >
-      {score}/{out}
-    </span>
-  );
+const ScoreBadge = ({ score, out }) => (
+  <span
+    className="px-2.5 py-1 rounded-full text-white font-semibold text-sm
+               bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500
+               shadow-md transform transition-transform hover:scale-110"
+  >
+    {score}/{out}
+  </span>
+);
+
 
   return (
     <div id="OnPageSEO" className="min-h-fit pt-20 pb-16 bg-gray-900 border border-gray-700 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 m-4 flex flex-col items-center justify-start p-6 space-y-6">
