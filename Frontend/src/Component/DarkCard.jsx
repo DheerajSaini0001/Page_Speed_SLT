@@ -140,7 +140,7 @@ export default function DarkCard() {
               </section>
 
 
-              <section id="accessibility" className="scroll-mt-20">
+              <section id="accessibility" className="">
                 <Accessibility data={result} />
               </section>
               <section id="security" className="scroll-mt-20">
