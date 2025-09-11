@@ -9,7 +9,7 @@ import Security_Compilance from "../Metrices/Security_Compilance";
 import UX_Content_Structure from "../Metrices/UX_Content_Structure";
 import Conversion_Lead_Flow from "../Metrices/Conversion_Lead_Flow";
 import AIO from "../Metrices/AIO";
-
+import logo from "./android-chrome-192x192.png";
 export default function DarkCard() {
   const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState("");
@@ -60,8 +60,9 @@ export default function DarkCard() {
         )}
 
         {/* Logo / Title */}
-        <div className="font-serif text-4xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent">
-          Site Audits
+        <div className="flex flex-col-rev justify-center items-center gap-4  font-serif text-4xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent">
+          <div><img src={logo} alt="" className="h-14" /></div>
+          <div>Site Audits</div>
         </div>
       </nav>
 
@@ -86,7 +87,7 @@ export default function DarkCard() {
                 onSubmit={handleClick}
               >
                 <input
-                  type="url"
+                  type="text"
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   placeholder="Type here..."
