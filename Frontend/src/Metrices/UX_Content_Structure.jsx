@@ -10,7 +10,7 @@ export default function UX_Content_Structure({ data }) {
     );
   }
 
-  const ScoreBadge = ({ score }) => (
+  const ScoreBadge = ({ score , out }) => (
     <span
       className={`px-2 py-1 rounded-full text-white font-semibold text-xs ${
         score >= 8
@@ -20,7 +20,7 @@ export default function UX_Content_Structure({ data }) {
           : "bg-red-500"
       }`}
     >
-      {score}
+      {score}/{out}
     </span>
   );
 
@@ -39,23 +39,23 @@ export default function UX_Content_Structure({ data }) {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>Mobile Friendliness Score</span>
-            <ScoreBadge score={data.jsonData?.E.Mobile_Friendliness_Score.toFixed(1) ?? 0} />
+            <ScoreBadge score={data.jsonData?.E.Mobile_Friendliness_Score.toFixed(1) ?? 0} out={3} />
           </div>
           <div className="flex justify-between items-center">
             <span>Navigation Depth Score</span>
-            <ScoreBadge score={data.jsonData?.E.Navigation_Depth_Score.toFixed(1) ?? 0} />
+            <ScoreBadge score={data.jsonData?.E.Navigation_Depth_Score.toFixed(1) ?? 0} out={2} />
           </div>
           <div className="flex justify-between items-center">
             <span>Layout Shift On interactions Score</span>
-            <ScoreBadge score={data.jsonData?.E.Layout_Shift_On_interactions_Score.toFixed(1) ?? 0} />
+            <ScoreBadge score={data.jsonData?.E.Layout_Shift_On_interactions_Score.toFixed(1) ?? 0} out={2} />
           </div>
           <div className="flex justify-between items-center">
             <span>Readability Score</span>
-            <ScoreBadge score={data.jsonData?.E.Readability_Score.toFixed(1) ?? 0} />
+            <ScoreBadge score={data.jsonData?.E.Readability_Score.toFixed(1) ?? 0} out={2} />
           </div>
           <div className="flex justify-between items-center">
             <span>Intrusive Interstitials Score</span>
-            <ScoreBadge score={data.jsonData?.E.Intrusive_Interstitials_Score.toFixed(1) ?? 0} />
+            <ScoreBadge score={data.jsonData?.E.Intrusive_Interstitials_Score.toFixed(1) ?? 0} out={1} />
           </div>
         </div>
       </div>

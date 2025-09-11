@@ -10,7 +10,7 @@ export default function Security_Compilance({ data }) {
     );
   }
 
-  const ScoreBadge = ({ score }) => (
+  const ScoreBadge = ({ score , out }) => (
     <span
       className={`px-2 py-1 rounded-full text-white font-semibold text-xs ${
         score >= 8
@@ -20,7 +20,7 @@ export default function Security_Compilance({ data }) {
           : "bg-red-500"
       }`}
     >
-      {score}
+      {score}/{out}
     </span>
   );
 
@@ -39,23 +39,23 @@ export default function Security_Compilance({ data }) {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>HTTPS Score</span>
-            <ScoreBadge score={data.jsonData?.D.HTTPS_Score.toFixed(1) ?? 0} />
+            <ScoreBadge score={data.jsonData?.D.HTTPS_Score.toFixed(1) ?? 0} out={2} />
           </div>
           <div className="flex justify-between items-center">
             <span>HSTS Score</span>
-            <ScoreBadge score={data.jsonData?.D.HSTS_Score.toFixed(1) ?? 0} />
+            <ScoreBadge score={data.jsonData?.D.HSTS_Score.toFixed(1) ?? 0} out={1} />
           </div>
           <div className="flex justify-between items-center">
             <span>Security Headers Score</span>
-            <ScoreBadge score={data.jsonData?.D.Security_Headers_Score.toFixed(1) ?? 0} />
+            <ScoreBadge score={data.jsonData?.D.Security_Headers_Score.toFixed(1) ?? 0} out={3} />
           </div>
           <div className="flex justify-between items-center">
             <span>Cookie Banner & Consent Mode Score</span>
-            <ScoreBadge score={data.jsonData?.D.Cookie_Banner_and_Consent_Mode_Score.toFixed(1) ?? 0} />
+            <ScoreBadge score={data.jsonData?.D.Cookie_Banner_and_Consent_Mode_Score.toFixed(1) ?? 0} out={1} />
           </div>
           <div className="flex justify-between items-center">
             <span>404/500 handling Score</span>
-            <ScoreBadge score={data.jsonData?.D.Error_Pages_Score.toFixed(1) ?? 0} />
+            <ScoreBadge score={data.jsonData?.D.Error_Pages_Score.toFixed(1) ?? 0} out={1} />
           </div>
         </div>
       </div>

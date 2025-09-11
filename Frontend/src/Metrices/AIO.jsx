@@ -9,7 +9,7 @@ export default function AIO({ data }) {
     );
   }
 
-  const ScoreBadge = ({ score }) => (
+  const ScoreBadge = ({ score , out }) => (
     <span
       className={`px-2 py-1 rounded-full text-white font-semibold text-xs ${
         score >= 8
@@ -19,7 +19,7 @@ export default function AIO({ data }) {
           : "bg-red-500"
       }`}
     >
-      {score}
+      {score}/{out}
     </span>
   );
 
@@ -50,15 +50,15 @@ export default function AIO({ data }) {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>Organization JSON-LD Score</span>
-            <ScoreBadge score={data.jsonData?.G?.G1?.Organization_JSON_LD_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.G?.G1?.Organization_JSON_LD_Score ?? 0} out={2} />
           </div>
           <div className="flex justify-between items-center">
             <span>Consistent NAP Score</span>
-            <ScoreBadge score={data.jsonData?.G?.G1?.Consistent_NAP_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.G?.G1?.Consistent_NAP_Score ?? 0} out={1} />
           </div>
           <div className="flex justify-between items-center">
             <span>Humans/Policies Score</span>
-            <ScoreBadge score={data.jsonData?.G?.G1?.Humans_or_Policies_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.G?.G1?.Humans_or_Policies_Score ?? 0} out={1} />
           </div>
         </div>
       </div>
@@ -75,15 +75,15 @@ export default function AIO({ data }) {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>FAQ/How-To-JSON-LD Score</span>
-            <ScoreBadge score={data.jsonData?.G?.G2?.FAQ_or_How_To_JSON_LD_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.G?.G2?.FAQ_or_How_To_JSON_LD_Score ?? 0} out={1.5} />
           </div>
           <div className="flex justify-between items-center">
             <span>Section Anchors/TOC Score</span>
-            <ScoreBadge score={data.jsonData?.G?.G2?.Section_Anchors_or_TOC_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.G?.G2?.Section_Anchors_or_TOC_Score ?? 0} out={1} />
           </div>
           <div className="flex justify-between items-center">
             <span>Descriptive Media Captions/Figcaptions Score</span>
-            <ScoreBadge score={data.jsonData?.G?.G2?.Descriptive_Media_Captions_or_Figcaptions_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.G?.G2?.Descriptive_Media_Captions_or_Figcaptions_Score ?? 0} out={0.5} />
           </div>
         </div>
       </div>
@@ -100,11 +100,11 @@ export default function AIO({ data }) {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>Correct Schema Types Score</span>
-            <ScoreBadge score={data.jsonData?.A?.A3?.Correct_Schema_Types_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.A?.A3?.Correct_Schema_Types_Score ?? 0} out={1.5} />
           </div>
           <div className="flex justify-between items-center">
             <span>Feed Availability Score</span>
-            <ScoreBadge score={data.jsonData?.A?.A3?.Feed_Availability_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.A?.A3?.Feed_Availability_Score ?? 0} out={0.5} />
           </div>
         </div>
       </div>
@@ -120,7 +120,7 @@ export default function AIO({ data }) {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>Robots Allowlist Score</span>
-            <ScoreBadge score={data.jsonData?.A?.A3?.Robots_Allowlist_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.A?.A3?.Robots_Allowlist_Score ?? 0} out={1} />
           </div>
         </div>
       </div>

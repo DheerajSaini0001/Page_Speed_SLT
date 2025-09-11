@@ -10,7 +10,7 @@ export default function Conversion_Lead_Flow({ data }) {
     );
   }
 
-  const ScoreBadge = ({ score }) => (
+  const ScoreBadge = ({ score , out }) => (
     <span
       className={`px-2 py-1 rounded-full text-white font-semibold text-xs ${
         score >= 8
@@ -20,7 +20,7 @@ export default function Conversion_Lead_Flow({ data }) {
           : "bg-red-500"
       }`}
     >
-      {score}
+      {score}/{out}
     </span>
   );
 
@@ -39,23 +39,27 @@ export default function Conversion_Lead_Flow({ data }) {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span> Primary CTAs Score</span>
-            <ScoreBadge score={data.jsonData?.F. Primary_CTAs_Score.toFixed(1) ?? 0} />
+            <ScoreBadge score={data.jsonData?.F. Primary_CTAs_Score.toFixed(1) ?? 0} out={2} />
           </div>
           <div className="flex justify-between items-center">
             <span>Forms Score</span>
-            <ScoreBadge score={data.jsonData?.F.Forms_Score.toFixed(1) ?? 0} />
+            <ScoreBadge score={data.jsonData?.F.Forms_Score.toFixed(1) ?? 0} out={2} />
           </div>
           <div className="flex justify-between items-center">
             <span>Thank-You/Success State Score</span>
-            <ScoreBadge score={data.jsonData?.F.Thank_You_or_Success_State_Score.toFixed(1) ?? 0} />
+            <ScoreBadge score={data.jsonData?.F.Thank_You_or_Success_State_Score.toFixed(1) ?? 0} out={1} />
           </div>
           <div className="flex justify-between items-center">
             <span>Tracking of Form Submits/Events Score</span>
-            <ScoreBadge score={data.jsonData?.F.Tracking_Of_Form_Submits_or_Events_Score.toFixed(1) ?? 0} />
+            <ScoreBadge score={data.jsonData?.F.Tracking_Of_Form_Submits_or_Events_Score.toFixed(1) ?? 0} out={2} />
           </div>
           <div className="flex justify-between items-center">
             <span>Contact Info Score</span>
-            <ScoreBadge score={data.jsonData?.F.Contact_Info_Score.toFixed(1) ?? 0} />
+            <ScoreBadge score={data.jsonData?.F.Contact_Info_Score.toFixed(1) ?? 0} out={2} />
+          </div>
+          <div className="flex justify-between items-center">
+            <span>Load on CRM/Webhook Score</span>
+            <ScoreBadge score={data.jsonData?.F.Load_On_CRM_or_Webhook_Score.toFixed(1) ?? 0} out={1} />
           </div>
         </div>
       </div>

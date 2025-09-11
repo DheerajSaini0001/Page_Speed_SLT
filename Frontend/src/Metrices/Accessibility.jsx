@@ -5,7 +5,7 @@ export default function Accessibility({ data }) {
     return <div />;
   }
 
-  const ScoreBadge = ({ score }) => (
+  const ScoreBadge = ({ score , out }) => (
     <span
       className={`px-2 py-1 rounded-full text-white font-semibold text-xs ${
         score >= 8
@@ -15,7 +15,7 @@ export default function Accessibility({ data }) {
           : "bg-red-500"
       }`}
     >
-      {score}
+      {score}/{out}
     </span>
   );
 
@@ -42,23 +42,23 @@ export default function Accessibility({ data }) {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>Color Contrast Score</span>
-            <ScoreBadge score={data.jsonData?.C.Color_Contrast_Score.toFixed(1) ?? 0} />
+            <ScoreBadge score={data.jsonData?.C.Color_Contrast_Score.toFixed(1) ?? 0} out={3} />
           </div>
           <div className="flex justify-between items-center">
             <span>Focusable/Keyboard Nav Score</span>
-            <ScoreBadge score={data.jsonData?.C.Focusable_Score.toFixed(1) ?? 0} />
+            <ScoreBadge score={data.jsonData?.C.Focusable_Score.toFixed(1) ?? 0} out={3} />
           </div>
           <div className="flex justify-between items-center">
             <span>ARIA/Labelling Score</span>
-            <ScoreBadge score={data.jsonData?.C.ARIA_Score.toFixed(1) ?? 0} />
+            <ScoreBadge score={data.jsonData?.C.ARIA_Score.toFixed(1) ?? 0} out={3} />
           </div>
           <div className="flex justify-between items-center">
             <span>Alt/Text Equivalents Score</span>
-            <ScoreBadge score={data.jsonData?.C.Alt_or_Text_Equivalents_Score.toFixed(1) ?? 0} />
+            <ScoreBadge score={data.jsonData?.C.Alt_or_Text_Equivalents_Score.toFixed(1) ?? 0} out={2}/>
           </div>
           <div className="flex justify-between items-center">
             <span>Skip Links/Landmarks Score</span>
-            <ScoreBadge score={data.jsonData?.C.Skip_Links_or_Landmarks_Score.toFixed(1) ?? 0} />
+            <ScoreBadge score={data.jsonData?.C.Skip_Links_or_Landmarks_Score.toFixed(1) ?? 0} out={1}/>
           </div>
         </div>
       </div>
