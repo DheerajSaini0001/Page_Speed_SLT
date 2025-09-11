@@ -45,12 +45,12 @@ export default function Sidebar({ children }) {
         <nav className="flex-1 p-2 space-y-2 overflow-y-auto ">
           
            <a href={`${menuItems[0].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition">{menuItems[0].icon} <pre> </pre> {menuItems[0].name} </a>
-           <a href={`${menuItems[1].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition">{menuItems[1].icon} {menuItems[1].name} </a>
-           <a href={`${menuItems[2].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition">{menuItems[2].icon} {menuItems[2].name} </a>
-           <a href={`${menuItems[3].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition">{menuItems[3].icon} {menuItems[3].name} </a>
-           <a href={`${menuItems[4].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition">{menuItems[4].icon} {menuItems[4].name} </a>
-           <a href={`${menuItems[5].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition">{menuItems[5].icon} {menuItems[5].name} </a>
-           <a href={`${menuItems[6].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition">{menuItems[6].icon} {menuItems[6].name} </a>
+           <a href={`${menuItems[1].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition">{menuItems[1].icon} <pre> </pre> {menuItems[1].name} </a>
+           <a href={`${menuItems[2].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition">{menuItems[2].icon} <pre> </pre> {menuItems[2].name} </a>
+           <a href={`${menuItems[3].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition">{menuItems[3].icon} <pre> </pre> {menuItems[3].name} </a>
+           <a href={`${menuItems[4].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition">{menuItems[4].icon} <pre> </pre> {menuItems[4].name} </a>
+           <a href={`${menuItems[5].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition">{menuItems[5].icon} <pre> </pre> {menuItems[5].name} </a>
+           <a href={`${menuItems[6].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition">{menuItems[6].icon} <pre> </pre> {menuItems[6].name} </a>
          
          
         </nav>
