@@ -70,6 +70,7 @@ console.log(data);
 <div class="flex justify-between items-center bg-gray-900 p-4 rounded-lg">
 
 
+
   <p class="text-white text-3xl">
     URL - <a href={`${data.jsonData.URL}`} target="-blank" class="text-blue-400 hover:underline">{data.jsonData.URL}</a>
 
