@@ -69,7 +69,9 @@ const ScoreBadge = ({ score, out }) => (
             ({data.jsonData?.G?.G2?.Total_Score_G2 || 0} out of 3)
           </span>
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 text-sm">
+
           <div className="flex justify-between items-center">
             <span>FAQ/How-To-JSON-LD Score</span>
             <ScoreBadge score={data.jsonData?.G?.G2?.FAQ_or_How_To_JSON_LD_Score ?? 0} out={1.5} />
@@ -94,7 +96,9 @@ const ScoreBadge = ({ score, out }) => (
             ({data.jsonData?.G?.G3?.Total_Score_G3 || 0} out of 2)
           </span>
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 text-sm">
+
           <div className="flex justify-between items-center">
             <span>Correct Schema Types Score</span>
             <ScoreBadge score={data.jsonData?.A?.A3?.Correct_Schema_Types_Score ?? 0} out={1.5} />
@@ -114,7 +118,7 @@ const ScoreBadge = ({ score, out }) => (
             ({data.jsonData?.G?.G4?.Total_Score_G4 || 0} out of 1)
           </span>
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-sm">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>Robots Allowlist Score</span>
             <ScoreBadge score={data.jsonData?.A?.A3?.Robots_Allowlist_Score ?? 0} out={1} />

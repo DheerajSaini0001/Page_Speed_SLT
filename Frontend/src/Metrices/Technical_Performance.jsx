@@ -65,7 +65,7 @@ const ScoreBadge = ({ score, out }) => (
             ({data.jsonData?.A?.A2?.Total_Score_A2.toFixed(1) || 0} out of 8)
           </span>
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-sm">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>Time to First Byte (TTFB) Score</span>
             <ScoreBadge score={data.jsonData?.A?.A2?.TTFB_Score.toFixed(1) ?? 0} out={3} />
@@ -94,7 +94,7 @@ const ScoreBadge = ({ score, out }) => (
             ({data.jsonData?.A?.A3?.Total_Score_A3.toFixed(1) || 0} out of 8)
           </span>
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-sm">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>Sitemap Score</span>
             <ScoreBadge score={data.jsonData?.A?.A3?.Sitemap_Score.toFixed(1) ?? 0} out={2} />

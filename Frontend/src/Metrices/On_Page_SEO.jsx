@@ -68,7 +68,7 @@ const ScoreBadge = ({ score, out }) => (
             ({data.jsonData?.B?.B2?.Total_Score_B2.toFixed(1) || 0} out of 6)
           </span>
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-sm">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>Image ALT Score</span>
             <ScoreBadge score={data.jsonData?.B?.B2?.Image_ALT_Score.toFixed(1) ?? 0} out={3}/>
@@ -93,7 +93,7 @@ const ScoreBadge = ({ score, out }) => (
             ({data.jsonData?.B?.B3?.Total_Score_B3.toFixed(1) || 0} out of 6)
           </span>
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-sm">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>URL Slugs Score</span>
             <ScoreBadge score={data.jsonData?.B?.B3?.URL_Slugs_Score ?? 0} out={2}/>
