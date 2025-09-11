@@ -39,7 +39,7 @@ export default function On_Page_SEO({ data }) {
         <h2 className="text-xl font-bold text-white mb-4">
           Essentials{" "}
           <span className="text-white">
-            ({data.jsonData?.B?.B1?.Total_Score_B1 || 0} out of 12)
+            ({data.jsonData?.B?.B1?.Total_Score_B1.toFixed(1) || 0} out of 12)
           </span>
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
@@ -49,7 +49,7 @@ export default function On_Page_SEO({ data }) {
           </div>
           <div className="flex justify-between items-center">
             <span>Meta Description Score</span>
-            <ScoreBadge score={data.jsonData?.B?.B1?.Meta_Description_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.B?.B1?.Meta_Description_Score.toFixed(1) ?? 0} />
           </div>
           <div className="flex justify-between items-center">
             <span>Canonical Score</span>
@@ -57,7 +57,7 @@ export default function On_Page_SEO({ data }) {
           </div>
           <div className="flex justify-between items-center">
             <span>H1 Score</span>
-            <ScoreBadge score={data.jsonData?.B?.B1?.H1_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.B?.B1?.H1_Score.toFixed(1) ?? 0} />
           </div>
         </div>
       </div>
@@ -68,13 +68,13 @@ export default function On_Page_SEO({ data }) {
         <h2 className="text-xl font-bold text-white mb-4">
           Media & Semantics{" "}
           <span className="text-white">
-            ({data.jsonData?.B?.B2?.Total_Score_B2 || 0} out of 6)
+            ({data.jsonData?.B?.B2?.Total_Score_B2.toFixed(1) || 0} out of 6)
           </span>
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>Image ALT Score</span>
-            <ScoreBadge score={data.jsonData?.B?.B2?.Image_ALT_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.B?.B2?.Image_ALT_Score.toFixed(1) ?? 0} />
           </div>
           <div className="flex justify-between items-center">
             <span>Heading Hierarcy Score</span>
@@ -82,7 +82,7 @@ export default function On_Page_SEO({ data }) {
           </div>
           <div className="flex justify-between items-center">
             <span>Descriptive Links Score</span>
-            <ScoreBadge score={data.jsonData?.B?.B2?.Descriptive_Links_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.B?.B2?.Descriptive_Links_Score.toFixed(1) ?? 0} />
           </div>
         </div>
       </div>
@@ -93,7 +93,7 @@ export default function On_Page_SEO({ data }) {
         <h2 className="text-xl font-bold text-white mb-4">
           Structure & Uniqueness{" "}
           <span className="text-white">
-            ({data.jsonData?.B?.B3?.Total_Score_B3 || 0} out of 6)
+            ({data.jsonData?.B?.B3?.Total_Score_B3.toFixed(1) || 0} out of 6)
           </span>
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-sm">
@@ -103,11 +103,11 @@ export default function On_Page_SEO({ data }) {
           </div>
           <div className="flex justify-between items-center">
             <span>Duplicate Content Score</span>
-            <ScoreBadge score={data.jsonData?.B?.B3?.Duplicate_Content_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.B?.B3?.Duplicate_Content_Score.toFixed(1) ?? 0} />
           </div>
           <div className="flex justify-between items-center">
             <span>Pagination Tags Score</span>
-            <ScoreBadge score={data.jsonData?.B?.B3?.Pagination_Tags_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.B?.B3?.Pagination_Tags_Score.toFixed(1) ?? 0} />
           </div>
         </div>
       </div>

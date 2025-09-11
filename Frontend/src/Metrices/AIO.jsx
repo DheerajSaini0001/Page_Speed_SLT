@@ -44,7 +44,7 @@ export default function AIO({ data }) {
         <h2 className="text-xl font-bold text-white mb-4">
           Entity & Organization Clarity{" "}
           <span className="text-white">
-            ({data.jsonData?.G?.G1?.Total_Score_G1 || 0} out of 4)
+            ({data.jsonData?.G?.G1?.Total_Score_G1.toFixed(1) || 0} out of 4)
           </span>
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
@@ -54,11 +54,11 @@ export default function AIO({ data }) {
           </div>
           <div className="flex justify-between items-center">
             <span>Consistent NAP Score</span>
-            <ScoreBadge score={data.jsonData?.G?.G1?.Consistent_NAP_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.G?.G1?.Consistent_NAP_Score.toFixed(1) ?? 0} />
           </div>
           <div className="flex justify-between items-center">
             <span>Humans/Policies Score</span>
-            <ScoreBadge score={data.jsonData?.G?.G1?.Humans_or_Policies_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.G?.G1?.Humans_or_Policies_Score.toFixed(1) ?? 0} />
           </div>
         </div>
       </div>
@@ -69,21 +69,21 @@ export default function AIO({ data }) {
         <h2 className="text-xl font-bold text-white mb-4">
           Content Answerability & Structure{" "}
           <span className="text-white">
-            ({data.jsonData?.G?.G2?.Total_Score_G2 || 0} out of 3)
+            ({data.jsonData?.G?.G2?.Total_Score_G2.toFixed(1) || 0} out of 3)
           </span>
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>FAQ/How-To-JSON-LD Score</span>
-            <ScoreBadge score={data.jsonData?.G?.G2?.FAQ_or_How_To_JSON_LD_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.G?.G2?.FAQ_or_How_To_JSON_LD_Score.toFixed(1) ?? 0} />
           </div>
           <div className="flex justify-between items-center">
             <span>Section Anchors/TOC Score</span>
-            <ScoreBadge score={data.jsonData?.G?.G2?.Section_Anchors_or_TOC_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.G?.G2?.Section_Anchors_or_TOC_Score.toFixed(1) ?? 0} />
           </div>
           <div className="flex justify-between items-center">
             <span>Descriptive Media Captions/Figcaptions Score</span>
-            <ScoreBadge score={data.jsonData?.G?.G2?.Descriptive_Media_Captions_or_Figcaptions_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.G?.G2?.Descriptive_Media_Captions_or_Figcaptions_Score.toFixed(1) ?? 0} />
           </div>
         </div>
       </div>
@@ -94,7 +94,7 @@ export default function AIO({ data }) {
         <h2 className="text-xl font-bold text-white mb-4">
           Product/Inventory Schema & Feeds{" "}
           <span className="text-white">
-            ({data.jsonData?.G?.G3?.Total_Score_G3 || 0} out of 2)
+            ({data.jsonData?.G?.G3?.Total_Score_G3.toFixed(1) || 0} out of 2)
           </span>
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-sm">
