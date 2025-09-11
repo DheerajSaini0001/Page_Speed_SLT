@@ -43,15 +43,15 @@ export default function Technical_Performance({ data }) {
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
-            <span>LCP Score</span>
+            <span>Largest Contentful Paint (LCP) Score</span>
             <ScoreBadge score={data.jsonData?.A?.A1?.LCP_Score.toFixed(1) ?? 0} out={5} />
           </div>
           <div className="flex justify-between items-center">
-            <span>CLS Score</span>
+            <span>Cumulative Layout Shift (CLS) Score</span>
             <ScoreBadge score={data.jsonData?.A?.A1?.CLS_Score.toFixed(1) ?? 0} out={3} />
           </div>
           <div className="flex justify-between items-center">
-            <span>INP Score</span>
+            <span>Interaction to Next Paint (INP) Score</span>
             <ScoreBadge score={data.jsonData?.A?.A1?.INP_Score.toFixed(1) ?? 0} out={4} />
           </div>
         </div>
@@ -68,7 +68,7 @@ export default function Technical_Performance({ data }) {
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-sm">
           <div className="flex justify-between items-center">
-            <span>TTFB Score</span>
+            <span>Time to First Byte (TTFB) Score</span>
             <ScoreBadge score={data.jsonData?.A?.A2?.TTFB_Score.toFixed(1) ?? 0} out={3} />
           </div>
           <div className="flex justify-between items-center">
@@ -92,17 +92,17 @@ export default function Technical_Performance({ data }) {
         <h2 className="text-xl font-bold text-white mb-4">
           Crawlability & Hygiene{" "}
           <span className="text-white">
-            ({data.jsonData?.A?.A3?.Total_Score_A3 || 0} out of 8)
+            ({data.jsonData?.A?.A3?.Total_Score_A3.toFixed(1) || 0} out of 8)
           </span>
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>Sitemap Score</span>
-            <ScoreBadge score={data.jsonData?.A?.A3?.Sitemap_Score ?? 0} out={2} />
+            <ScoreBadge score={data.jsonData?.A?.A3?.Sitemap_Score.toFixed(1) ?? 0} out={2} />
           </div>
           <div className="flex justify-between items-center">
             <span>Robots Score</span>
-            <ScoreBadge score={data.jsonData?.A?.A3?.Robots_Score ?? 0} out={2} />
+            <ScoreBadge score={data.jsonData?.A?.A3?.Robots_Score.toFixed(1) ?? 0} out={2} />
           </div>
           <div className="flex justify-between items-center">
             <span>Broken Links Score</span>

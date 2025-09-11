@@ -43,19 +43,19 @@ export default function UX_Content_Structure({ data }) {
           </div>
           <div className="flex justify-between items-center">
             <span>Navigation Depth Score</span>
-            <ScoreBadge score={data.jsonData?.E.Navigation_Depth_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.E.Navigation_Depth_Score.toFixed(1) ?? 0} />
           </div>
           <div className="flex justify-between items-center">
             <span>Layout Shift On interactions Score</span>
-            <ScoreBadge score={data.jsonData?.E.Layout_Shift_On_interactions_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.E.Layout_Shift_On_interactions_Score.toFixed(1) ?? 0} />
           </div>
           <div className="flex justify-between items-center">
             <span>Readability Score</span>
-            <ScoreBadge score={data.jsonData?.E.Readability_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.E.Readability_Score.toFixed(1) ?? 0} />
           </div>
           <div className="flex justify-between items-center">
             <span>Intrusive Interstitials Score</span>
-            <ScoreBadge score={data.jsonData?.E.Intrusive_Interstitials_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.E.Intrusive_Interstitials_Score.toFixed(1) ?? 0} />
           </div>
         </div>
       </div>

@@ -43,19 +43,19 @@ export default function Accessibility({ data }) {
           </div>
           <div className="flex justify-between items-center">
             <span>Focusable/Keyword Nav Score</span>
-            <ScoreBadge score={data.jsonData?.C.Focusable_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.C.Focusable_Score.toFixed(1) ?? 0} />
           </div>
           <div className="flex justify-between items-center">
             <span>ARIA/Labelling Score</span>
-            <ScoreBadge score={data.jsonData?.C.ARIA_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.C.ARIA_Score.toFixed(1) ?? 0} />
           </div>
           <div className="flex justify-between items-center">
             <span>Alt/Text Equivalents Score</span>
-            <ScoreBadge score={data.jsonData?.C.Alt_or_Text_Equivalents_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.C.Alt_or_Text_Equivalents_Score.toFixed(1) ?? 0} />
           </div>
           <div className="flex justify-between items-center">
             <span>Skip Links/Landmarks Score</span>
-            <ScoreBadge score={data.jsonData?.C.Skip_Links_or_Landmarks_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.C.Skip_Links_or_Landmarks_Score.toFixed(1) ?? 0} />
           </div>
         </div>
       </div>

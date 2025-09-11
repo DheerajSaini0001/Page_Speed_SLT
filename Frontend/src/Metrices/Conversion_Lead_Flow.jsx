@@ -43,19 +43,19 @@ export default function Conversion_Lead_Flow({ data }) {
           </div>
           <div className="flex justify-between items-center">
             <span>Forms Score</span>
-            <ScoreBadge score={data.jsonData?.F.Forms_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.F.Forms_Score.toFixed(1) ?? 0} />
           </div>
           <div className="flex justify-between items-center">
             <span>Thank-You/Success State Score</span>
-            <ScoreBadge score={data.jsonData?.F.Thank_You_or_Success_State_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.F.Thank_You_or_Success_State_Score.toFixed(1) ?? 0} />
           </div>
           <div className="flex justify-between items-center">
             <span>Tracking of Form Submits/Events Score</span>
-            <ScoreBadge score={data.jsonData?.F.Tracking_Of_Form_Submits_or_Events_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.F.Tracking_Of_Form_Submits_or_Events_Score.toFixed(1) ?? 0} />
           </div>
           <div className="flex justify-between items-center">
             <span>Contact Info Score</span>
-            <ScoreBadge score={data.jsonData?.F.Contact_Info_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.F.Contact_Info_Score.toFixed(1) ?? 0} />
           </div>
         </div>
       </div>

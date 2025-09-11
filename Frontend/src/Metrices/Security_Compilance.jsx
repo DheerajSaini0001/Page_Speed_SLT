@@ -43,19 +43,19 @@ export default function Security_Compilance({ data }) {
           </div>
           <div className="flex justify-between items-center">
             <span>HSTS Score</span>
-            <ScoreBadge score={data.jsonData?.D.HSTS_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.D.HSTS_Score.toFixed(1) ?? 0} />
           </div>
           <div className="flex justify-between items-center">
             <span>Security Headers Score</span>
-            <ScoreBadge score={data.jsonData?.D.Security_Headers_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.D.Security_Headers_Score.toFixed(1) ?? 0} />
           </div>
           <div className="flex justify-between items-center">
             <span>Cookie Banner & Consent Mode Score</span>
-            <ScoreBadge score={data.jsonData?.D.Cookie_Banner_and_Consent_Mode_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.D.Cookie_Banner_and_Consent_Mode_Score.toFixed(1) ?? 0} />
           </div>
           <div className="flex justify-between items-center">
             <span>404/500 handling Score</span>
-            <ScoreBadge score={data.jsonData?.D.Error_Pages_Score ?? 0} />
+            <ScoreBadge score={data.jsonData?.D.Error_Pages_Score.toFixed(1) ?? 0} />
           </div>
         </div>
       </div>
