@@ -65,7 +65,7 @@ console.log(data);
   ];
 
   return (
-    <div className="min-h-screen w-full  text-white p-4 sm:p-6 grid grid-cols-1 gap-6">
+    <div id="deshboard" className="min-h-screen w-full  text-white p-4 sm:p-6 grid grid-cols-1 gap-6">
      
 <div class="flex justify-between items-center bg-gray-900 p-4 rounded-lg">
 

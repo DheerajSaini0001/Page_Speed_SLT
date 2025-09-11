@@ -60,7 +60,7 @@ export default function DarkCard() {
         )}
 
         {/* Logo / Title */}
-        <div className="flex flex-col justify-center items-center text-2xl sm:text-4xl font-bold">
+        <div className="font-serif text-4xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent">
           Site Audits
         </div>
       </nav>
@@ -127,7 +127,7 @@ export default function DarkCard() {
 
             {/* Main Dashboard */}
             <div className="flex-1 lg:ml-64 p-4 sm:p-6 space-y-8">
-              <section id="dashboard" className="scroll-mt-20">
+              <section id="deshboard" className="scroll-mt-20">
                 <Dashboard2 data={result} />
               </section>
 
@@ -139,10 +139,10 @@ export default function DarkCard() {
                 <On_Page_SEO data={result} />
               </section>
 
+
               <section id="accessibility" className="scroll-mt-20">
                 <Accessibility data={result} />
               </section>
-
               <section id="security" className="scroll-mt-20">
                 <Security_Compilance data={result} />
               </section>

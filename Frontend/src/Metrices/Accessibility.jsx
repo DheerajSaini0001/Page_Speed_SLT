@@ -1,13 +1,8 @@
 import React from 'react';
 
-
 export default function Accessibility({ data }) {
   if (!data || !data.jsonData) {
-    return (
-      <div >
-     
-      </div>
-    );
+    return <div />;
   }
 
   const ScoreBadge = ({ score }) => (
@@ -25,7 +20,13 @@ export default function Accessibility({ data }) {
   );
 
   return (
-    <div id="accessibility" className=" min-h-fit pt-20 pb-16 bg-gray-900 border border-gray-700 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300  m-4 flex flex-col items-center justify-start p-6 space-y-6">
+    <div
+      id="accessibility"
+      className="min-h-fit pt-20 pb-16 bg-gray-900 border border-gray-700 rounded-2xl 
+                 shadow-lg hover:shadow-2xl transform hover:-translate-y-1 
+                 transition-all duration-300 m-4 flex flex-col items-center 
+                 justify-start p-6 space-y-6"
+    >
       <h1 className="text-3xl font-extrabold text-amber-100 mb-6">
         Accessibility{" "}
         <span className="text-gray-100">
@@ -33,16 +34,18 @@ export default function Accessibility({ data }) {
         </span>
       </h1>
 
-      {/* Core Web Vitals */}
-      <div className="w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-indigo-500 bg-gradient-to-br from-blue-900 via-gray-900 to-black
- hover:scale-105 transition-transform duration-300">
+      <div
+        className="w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-indigo-500 
+                   bg-gradient-to-br from-blue-900 via-gray-900 to-black 
+                   hover:scale-105 transition-transform duration-300"
+      >
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>Color Contrast Score</span>
             <ScoreBadge score={data.jsonData?.C.Color_Contrast_Score.toFixed(1) ?? 0} />
           </div>
           <div className="flex justify-between items-center">
-            <span>Focusable/Keyword Nav Score</span>
+            <span>Focusable/Keyboard Nav Score</span>
             <ScoreBadge score={data.jsonData?.C.Focusable_Score.toFixed(1) ?? 0} />
           </div>
           <div className="flex justify-between items-center">
@@ -62,4 +65,3 @@ export default function Accessibility({ data }) {
     </div>
   );
 }
-
