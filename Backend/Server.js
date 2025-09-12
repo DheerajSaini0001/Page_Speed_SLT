@@ -668,6 +668,7 @@ async function conversionLeadFlow(url) {
 
   return report;
 }
+
 async function aioReadiness(url) {
   const report = {};
 
@@ -712,7 +713,13 @@ async function aioReadiness(url) {
   }
 
   // Consistent NAP
-  const napScore = 1; // placeholder
+const bodyText = $("body").text();
+const hasPhone = /\+?\d[\d\s\-]{7,}/.test(bodyText);
+const hasEmail = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i.test(bodyText);
+const hasAddress = /(street|st\.|road|rd\.|avenue|ave\.|blvd|building)/i.test(bodyText);
+
+const napCount = [hasPhone, hasEmail, hasAddress].filter(Boolean).length;
+const napScore = napCount >= 2 ? 1 : 0; // pass if at least 2 present
 
   // Humans/Policies
   const policies = ["About", "Contact", "Privacy", "Terms", "Returns", "Shipping"];
@@ -752,13 +759,24 @@ async function aioReadiness(url) {
   const productScore = normalizeScore(productPercent, 1.5);
   const productValid = productPercent >= 70;
 
-  const feedScore = 1; // placeholder (0.5 weight)
+const hasFeed = $('link[type="application/rss+xml"], link[type="application/atom+xml"], link[type="application/json"]').length > 0;
+const feedScore = hasFeed ? 0.5 : 0; // weight 0.5
 
   // -------------------
   // G4: Crawl Friendliness (1)
   // -------------------
-  const robotsScore = 1; // placeholder (assume not blocking)
-  const robotsOk = robotsScore === 1;
+let robotsScore = 1;
+let robotsOk = true;
+try {
+  const robotsUrl = new URL("/robots.txt", url).href;
+  const res = await axios.get(robotsUrl);
+  if (/Disallow:\s*\/\s*$/i.test(res.data)) {
+    robotsScore = 0;
+    robotsOk = false;
+  }
+} catch {
+  // if robots.txt missing, assume OK
+}
 
   // -------------------
   // Totals

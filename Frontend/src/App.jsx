@@ -15,8 +15,6 @@ function App() {
       <Route path='/' element={<DarkCard/>} />
       <Route path='/about' element={ <About/>} />
     </Routes>
-   
- 
     </>
   )
 }
