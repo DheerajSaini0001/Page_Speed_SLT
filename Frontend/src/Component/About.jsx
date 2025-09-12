@@ -2,7 +2,7 @@ import logo from "./android-chrome-192x192.png";
 export default function About() {
     return (
      
-      <div className="bg-gray-50 min-h-screen py-12 px-6">
+      <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-black min-h-screen py-12 px-6">
    <nav className="fixed top-0 left-0 w-full h-16 bg-gray-900 border-b border-gray-700 flex items-center justify-between px-4 z-50">
 
         <div className="flex flex-col-rev justify-center items-center gap-4  font-serif text-4xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent">
@@ -13,10 +13,10 @@ export default function About() {
 
         <div className="mt-16 max-w-5xl mx-auto">
           {/* Heading */}
-          <h1 className="text-4xl font-bold text-gray-900 mb-6 text-center">
+          <h1 className="text-4xl font-bold text-white mb-6 text-center">
             About Our Site Audit Tool
           </h1>
-          <p className="text-lg text-gray-600 text-center max-w-3xl mx-auto mb-12">
+          <p className="text-lg text-gray-200 text-center max-w-3xl mx-auto mb-12">
             Our Site Audit tool helps developers, marketers, and businesses 
             improve their website performance, SEO, and accessibility. 
             We aim to simplify the process of finding issues and boosting online presence.
@@ -28,7 +28,7 @@ export default function About() {
             <div className="bg-white shadow-md rounded-2xl p-8 hover:shadow-lg transition">
               <h2 className="text-2xl font-semibold text-gray-800 mb-4">Our Mission</h2>
               <p className="text-gray-600">
-                To empower website owners and developers by providing actionable 
+               👉 To empower website owners and developers by providing actionable 
                 insights that enhance site speed, SEO performance, and user experience.
               </p>
             </div>
@@ -47,8 +47,8 @@ export default function About() {
   
           {/* Team */}
           <div className="mt-16 text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">Meet the Team</h2>
-            <p className="text-gray-600 mb-8">
+            <h2 className="text-3xl font-bold text-gray-200 mb-6">Meet the Team</h2>
+            <p className="text-gray-200 mb-8">
               We are a passionate group of developers and analysts committed 
               to making the web faster and more accessible for everyone.
             </p>
