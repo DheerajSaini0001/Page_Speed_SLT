@@ -11,8 +11,8 @@ function App() {
 
   return (
     <>
-   {/* <DarkCard/> */}
-   <About/>
+   <DarkCard/>
+   {/* <About/> */}
     </>
   )
 }
