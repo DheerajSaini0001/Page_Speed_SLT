@@ -6,8 +6,8 @@ export default function Footer() {
           
           <div className="flex space-x-6 mt-4 md:mt-0">
             <a href="#" className="hover:text-white transition">About</a>
-            <a href="#" className="hover:text-white transition">Services</a>
-            <a href="#" className="hover:text-white transition">Contact</a>
+            <a href="https://sltechsoft.com/service" className="hover:text-white transition">Services</a>
+            <a href="https://sltechsoft.com/" className="hover:text-white transition">Contact</a>
           </div>
         </div>
       </footer>
