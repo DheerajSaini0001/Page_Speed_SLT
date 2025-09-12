@@ -4,15 +4,17 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import DarkCard from './Component/DarkCard'
 import About from './Component/About'
-
+import  {Routes,Route} from "react-router-dom"
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <>
-   <DarkCard/>
-   {/* <About/> */}
+    <Routes>
+      <Route path='/' element={<DarkCard/>} />
+      <Route path='/about' element={  <About/>} />
+    </Routes>
     </>
   )
 }
