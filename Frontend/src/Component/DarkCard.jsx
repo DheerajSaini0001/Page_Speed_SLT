@@ -10,6 +10,7 @@ import UX_Content_Structure from "../Metrices/UX_Content_Structure";
 import Conversion_Lead_Flow from "../Metrices/Conversion_Lead_Flow";
 import AIO from "../Metrices/AIO";
 import logo from "./android-chrome-192x192.png";
+import Footer from "./Footer";
 export default function DarkCard() {
   const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState("");
@@ -127,7 +128,7 @@ export default function DarkCard() {
             )}
 
             {/* Main Dashboard */}
-            <div className="flex-1 lg:ml-64 p-4 sm:p-6 space-y-8">
+            <div className="flex-1 lg:ml-64 pb-0 pl-4 pr-4 pt-4 sm: space-y-8">
               <section id="deshboard" className="scroll-mt-20">
                 <Dashboard2 data={result} />
               </section>
@@ -159,10 +160,12 @@ export default function DarkCard() {
               <section id="aio" className="scroll-mt-20">
                 <AIO data={result} />
               </section>
+          
             </div>
           </div>
         )}
       </div>
+        <Footer/>
     </div>
   );
 }

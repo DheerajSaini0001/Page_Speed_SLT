@@ -61,7 +61,7 @@ const ScoreBadge = ({ score, out }) => (
       </div>
 
       {/* Delivery & Render */}
-      <div className="w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-purple-500 bg-gradient-to-br from-blue-900 via-gray-900 to-black
+      <div className="w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-indigo-500 bg-gradient-to-br from-blue-900 via-gray-900 to-black
  hover:scale-105 transition-transform duration-300">
         <h2 className="text-xl font-bold text-white mb-4">
           Content Answerability & Structure{" "}
@@ -69,7 +69,9 @@ const ScoreBadge = ({ score, out }) => (
             ({data.jsonData?.G?.G2?.Total_Score_G2 || 0} out of 3)
           </span>
         </h2>
+
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 text-sm">
+
           <div className="flex justify-between items-center">
             <span>FAQ/How-To-JSON-LD Score</span>
             <ScoreBadge score={data.jsonData?.G?.G2?.FAQ_or_How_To_JSON_LD_Score ?? 0} out={1.5} />
@@ -94,7 +96,9 @@ const ScoreBadge = ({ score, out }) => (
             ({data.jsonData?.G?.G3?.Total_Score_G3 || 0} out of 2)
           </span>
         </h2>
+
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 text-sm">
+
           <div className="flex justify-between items-center">
             <span>Correct Schema Types Score</span>
             <ScoreBadge score={data.jsonData?.A?.A3?.Correct_Schema_Types_Score ?? 0} out={1.5} />
