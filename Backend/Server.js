@@ -66,6 +66,51 @@ async function checkSecurityHeaders(url) {
   }
 }
 
+async function checkCookieBanner(url) {
+  try {
+    const browser = await puppeteer.launch({ headless: true });
+    const page = await browser.newPage();
+    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 20000 });
+
+    // Look for common selectors/keywords
+    const cookieBanner = await page.evaluate(() => {
+      const text = document.body.innerText.toLowerCase();
+      return (
+        text.includes("cookie") &&
+        (text.includes("consent") || text.includes("policy"))
+      );
+    });
+
+    await browser.close();
+    return cookieBanner ? 1 : 0;
+  } catch {
+    return 0;
+  }
+}
+
+async function checkCustomErrorPage(url) {
+  try {
+    // Add a fake path that likely doesn’t exist
+    const fakeUrl = url.replace(/\/$/, "") + "/nonexistent-" + Date.now();
+    const res = await axios.get(fakeUrl, { validateStatus: () => true });
+
+    if (res.status === 404 || res.status === 500) {
+      // Look for custom branding/HTML rather than default server text
+      const html = res.data.toLowerCase();
+      if (
+        html.includes("404") ||
+        html.includes("page not found") ||
+        html.includes("error")
+      ) {
+        return 1; // custom error page detected
+      }
+    }
+    return 0;
+  } catch {
+    return 0;
+  }
+}
+
 function fleschReadingEase(text) {
   // Simple approximation: can be replaced with proper library
   const words = text.split(/\s+/).length;
@@ -353,10 +398,10 @@ const browser = await puppeteer.launch({ headless: true });
 
   // Combine all C metrics
   report.C = {
-    colorContrast: parseFloat(CC.toFixed(2)),
-    keyboardNavigation: parseFloat(KN.toFixed(2)),
-    ariaLabeling: parseFloat(AL.toFixed(2)),
-    altTextEquivalents: parseFloat(TX.toFixed(2)),
+    colorContrast: parseFloat(CC.toFixed(2))*3,
+    keyboardNavigation: parseFloat(KN.toFixed(2))*3,
+    ariaLabeling: parseFloat(AL.toFixed(2))*3,
+    altTextEquivalents: parseFloat(TX.toFixed(2))*2,
     skipLinksLandmarks: SL,
     totalCScore: parseFloat(score.toFixed(2)),
   };
@@ -378,12 +423,10 @@ async function securityCompliance(url) {
   const headersScore = await checkSecurityHeaders(url);
 
   // 4️⃣ Cookie Banner & Consent (weight 1)
-  // Placeholder: in real use, check for cookie consent elements/scripts
-  const cookieBannerScore = 1; // assume compliant
+  const cookieBannerScore = await checkCookieBanner(url); // assume compliant
 
   // 5️⃣ 404/500 custom error pages (weight 1)
-  // Placeholder: check /404 or /nonexistent page returns custom content
-  const errorPageScore = 1; // assume compliant
+  const errorPageScore = await checkCustomErrorPage(url); // assume compliant
 
   report.D = {
     httpsMixedContent: httpsScore * 2,
