@@ -1,7 +1,17 @@
+import logo from "./android-chrome-192x192.png";
 export default function About() {
     return (
+     
       <div className="bg-gray-50 min-h-screen py-12 px-6">
-        <div className="max-w-5xl mx-auto">
+   <nav className="fixed top-0 left-0 w-full h-16 bg-gray-900 border-b border-gray-700 flex items-center justify-between px-4 z-50">
+
+        <div className="flex flex-col-rev justify-center items-center gap-4  font-serif text-4xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent">
+          <div><img src={logo} alt="" className="h-14" /></div>
+          <div>Site Audits</div>
+        </div>
+      </nav>
+
+        <div className="mt-16 max-w-5xl mx-auto">
           {/* Heading */}
           <h1 className="text-4xl font-bold text-gray-900 mb-6 text-center">
             About Our Site Audit Tool
