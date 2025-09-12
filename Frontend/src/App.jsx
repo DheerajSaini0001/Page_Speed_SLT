@@ -3,6 +3,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import DarkCard from './Component/DarkCard'
+import About from './Component/About'
 
 
 function App() {
@@ -10,7 +11,8 @@ function App() {
 
   return (
     <>
-   <DarkCard/>
+   {/* <DarkCard/> */}
+   <About/>
     </>
   )
 }
