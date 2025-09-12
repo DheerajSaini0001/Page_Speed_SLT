@@ -75,7 +75,7 @@ const ScoreBadge = ({ score, out }) => (
           </div>
           <div className="flex justify-between items-center">
             <span>Heading Hierarcy Score</span>
-            <ScoreBadge score={data.jsonData?.B?.B2?.Heading_Hierarcy_Score ?? 0} out={2}/>
+            <ScoreBadge score={data.jsonData?.B?.B2?.Heading_Hierarchy_Score ?? 0} out={2}/>
           </div>
           <div className="flex justify-between items-center">
             <span>Descriptive Links Score</span>

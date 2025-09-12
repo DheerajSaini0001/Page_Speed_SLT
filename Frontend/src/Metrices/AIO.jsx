@@ -121,7 +121,7 @@ const ScoreBadge = ({ score, out }) => (
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>Robots Allowlist Score</span>
-            <ScoreBadge score={data.jsonData?.A?.A3?.Robots_Allowlist_Score ?? 0} out={1} />
+            <ScoreBadge score={data.jsonData?.G?.G4?.Robots_Allowlist_Score ?? 0} out={1} />
           </div>
         </div>
       </div>

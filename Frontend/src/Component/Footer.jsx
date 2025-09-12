@@ -5,7 +5,7 @@ export default function Footer() {
           <p className="text-sm">&copy; {new Date().getFullYear()} Success Leader Technologies. All rights reserved.</p>
           
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <a href="#" className="hover:text-white transition">About</a>
+            <a href="/about" className="hover:text-white transition">About</a>
             <a href="https://sltechsoft.com/service" className="hover:text-white transition">Services</a>
             <a href="https://sltechsoft.com/" className="hover:text-white transition">Contact</a>
           </div>
