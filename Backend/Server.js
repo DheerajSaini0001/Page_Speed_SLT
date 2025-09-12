@@ -593,8 +593,8 @@ async function uxContentStructure(url) {
 // Conversion & Lead Flow function
 async function conversionLeadFlow(url) {
   const report = {};
-
   let html;
+
   try {
     const res = await axios.get(url);
     html = res.data;
@@ -605,36 +605,46 @@ async function conversionLeadFlow(url) {
 
   const $ = cheerio.load(html);
 
-  // 1️⃣ Primary CTAs above the fold (weight 2)
-  // Placeholder: assume 90% of key pages have CTA above fold
-  const ctaPassRate = 90; // %
+  // 1️⃣ Primary CTAs above the fold
+  const ctaAboveFold = $('a, button').filter((i, el) => {
+    const text = $(el).text().toLowerCase();
+    return /sign up|contact|buy|start|try|learn more|get/i.test(text);
+  }).length;
+  const ctaPassRate = ctaAboveFold > 0 ? 100 : 0;
   const ctaScore = normalizeScore(ctaPassRate, 2);
 
-  // 2️⃣ Forms (labels, required, validation) (weight 2)
+  // 2️⃣ Forms validation
   const forms = $("form").toArray();
   const validForms = forms.filter((f) => {
-    const labels = $(f).find("label").length;
-    const inputs = $(f).find("input[required]").length;
-    return labels > 0 && inputs >= 0; // simple check
+    const $f = $(f);
+    const labels = $f.find("label").length;
+    const requiredInputs = $f.find("input[required]").length;
+    const hasValidation = $f.find("input[pattern], input[type=email], input[type=tel]").length;
+    return labels > 0 && requiredInputs > 0 && hasValidation > 0;
   });
   const formsPassRate = (validForms.length / (forms.length || 1)) * 100;
   const formsScore = normalizeScore(formsPassRate, 2);
 
-  // 3️⃣ Thank-You / Success state (weight 1)
-  // Placeholder: assume 100% sampled pass
-  const thankYouScore = 1;
+  // 3️⃣ Thank-You / Success state
+  const thankYouLinks = $('a[href*="thank"], a[href*="success"]').length;
+  const thankYouScore = thankYouLinks > 0 ? 1 : 0;
 
-  // 4️⃣ Tracking of form submits/events without PII (weight 2)
-  // Placeholder: assume tracking works
-  const trackingScore = 1;
+  // 4️⃣ Tracking scripts
+  const trackingScripts = $('script').toArray().some((s) => {
+    const code = $(s).html();
+    return /gtag|fbq|dataLayer.push/i.test(code);
+  });
+  const trackingScore = trackingScripts ? 1 : 0;
 
-  // 5️⃣ Contact Info (click-to-call, email, address, hours, map) (weight 2)
-  // Placeholder: assume present and consistent
-  const contactScore = 1;
+  // 5️⃣ Contact Info
+  const hasPhone = $('a[href^="tel:"]').length > 0;
+  const hasEmail = $('a[href^="mailto:"]').length > 0;
+  const hasAddress = /\d{1,5}\s\w+/.test($("body").text());
+  const contactScore = (hasPhone || hasEmail || hasAddress) ? 1 : 0;
 
-  // 6️⃣ Load on CRM/Webhook dry-run (2xx to endpoint) (weight 1)
-  // Placeholder: assume successful
-  const crmScore = 1;
+  // 6️⃣ CRM/Webhook endpoint
+  const crmEndpoints = $("form[action^='http']").length;
+  const crmScore = crmEndpoints > 0 ? 1 : 0;
 
   // Combine all F metrics
   report.F = {
@@ -658,7 +668,6 @@ async function conversionLeadFlow(url) {
 
   return report;
 }
-
 async function aioReadiness(url) {
   const report = {};
 
