@@ -31,18 +31,18 @@ export default function About() {
         {/* Sections */}
         <section className="grid md:grid-cols-2 gap-10">
           {/* Mission */}
-          <div className="bg-white shadow-md rounded-2xl p-8 hover:shadow-xl hover:scale-105 transition-transform duration-300">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Our Mission</h2>
-            <p className="text-gray-600">
+          <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 shadow-lg rounded-2xl p-8 hover:shadow-xl hover:scale-105 transition-transform duration-300">
+            <h2 className="text-2xl  text-gray-100 mb-4 font-extrabold">Our Mission</h2>
+            <p className="text-gray-100">
               👉 To empower website owners and developers by providing actionable 
               insights that enhance site speed, SEO performance, and user experience.
             </p>
           </div>
 
           {/* Features */}
-          <div className="bg-white shadow-md rounded-2xl p-8 hover:shadow-xl hover:scale-105 transition-transform duration-300">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">What We Offer</h2>
-            <ul className="list-disc list-inside text-gray-600 space-y-2">
+          <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 shadow-lg rounded-2xl p-8 hover:shadow-xl hover:scale-105 transition-transform duration-300">
+            <h2 className="text-2xl  text-gray-100 mb-4 font-extrabold">What We Offer</h2>
+            <ul className="list-disc list-inside text-gray-100 space-y-2">
               <li>Comprehensive SEO Audits</li>
               <li>Performance & Speed Optimization Tips</li>
               <li>Accessibility & Compliance Checks</li>
@@ -52,7 +52,7 @@ export default function About() {
         </section>
 
         {/* Team */}
-        <section className="mt-20 text-center px-4 sm:px-6 lg:px-8">
+        <section className="mt-20 text-center px-4 sm:px-6  lg:px-8">
           <h2 className="text-3xl font-bold text-gray-200 mb-6">Meet the Team</h2>
           <p className="text-gray-300 mb-10 max-w-2xl mx-auto">
             We are a passionate group of developers and analysts committed 
@@ -61,30 +61,30 @@ export default function About() {
 
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-10">
             {/* Dheeraj */}
-            <div className="bg-white shadow-md rounded-2xl p-6 hover:shadow-xl hover:scale-105 transition-transform duration-300">
+            <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 shadow-lg rounded-2xl p-6 hover:shadow-xl hover:scale-105 transition-transform duration-300">
               <div className="w-24 h-24 mx-auto rounded-full overflow-hidden mb-4">
                 <img src="./Dheeraj.jpeg" alt="Dheeraj Saini - Frontend Developer" className=" object-cover" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-800">Dheeraj Saini</h3>
-              <p className="text-sm text-gray-500">Frontend Developer</p>
+              <h3 className="text-lg  text-gray-100 font-extrabold">Dheeraj</h3>
+              <p className="text-sm text-gray-100">Frontend Developer</p>
             </div>
 
             {/* Piyush */}
-            <div className="bg-white shadow-md rounded-2xl p-6 hover:shadow-xl hover:scale-105 transition-transform duration-300">
+            <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 shadow-lg rounded-2xl p-6 hover:shadow-xl hover:scale-105 transition-transform duration-300">
               <div className="w-24 h-24 mx-auto rounded-full overflow-hidden mb-4">
                 <img src="./Piyush.jpeg" alt="Piyush - Backend Developer" className="w-full h-full object-cover" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-800">Piyush</h3>
-              <p className="text-sm text-gray-500">Backend Developer</p>
+              <h3 className="text-lg font-extrabold text-gray-100">Piyush</h3>
+              <p className="text-sm text-gray-100">Backend Developer</p>
             </div>
 
             {/* Mayank */}
-            <div className="bg-white shadow-md rounded-2xl p-6 hover:shadow-xl hover:scale-105 transition-transform duration-300">
+            <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 shadow-lg rounded-2xl p-6 hover:shadow-xl hover:scale-105 transition-transform duration-300">
               <div className="w-24 h-24 mx-auto rounded-full overflow-hidden mb-4">
                 <img src="./Mayank.JPG" alt="Mayank - Backend Developer" className="w-full h-full object-cover" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-800">Mayank</h3>
-              <p className="text-sm text-gray-500">Backend Developer</p>
+              <h3 className="text-lg font-extrabold text-gray-100">Mayank</h3>
+              <p className="text-sm text-gray-100">Backend Developer</p>
             </div>
           </div>
         </section>
