@@ -73,7 +73,7 @@ export default function DarkCard() {
       {/* Spacer to prevent content from going under navbar */}
       <div className="h-16"></div>
 
-      <div className="flex flex-col min-h-170 items-center">
+      <div className="flex flex-col min-h-175 items-center">
         {/* ✅ Input Section (show only before result) */}
         {!result && (
           <div className="w-full mt-40 max-w-2xl mx-auto bg-gray-900 rounded-2xl shadow-2xl p-6 space-y-4 border border-gray-700">
