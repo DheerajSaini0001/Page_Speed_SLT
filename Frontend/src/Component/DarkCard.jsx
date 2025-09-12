@@ -34,6 +34,8 @@ export default function DarkCard() {
 
       const result = await response.json();
       setResult(result);
+      console.log(result);
+      
       setInputValue("");
     } catch (error) {
       alert("Error: " + error.message);
@@ -41,6 +43,7 @@ export default function DarkCard() {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="scroll-smooth m-0 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white overflow-x-hidden">

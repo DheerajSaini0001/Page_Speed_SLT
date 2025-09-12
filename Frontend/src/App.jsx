@@ -13,7 +13,7 @@ function App() {
     <>
     <Routes>
       <Route path='/' element={<DarkCard/>} />
-      <Route path='/about' element={  <About/>} />
+      <Route path='/about' element={ <About/>} />
     </Routes>
    
  
