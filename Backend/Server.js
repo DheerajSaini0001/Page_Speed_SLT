@@ -5,6 +5,7 @@ import * as cheerio from "cheerio";
 import crypto from "crypto";
 import puppeteer from "puppeteer";
 import AxePuppeteer from "@axe-core/puppeteer";
+import PQueue from "p-queue";
 
 
 const PORT =2000;
@@ -15,7 +16,6 @@ app.use(cors());
 
 const API_KEY = 'AIzaSyCww7MhvCEUmHhlACNBqfbzL5PUraT8lkk';
 
-
 // Helper: normalize pass rate (0–100%) to 0–1 score
 const normalizeScore = (passRate, weight) => (passRate / 100) * weight;
 
@@ -24,10 +24,9 @@ function hashContent(content) {
 }
 
 // Helper to check HTTPS and mixed content
-async function checkHTTPS(url) {
+async function checkHTTPS(htmlData) {
   try {
-    const res = await axios.get(url);
-    const mixedContent = res.data.match(/http:\/\/[^"']+/gi);
+    const mixedContent = htmlData.match(/http:\/\/[^"']+/gi);
     return res.request.protocol === "https:" && (!mixedContent || mixedContent.length === 0) ? 1 : 0;
   } catch {
     return 0;
@@ -35,10 +34,9 @@ async function checkHTTPS(url) {
 }
 
 // Helper to check HSTS header
-async function checkHSTS(url) {
+async function checkHSTS(html) {
   try {
-    const res = await axios.get(url);
-    const hsts = res.headers["strict-transport-security"];
+    const hsts = html.headers["strict-transport-security"];
     if (!hsts) return 0;
     if (hsts.includes("preload")) return 1;
     return 0.5;
@@ -48,10 +46,9 @@ async function checkHSTS(url) {
 }
 
 // Helper to check security headers
-async function checkSecurityHeaders(url) {
+async function checkSecurityHeaders(html) {
   try {
-    const res = await axios.get(url);
-    const headers = res.headers;
+    const headers = html.headers;
     const requiredHeaders = [
       "content-security-policy",
       "x-content-type-options",
@@ -66,12 +63,9 @@ async function checkSecurityHeaders(url) {
   }
 }
 
-async function checkCookieBanner(url) {
+async function checkCookieBanner(url,page) {
+      await page.goto(url, { waitUntil: "networkidle2" });
   try {
-    const browser = await puppeteer.launch({ headless: true });
-    const page = await browser.newPage();
-    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 20000 });
-
     // Look for common selectors/keywords
     const cookieBanner = await page.evaluate(() => {
       const text = document.body.innerText.toLowerCase();
@@ -121,7 +115,54 @@ function fleschReadingEase(text) {
    return score;
 }
 
-async function technicalMetrics(url,data) {
+// --- Parallel BFS crawl for navigation depth ---
+async function crawlDepthParallel(startUrl, maxDepth = 3, concurrency = 5) {
+  const visited = new Set([startUrl]);
+  let queue = [{ url: startUrl, depth: 0 }];
+  let withinLimit = 0,
+    total = 0;
+
+  const queueExecutor = new PQueue({ concurrency });
+
+  while (queue.length) {
+    const batch = queue.splice(0, concurrency);
+
+    await Promise.all(
+      batch.map((item) =>
+        queueExecutor.add(async () => {
+          const { url: current, depth } = item;
+          if (depth > maxDepth) return;
+
+          try {
+            const res = await axios.get(current);
+            const $ = cheerio.load(res.data);
+            total++;
+            if (depth <= maxDepth) withinLimit++;
+
+            $("a[href]").each((_, el) => {
+              const link = $(el).attr("href");
+              if (
+                link &&
+                !link.startsWith("mailto:") &&
+                !link.startsWith("javascript:")
+              ) {
+                const fullUrl = new URL(link, startUrl).href;
+                if (!visited.has(fullUrl) && fullUrl.startsWith(startUrl)) {
+                  visited.add(fullUrl);
+                  queue.push({ url: fullUrl, depth: depth + 1 });
+                }
+              }
+            });
+          } catch {}
+        })
+      )
+    );
+  }
+
+  return total ? (withinLimit / total) * 100 : 100;
+}
+
+async function technicalMetrics(url,data,$,robotsText) {
   let totalScore_A3 = 0;
   
   // --- Helper functions ---
@@ -137,48 +178,38 @@ async function technicalMetrics(url,data) {
     return 0;
   };
 
-  // --- 1️⃣ Sitemap check ---
-  let sitemapScore = 0;
-  try {
-    const robotsUrl = new URL("/robots.txt", url).href;
-    const robotsRes = await axios.get(robotsUrl);
-    const robotsText = robotsRes.data;
-
-    const sitemapMatch = robotsText.match(/Sitemap:\s*(.*)/i);
-    if (sitemapMatch) {
-      const sitemapUrl = sitemapMatch[1].trim();
-      try {
-        const sitemapRes = await axios.get(sitemapUrl);
-        sitemapScore = sitemapRes.status === 200 ? 1 : 0.5;
-      } catch {
-        sitemapScore = 0.5;
-      }
-    } else {
-      sitemapScore = 0;
+// --- Fetch robots.txt once ---
+let sitemapScore = 0;
+let robotsScore = 0;
+try {
+  // 1️⃣ Sitemap check
+  const sitemapMatch = robotsText.match(/Sitemap:\s*(.*)/i);
+  if (sitemapMatch) {
+    const sitemapUrl = sitemapMatch[1].trim();
+    try {
+      const sitemapRes = await axios.get(sitemapUrl);
+      sitemapScore = sitemapRes.status === 200 ? 1 : 0.5;
+    } catch {
+      sitemapScore = 0.5;
     }
-  } catch {
-    sitemapScore = 0;
   }
-  totalScore_A3 += sitemapScore * 2;
 
-  // --- 2️⃣ robots.txt validity ---
-  let robotsScore = 0;
-  try {
-    const robotsUrl = new URL("/robots.txt", url).href;
-    const res = await axios.get(robotsUrl);
-    const robotsText = res.data;
-    const hasGlobalDisallow = /Disallow:\s*\/\s*$/mi.test(robotsText);
-    robotsScore = !hasGlobalDisallow ? 1 : 0;
-  } catch {
-    robotsScore = 0;
-  }
-  totalScore_A3 += robotsScore * 2;
+  // 2️⃣ robots.txt validity
+  const hasGlobalDisallow = /Disallow:\s*\/\s*$/mi.test(robotsText);
+  robotsScore = !hasGlobalDisallow ? 1 : 0;
+
+} catch {
+  sitemapScore = 0;
+  robotsScore = 0;
+}
+
+// Add to total
+totalScore_A3 += sitemapScore * 2;
+totalScore_A3 += robotsScore * 2;
 
   // --- 3️⃣ Broken links ---
   let brokenScore = 0;
   try {
-    const { data } = await axios.get(url);
-    const $ = cheerio.load(data);
     const links = $("a[href]")
       .map((i, el) => $(el).attr("href"))
       .get()
@@ -215,8 +246,9 @@ async function technicalMetrics(url,data) {
   }
   totalScore_A3 += redirectScore * 2;
 
+  // const audits = data?.lighthouseResult?.audits;
 
-  const lcpScore = ((data?.lighthouseResult?.audits?.["largest-contentful-paint"]?.score || 1)*5)
+  const lcpScore = (data?.lighthouseResult?.audits?.["largest-contentful-paint"]?.score || 1)*5
   const clsScore =  (data?.lighthouseResult?.audits?.["cumulative-layout-shift"]?.score || 1)*3
   const inpScore = (data?.lighthouseResult?.audits?.["interactive"]?.score|| 1)*4
   const total_A1 = parseFloat(lcpScore + clsScore + inpScore)
@@ -252,19 +284,7 @@ async function technicalMetrics(url,data) {
 }
 
 // Main SEO function (B1+B2+B3)
-async function seoMetrics(url) {
-  const result = {};
-
-  let html;
-  try {
-    const res = await axios.get(url);
-    html = res.data;
-  } catch (err) {
-    console.error("Failed to fetch page:", err.message);
-    return null;
-  }
-
-  const $ = cheerio.load(html);
+async function seoMetrics(url,htmlData,$) {
 
   // --- B1: Essentials ---
   const title = $("title").text().trim();
@@ -320,7 +340,7 @@ async function seoMetrics(url) {
     urlSlugScore = 0;
   }
 
-  const contentHash = hashContent(html);
+  const contentHash = hashContent(htmlData);
   const duplicatePercent = 0; // placeholder for multi-page comparison
   let dupScore = 3;
   if (duplicatePercent === 0) dupScore = 3;
@@ -347,9 +367,12 @@ async function seoMetrics(url) {
 }
 
 // Accessibility function (C section)
-async function accessibilityMetrics(url) {
+async function accessibilityMetrics(url,page) {
 const report = {};
-  
+
+    await page.goto(url, { waitUntil: "networkidle2" });
+    // Run axe-core audit
+    const results = await new AxePuppeteer(page).analyze();
 // --- Helper: Calculate pass rate for selected Axe rules ---
 function calculatePassRate(results, ruleIds) {
   const total = ruleIds.length;
@@ -366,13 +389,6 @@ async function hasSkipLinksOrLandmarks(page) {
   const landmarks = await page.$$('[role="banner"], [role="main"], [role="contentinfo"], [role="navigation"], [role="complementary"]');
   return (skipLink || landmarks.length > 0) ? 1 : 0;
 }
-
-const browser = await puppeteer.launch({ headless: true });
-  const page = await browser.newPage();
-  await page.goto(url, { waitUntil: "networkidle2" });
-
-  // Run axe-core audit
-  const results = await new AxePuppeteer(page).analyze();
 
   // --- Calculate each category ---
   const CC = calculatePassRate(results, ["color-contrast"]); // Color contrast AA
@@ -391,8 +407,6 @@ const browser = await puppeteer.launch({ headless: true });
   const TX = calculatePassRate(results, ["image-alt"]); // Alt/text equivalents
   const SL = await hasSkipLinksOrLandmarks(page); // Skip links / landmarks
 
-  await browser.close();
-
   // --- Weighted scoring ---
   const score = (CC * 3) + (KN * 3) + (AL * 3) + (TX * 2) + (SL * 1);
 
@@ -410,23 +424,23 @@ const browser = await puppeteer.launch({ headless: true });
 }
 
 // D section function
-async function securityCompliance(url) {
+async function securityCompliance(url,html,htmlData,page) {
   const report = {};
 
-  // 1️⃣ HTTPS & mixed content (weight 2)
-  const httpsScore = await checkHTTPS(url);
-
-  // 2️⃣ HSTS (weight 1)
-  const hstsScore = await checkHSTS(url);
-
-  // 3️⃣ Security Headers (weight 3)
-  const headersScore = await checkSecurityHeaders(url);
-
-  // 4️⃣ Cookie Banner & Consent (weight 1)
-  const cookieBannerScore = await checkCookieBanner(url); // assume compliant
-
-  // 5️⃣ 404/500 custom error pages (weight 1)
-  const errorPageScore = await checkCustomErrorPage(url); // assume compliant
+  // Run all checks in parallel
+  const [
+    httpsScore,
+    hstsScore,
+    headersScore,
+    cookieBannerScore,
+    errorPageScore
+  ] = await Promise.all([
+    checkHTTPS(htmlData),           // 1️⃣ HTTPS & mixed content
+    checkHSTS(html),            // 2️⃣ HSTS
+    checkSecurityHeaders(html), // 3️⃣ Security Headers
+    checkCookieBanner(url,page),    // 4️⃣ Cookie Banner & Consent
+    checkCustomErrorPage(url)  // 5️⃣ 404/500 custom error pages
+  ]);
 
   report.D = {
     httpsMixedContent: httpsScore * 2,
@@ -446,28 +460,13 @@ async function securityCompliance(url) {
 }
 
 // UX & Content Structure function
-async function uxContentStructure(url) {
+async function uxContentStructure(url, $, page) {
   const report = {};
-
-  let html;
-  try {
-    const res = await axios.get(url);
-    html = res.data;
-  } catch (err) {
-    console.error("Failed to fetch page:", err.message);
-    return null;
-  }
-
-  const $ = cheerio.load(html);
-
-  // Puppeteer single browser
-  const browser = await puppeteer.launch({ headless: true });
-  const page = await browser.newPage();
 
   // Inject CLS observer
   await page.evaluateOnNewDocument(() => {
     window.__cls = 0;
-    new PerformanceObserver(list => {
+    new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
         if (!entry.hadRecentInput) window.__cls += entry.value;
       }
@@ -475,101 +474,77 @@ async function uxContentStructure(url) {
   });
 
   await page.goto(url, { waitUntil: "networkidle2" });
-  await new Promise(resolve => setTimeout(resolve, 5000));
 
-  // 1️⃣ Mobile Friendliness (viewport + font size + tap targets)
-  const viewport = $('meta[name="viewport"]').attr("content") ? 1 : 0;
+  // --- 1️⃣ Mobile Friendliness ---
+  const mobileTask = (async () => {
+    const viewport = $("meta[name='viewport']").attr("content") ? 1 : 0;
 
-  const { avgFontSize, badTapTargets } = await page.evaluate(() => {
-    const elements = [...document.querySelectorAll("p,span,li,a")];
-    const sizes = elements.map(el =>
-      parseFloat(window.getComputedStyle(el).fontSize) || 16
-    );
-    const avgFontSize = sizes.length
-      ? sizes.reduce((a, b) => a + b, 0) / sizes.length
-      : 16;
-
-    const links = [...document.querySelectorAll("a,button")];
-    const badTapTargets = links.filter(el => {
-      const r = el.getBoundingClientRect();
-      return r.width < 48 || r.height < 48;
-    }).length;
-
-    return { avgFontSize, badTapTargets };
-  });
-
-  const fontCheck = avgFontSize >= 16 ? 1 : 0;
-  const tapTargetCheck = badTapTargets === 0 ? 1 : 0;
-  const mobileFriendlinessScore =
-    (viewport + fontCheck + tapTargetCheck) >= 2 ? 3 : 0;
-
-  // 2️⃣ Navigation Depth (BFS crawl up to 3 clicks)
-  async function crawlDepth(startUrl, maxDepth = 3) {
-    const visited = new Set([startUrl]);
-    let queue = [{ url: startUrl, depth: 0 }];
-    let withinLimit = 0, total = 0;
-
-    while (queue.length) {
-      const { url: current, depth } = queue.shift();
-      if (depth > maxDepth) continue;
-
-      try {
-        const res = await axios.get(current, { timeout: 8000 });
-        const $ = cheerio.load(res.data);
-        total++;
-        if (depth <= 3) withinLimit++;
-
-        $("a[href]").each((_, el) => {
-          const link = $(el).attr("href");
-          if (
-            link &&
-            !link.startsWith("mailto:") &&
-            !link.startsWith("javascript:")
-          ) {
-            const fullUrl = new URL(link, startUrl).href;
-            if (!visited.has(fullUrl) && fullUrl.startsWith(startUrl)) {
-              visited.add(fullUrl);
-              queue.push({ url: fullUrl, depth: depth + 1 });
-            }
-          }
-        });
-      } catch {}
-    }
-    return total ? (withinLimit / total) * 100 : 100;
-  }
-  const navigationDepthPassRate = await crawlDepth(url, 3);
-  const navigationDepthScore = normalizeScore(navigationDepthPassRate, 2);
-
-  // 3️⃣ Layout Shift (CLS)
-  const clsValue = await page.evaluate(() => window.__cls || 0);
-  const clsPassRate = clsValue < 0.1 ? 100 : clsValue < 0.25 ? 70 : 30;
-  const layoutShiftScore = normalizeScore(clsPassRate, 2);
-
-  // 4️⃣ Readability (using raw HTML text)
-  const text = $("body").text();
-  const fleschScore = fleschReadingEase(text);
-  const readabilityPassRate = Math.max(
-    0,
-    Math.min(100, 100 - Math.abs(fleschScore - 60))
-  );
-  const readabilityScore = normalizeScore(readabilityPassRate, 2);
-
-  // 5️⃣ Intrusive Interstitials
-  const hasOverlay = await page.evaluate(() => {
-    const els = [...document.querySelectorAll("div,section,aside")];
-    return els.some(el => {
-      const rect = el.getBoundingClientRect();
-      return (
-        rect.width > window.innerWidth * 0.9 &&
-        rect.height > window.innerHeight * 0.9
+    const { avgFontSize, badTapTargets } = await page.evaluate(() => {
+      const elements = [...document.querySelectorAll("p,span,li,a")];
+      const sizes = elements.map(
+        (el) => parseFloat(window.getComputedStyle(el).fontSize) || 16
       );
+      const avgFontSize = sizes.length
+        ? sizes.reduce((a, b) => a + b, 0) / sizes.length
+        : 16;
+
+      const links = [...document.querySelectorAll("a,button")];
+      const badTapTargets = links.filter((el) => {
+        const r = el.getBoundingClientRect();
+        return r.width < 48 || r.height < 48;
+      }).length;
+
+      return { avgFontSize, badTapTargets };
     });
+
+    const fontCheck = avgFontSize >= 16 ? 1 : 0;
+    const tapTargetCheck = badTapTargets === 0 ? 1 : 0;
+    return viewport + fontCheck + tapTargetCheck >= 2 ? 3 : 0;
+  })();
+
+  // --- 2️⃣ Navigation Depth ---
+  const navTask = crawlDepthParallel(url, 3, 5).then((passRate) =>
+    normalizeScore(passRate, 2)
+  );
+
+  // --- 3️⃣ Layout Shift (CLS) ---
+  const clsTask = page.evaluate(() => window.__cls || 0).then((clsValue) => {
+    const passRate = clsValue < 0.1 ? 100 : clsValue < 0.25 ? 70 : 30;
+    return normalizeScore(passRate, 2);
   });
-  const intrusiveInterstitialScore = hasOverlay ? 0 : 1;
 
-  await browser.close();
+  // --- 4️⃣ Readability ---
+  const readabilityTask = (async () => {
+    const text = $("body").text();
+    const fleschScore = fleschReadingEase(text);
+    const passRate = Math.max(0, Math.min(100, 100 - Math.abs(fleschScore - 60)));
+    return normalizeScore(passRate, 2);
+  })();
 
-  // ✅ Final Report
+  // --- 5️⃣ Intrusive Interstitials ---
+  const interstitialTask = page.evaluate(() => {
+    const els = [...document.querySelectorAll("div,section,aside")];
+    return els.some((el) => {
+      const rect = el.getBoundingClientRect();
+      return rect.width > window.innerWidth * 0.9 && rect.height > window.innerHeight * 0.9;
+    });
+  }).then((hasOverlay) => (hasOverlay ? 0 : 1));
+
+  // --- Run all tasks in parallel ---
+  const [
+    mobileFriendlinessScore,
+    navigationDepthScore,
+    layoutShiftScore,
+    readabilityScore,
+    intrusiveInterstitialScore,
+  ] = await Promise.all([
+    mobileTask,
+    navTask,
+    clsTask,
+    readabilityTask,
+    interstitialTask,
+  ]);
+
   report.E = {
     mobileFriendliness: mobileFriendlinessScore,
     navigationDepth: parseFloat(navigationDepthScore.toFixed(2)),
@@ -591,19 +566,8 @@ async function uxContentStructure(url) {
 }
 
 // Conversion & Lead Flow function
-async function conversionLeadFlow(url) {
+async function conversionLeadFlow($) {
   const report = {};
-  let html;
-
-  try {
-    const res = await axios.get(url);
-    html = res.data;
-  } catch (err) {
-    console.error("Failed to fetch page:", err.message);
-    return null;
-  }
-
-  const $ = cheerio.load(html);
 
   // 1️⃣ Primary CTAs above the fold
   const ctaAboveFold = $('a, button').filter((i, el) => {
@@ -669,19 +633,8 @@ async function conversionLeadFlow(url) {
   return report;
 }
 
-async function aioReadiness(url) {
+async function aioReadiness($,robotsText) {
   const report = {};
-
-  let html;
-  try {
-    const res = await axios.get(url);
-    html = res.data;
-  } catch (err) {
-    console.error("Failed to fetch page:", err.message);
-    return null;
-  }
-
-  const $ = cheerio.load(html);
 
   // -------------------
   // G1: Entity & Organization Clarity (4)
@@ -768,9 +721,7 @@ const feedScore = hasFeed ? 0.5 : 0; // weight 0.5
 let robotsScore = 1;
 let robotsOk = true;
 try {
-  const robotsUrl = new URL("/robots.txt", url).href;
-  const res = await axios.get(robotsUrl);
-  if (/Disallow:\s*\/\s*$/i.test(res.data)) {
+  if (/Disallow:\s*\/\s*$/i.test(robotsText)) {
     robotsScore = 0;
     robotsOk = false;
   }
@@ -920,26 +871,36 @@ app.post('/data', async (req, res) => {
   // console.log(message);
 
   try {
-    const apiUrl =`https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${ encodeURIComponent(url)}&strategy=desktop&key=${API_KEY}`;
-    // console.log(apiUrl);
-    
-    const response = await fetch(apiUrl);
+    const googleAPI =`https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${ encodeURIComponent(url)}&strategy=desktop&key=${API_KEY}`;
+    // console.log(googleAPI);
+    const response = await fetch(googleAPI);
     const data = await response.json(); 
+    
+    const html = await axios.get(url);
+    const htmlData = html.data;
+    const $ = cheerio.load(htmlData);
 
-  const technicalReport = await technicalMetrics(url,data);
-  const seoReport = await seoMetrics(url);
-  const accessibilityReport = await accessibilityMetrics(url);
-  const securityReport = await securityCompliance(url);
-  const uxReport = await uxContentStructure(url);
-  const conversionReport = await conversionLeadFlow(url);
-  const aioReport = await aioReadiness(url);
-  // console.log("Technical Report:", scores)
-  // console.log("SEO Report (B1+B2+B3):", seoReport);
-  // console.log("Accessibility C Section Report:", accessibilityReport);
-  // console.log("Security/Compliance D Section Report:", securityReport);
-  // console.log("UX & Content Structure E Section Report:", uxReport);
-  // console.log("Conversion & Lead Flow F Section Report:", conversionReport);
-  // console.log("AIO G Section Report:", aioReport);
+    const robotsRes = await axios.get(new URL("/robots.txt", url).href);
+    const robotsText = robotsRes.data;
+
+    const browser = await puppeteer.launch({ headless: true });
+    const page = await browser.newPage();
+  
+  const technicalReport = await technicalMetrics(url,data,$,robotsText);
+  console.log("Technical Report:", technicalReport)
+  const seoReport = await seoMetrics(url,htmlData,$);
+  console.log("SEO Report (B1+B2+B3):", seoReport);
+  const accessibilityReport = await accessibilityMetrics(url,page);
+  console.log("Accessibility C Section Report:", accessibilityReport);
+  const securityReport = await securityCompliance(url,html,htmlData,page);
+  console.log("Security/Compliance D Section Report:", securityReport);
+  const uxReport = await uxContentStructure(url,$,page);
+  console.log("UX & Content Structure E Section Report:", uxReport);
+  const conversionReport = await conversionLeadFlow($);
+  console.log("Conversion & Lead Flow F Section Report:", conversionReport);
+  const aioReport = await aioReadiness($,robotsText);
+  console.log("AIO G Section Report:", aioReport);
+  await browser.close();
 
     const jsonData = {
       URL:url,
@@ -970,7 +931,7 @@ app.post('/data', async (req, res) => {
         B1:{
           Unique_Title_Score:seoReport.B1.title,
           Meta_Description_Score:seoReport.B1.metaDescription,
-          Canonocal_Score:seoReport.B1.canonical,
+          Canonical_Score:seoReport.B1.canonical,
           H1_Score:seoReport.B1.h1,
           Total_Score_B1:seoReport.B1.total
         },
@@ -1040,8 +1001,8 @@ app.post('/data', async (req, res) => {
           Total_Score_G3: aioReport.G.productSchemas + aioReport.G.feedAvailability
         },
         G4:{
-          Robots_Allowlist_Score: aioReport.G.feedAvailability,
-          Total_Score_G3: aioReport.G.crawlFriendliness
+          Robots_Allowlist_Score: aioReport.G.crawlFriendliness,
+          Total_Score_G4: aioReport.G.crawlFriendliness
         },
         AIO_Readiness_Score_Total: aioReport.G.totalGScore,
         AIO_Compatibility_Badge: aioReport.G.aioCompatibleBadge
