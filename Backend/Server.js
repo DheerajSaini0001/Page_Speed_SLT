@@ -460,32 +460,116 @@ async function uxContentStructure(url) {
 
   const $ = cheerio.load(html);
 
-  // 1️⃣ Mobile Friendliness (viewport, font size, tap targets)
-  const viewport = $('meta[name="viewport"]').attr("content") ? 1 : 0;
-  // Placeholder: assume font size and tap targets compliant
-  const mobileFriendlinessScore = viewport ? 3 : 0; // weight 3
+  // Puppeteer single browser
+  const browser = await puppeteer.launch({ headless: true });
+  const page = await browser.newPage();
 
-  // 2️⃣ Navigation Depth (≤3 clicks to key pages)
-  // Placeholder: assume all key paths within 3 clicks
-  const navigationDepthPassRate = 90; // %
+  // Inject CLS observer
+  await page.evaluateOnNewDocument(() => {
+    window.__cls = 0;
+    new PerformanceObserver(list => {
+      for (const entry of list.getEntries()) {
+        if (!entry.hadRecentInput) window.__cls += entry.value;
+      }
+    }).observe({ type: "layout-shift", buffered: true });
+  });
+
+  await page.goto(url, { waitUntil: "networkidle2" });
+  await new Promise(resolve => setTimeout(resolve, 5000));
+
+  // 1️⃣ Mobile Friendliness (viewport + font size + tap targets)
+  const viewport = $('meta[name="viewport"]').attr("content") ? 1 : 0;
+
+  const { avgFontSize, badTapTargets } = await page.evaluate(() => {
+    const elements = [...document.querySelectorAll("p,span,li,a")];
+    const sizes = elements.map(el =>
+      parseFloat(window.getComputedStyle(el).fontSize) || 16
+    );
+    const avgFontSize = sizes.length
+      ? sizes.reduce((a, b) => a + b, 0) / sizes.length
+      : 16;
+
+    const links = [...document.querySelectorAll("a,button")];
+    const badTapTargets = links.filter(el => {
+      const r = el.getBoundingClientRect();
+      return r.width < 48 || r.height < 48;
+    }).length;
+
+    return { avgFontSize, badTapTargets };
+  });
+
+  const fontCheck = avgFontSize >= 16 ? 1 : 0;
+  const tapTargetCheck = badTapTargets === 0 ? 1 : 0;
+  const mobileFriendlinessScore =
+    (viewport + fontCheck + tapTargetCheck) >= 2 ? 3 : 0;
+
+  // 2️⃣ Navigation Depth (BFS crawl up to 3 clicks)
+  async function crawlDepth(startUrl, maxDepth = 3) {
+    const visited = new Set([startUrl]);
+    let queue = [{ url: startUrl, depth: 0 }];
+    let withinLimit = 0, total = 0;
+
+    while (queue.length) {
+      const { url: current, depth } = queue.shift();
+      if (depth > maxDepth) continue;
+
+      try {
+        const res = await axios.get(current, { timeout: 8000 });
+        const $ = cheerio.load(res.data);
+        total++;
+        if (depth <= 3) withinLimit++;
+
+        $("a[href]").each((_, el) => {
+          const link = $(el).attr("href");
+          if (
+            link &&
+            !link.startsWith("mailto:") &&
+            !link.startsWith("javascript:")
+          ) {
+            const fullUrl = new URL(link, startUrl).href;
+            if (!visited.has(fullUrl) && fullUrl.startsWith(startUrl)) {
+              visited.add(fullUrl);
+              queue.push({ url: fullUrl, depth: depth + 1 });
+            }
+          }
+        });
+      } catch {}
+    }
+    return total ? (withinLimit / total) * 100 : 100;
+  }
+  const navigationDepthPassRate = await crawlDepth(url, 3);
   const navigationDepthScore = normalizeScore(navigationDepthPassRate, 2);
 
-  // 3️⃣ Layout Shift on Interactions (CLS spikes)
-  // Placeholder: assume 95% of interactions pass
-  const clsPassRate = 95; // %
+  // 3️⃣ Layout Shift (CLS)
+  const clsValue = await page.evaluate(() => window.__cls || 0);
+  const clsPassRate = clsValue < 0.1 ? 100 : clsValue < 0.25 ? 70 : 30;
   const layoutShiftScore = normalizeScore(clsPassRate, 2);
 
-  // 4️⃣ Readability (Flesch 50–70 for articles)
+  // 4️⃣ Readability (using raw HTML text)
   const text = $("body").text();
   const fleschScore = fleschReadingEase(text);
-  const readabilityPassRate = fleschScore >= 50 && fleschScore <= 70 ? 100 : 0; // simplified
+  const readabilityPassRate = Math.max(
+    0,
+    Math.min(100, 100 - Math.abs(fleschScore - 60))
+  );
   const readabilityScore = normalizeScore(readabilityPassRate, 2);
 
-  // 5️⃣ Intrusive Interstitials (0/1)
-  // Placeholder: assume compliant
-  const intrusiveInterstitialScore = 1; // weight 1
+  // 5️⃣ Intrusive Interstitials
+  const hasOverlay = await page.evaluate(() => {
+    const els = [...document.querySelectorAll("div,section,aside")];
+    return els.some(el => {
+      const rect = el.getBoundingClientRect();
+      return (
+        rect.width > window.innerWidth * 0.9 &&
+        rect.height > window.innerHeight * 0.9
+      );
+    });
+  });
+  const intrusiveInterstitialScore = hasOverlay ? 0 : 1;
 
-  // Combine all E metrics
+  await browser.close();
+
+  // ✅ Final Report
   report.E = {
     mobileFriendliness: mobileFriendlinessScore,
     navigationDepth: parseFloat(navigationDepthScore.toFixed(2)),
