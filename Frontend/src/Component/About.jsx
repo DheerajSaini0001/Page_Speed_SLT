@@ -6,6 +6,7 @@ import Footer from "./Footer"
 
 export default function About() {
   return (
+   <>
     <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-black min-h-screen py-12 px-6">
       {/* Navbar */}
       <nav className="fixed top-0 left-0 w-full h-16 bg-gray-900 border-b border-gray-700 flex items-center justify-between px-6 z-50">
@@ -90,7 +91,8 @@ export default function About() {
         
       </div>
       
-      <Footer/>
     </div>
+      <Footer/>
+   </>
   );
 }
