@@ -34,6 +34,8 @@ export default function DarkCard() {
 
       const result = await response.json();
       setResult(result);
+      console.log(result);
+      
       setInputValue("");
     } catch (error) {
       alert("Error: " + error.message);
@@ -41,6 +43,7 @@ export default function DarkCard() {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="scroll-smooth m-0 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white overflow-x-hidden">
@@ -70,7 +73,7 @@ export default function DarkCard() {
       {/* Spacer to prevent content from going under navbar */}
       <div className="h-16"></div>
 
-      <div className="flex flex-col min-h-screen items-center">
+      <div className="flex flex-col min-h-175 items-center">
         {/* ✅ Input Section (show only before result) */}
         {!result && (
           <div className="w-full mt-40 max-w-2xl mx-auto bg-gray-900 rounded-2xl shadow-2xl p-6 space-y-4 border border-gray-700">
