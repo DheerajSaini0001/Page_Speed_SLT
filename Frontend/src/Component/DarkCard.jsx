@@ -11,6 +11,7 @@ import Conversion_Lead_Flow from "../Metrices/Conversion_Lead_Flow";
 import AIO from "../Metrices/AIO";
 import logo from "./android-chrome-192x192.png";
 import Footer from "./Footer";
+import RawData from "../Metrices/RawData";
 export default function DarkCard() {
   const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState("");
@@ -163,6 +164,10 @@ export default function DarkCard() {
 
               <section id="aio" className="scroll-mt-20">
                 <AIO data={result} />
+              </section>
+          
+              <section id="Rawdata" className="scroll-mt-20">
+                <RawData data={result}/>
               </section>
           
             </div>
