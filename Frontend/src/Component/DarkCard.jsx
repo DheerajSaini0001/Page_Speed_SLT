@@ -11,6 +11,8 @@ import Conversion_Lead_Flow from "../Metrices/Conversion_Lead_Flow";
 import AIO from "../Metrices/AIO";
 import logo from "./android-chrome-192x192.png";
 import Footer from "./Footer";
+import RawData from "../Metrices/RawData";
+
 export default function DarkCard() {
   const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState("");
@@ -35,7 +37,7 @@ export default function DarkCard() {
       const result = await response.json();
       setResult(result);
       console.log(result);
-      
+
       setInputValue("");
     } catch (error) {
       alert("Error: " + error.message);
@@ -43,11 +45,9 @@ export default function DarkCard() {
       setLoading(false);
     }
   };
-  
 
   return (
-   <>
-    <div className="scroll-smooth m-0 min-h-11/12 bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white overflow-x-hidden">
+    <div className="scroll-smooth m-0 bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white overflow-x-hidden flex flex-col min-h-screen">
       {/* ✅ Navbar */}
       <nav className="fixed top-0 left-0 w-full h-16 bg-gray-900 border-b border-gray-700 flex items-center justify-between px-4 z-50">
         {/* Hamburger button (mobile only) */}
@@ -65,8 +65,10 @@ export default function DarkCard() {
         )}
 
         {/* Logo / Title */}
-        <div className="flex flex-col-rev justify-center items-center gap-4  font-serif text-4xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent">
-          <div><img src={logo} alt="" className="h-14" /></div>
+        <div className="flex flex-col-rev justify-center items-center gap-4 font-serif text-4xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent">
+          <div>
+            <img src={logo} alt="" className="h-14" />
+          </div>
           <div>Site Audits</div>
         </div>
       </nav>
@@ -74,8 +76,9 @@ export default function DarkCard() {
       {/* Spacer to prevent content from going under navbar */}
       <div className="h-16"></div>
 
-      <div className="flex flex-col min-h-175 items-center">
-        {/* ✅ Input Section (show only before result) */}
+      {/* ✅ Main Content Wrapper */}
+      <div className="flex-1 flex flex-col items-center">
+        {/* Input Section (before result) */}
         {!result && (
           <div className="w-full mt-40 max-w-2xl mx-auto bg-gray-900 rounded-2xl shadow-2xl p-6 space-y-4 border border-gray-700">
             <h2 className="text-2xl font-bold text-center">
@@ -103,7 +106,9 @@ export default function DarkCard() {
                   disabled={loading}
                   className="flex items-center justify-center bg-blue-600 hover:bg-blue-700 disabled:opacity-50 transition rounded-lg font-semibold px-4"
                 >
-                  {loading && <Loader2 className="animate-spin m-2 mr-4 h-fit w-fit" />}
+                  {loading && (
+                    <Loader2 className="animate-spin m-2 mr-4 h-fit w-fit" />
+                  )}
                   {loading ? " Analyzing... Please Wait" : "Analyze"}
                 </button>
               </form>
@@ -111,9 +116,9 @@ export default function DarkCard() {
           </div>
         )}
 
-        {/* ✅ Sidebar + Dashboard layout (only when result exists) */}
+        {/* Sidebar + Dashboard layout (only when result exists) */}
         {result && (
-          <div className="relative w-full min-h-screen flex">
+          <div className="relative w-full flex flex-1">
             {/* Sidebar */}
             <div
               className={`fixed top-16 left-0 z-40 w-64 h-[calc(100vh-4rem)] bg-gray-900 border-r border-gray-700 transform 
@@ -132,7 +137,7 @@ export default function DarkCard() {
             )}
 
             {/* Main Dashboard */}
-            <div className="flex-1 lg:ml-64 pb-0 pl-4 pr-4 pt-4 sm: space-y-8">
+            <div className="flex-1 lg:ml-64 pb-0 pl-4 pr-4 pt-4 space-y-8">
               <section id="deshboard" className="scroll-mt-20">
                 <Dashboard2 data={result} />
               </section>
@@ -145,10 +150,10 @@ export default function DarkCard() {
                 <On_Page_SEO data={result} />
               </section>
 
-
-              <section id="accessibility" className="">
+              <section id="accessibility">
                 <Accessibility data={result} />
               </section>
+
               <section id="security" className="scroll-mt-20">
                 <Security_Compilance data={result} />
               </section>
@@ -164,13 +169,19 @@ export default function DarkCard() {
               <section id="aio" className="scroll-mt-20">
                 <AIO data={result} />
               </section>
-          
+
+              <section id="Rawdata" className="scroll-mt-20">
+                <RawData data={result} />
+              </section>
             </div>
           </div>
         )}
       </div>
+
+      {/* ✅ Footer (always at bottom) */}
+      <footer className="mt-auto bg-gray-800 text-white text-center">
+        <Footer />
+      </footer>
     </div>
-        <Footer/>
-   </>
   );
 }

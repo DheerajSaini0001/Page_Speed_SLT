@@ -9,6 +9,7 @@ import {
   Menu,
   Brain,
   X,
+  Database,
 } from "lucide-react";
 
 export default function Sidebar({ children }) {
@@ -22,6 +23,7 @@ export default function Sidebar({ children }) {
     { name: "UX & Content Structure", link: "#UXContentStructure", icon: <Layout size={20} /> },
     { name: "Conversion & Lead Flow", link: "#ConversionLeadFlow", icon: <TrendingUp size={20} /> },
     { name: "AIO (AI-Optimization) Readiness", link: "#AIOReadiness", icon: <Brain size={20} /> },
+    { name: "Raw Data", link: "#Rawdata", icon: <Database size={20} /> },
   ];
 
   return (
@@ -51,6 +53,7 @@ export default function Sidebar({ children }) {
            <a href={`${menuItems[4].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition">{menuItems[4].icon} <pre> </pre> {menuItems[4].name} </a>
            <a href={`${menuItems[5].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition">{menuItems[5].icon} <pre> </pre> {menuItems[5].name} </a>
            <a href={`${menuItems[6].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition">{menuItems[6].icon} <pre> </pre> {menuItems[6].name} </a>
+           <a href={`${menuItems[7].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition">{menuItems[7].icon} <pre> </pre> {menuItems[7].name} </a>
          
          
         </nav>
