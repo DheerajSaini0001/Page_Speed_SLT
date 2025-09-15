@@ -1,4 +1,6 @@
+import { Download } from "lucide-react";
 import React, { useState } from "react";
+import { FileText } from "lucide-react";
 
 const RawData = ({ data }) => {
   const [openKeys, setOpenKeys] = useState({});
@@ -9,8 +11,51 @@ const RawData = ({ data }) => {
       [key]: !prev[key],
     }));
   };
+console.log(data);
 
-  const renderData = (obj, parentKey = "") => {
+// Download Function 
+const downloadAsTxt = (data, filename = "seo-report.txt") => {
+  // Convert object to readable text
+  const formatObject = (obj, indent = 0) => {
+    let str = "";
+    const space = " ".repeat(indent);
+
+    Object.entries(obj).forEach(([key, value]) => {
+      if (value && typeof value === "object" && !Array.isArray(value)) {
+        str += `${space}${key}:\n${formatObject(value, indent + 2)}`;
+      } else if (Array.isArray(value)) {
+        str += `${space}${key}:\n`;
+        value.forEach((item, idx) => {
+          if (typeof item === "object") {
+            str += `${space}  - Item ${idx + 1}:\n${formatObject(
+              item,
+              indent + 4
+            )}`;
+          } else {
+            str += `${space}  - ${item}\n`;
+          }
+        });
+      } else {
+        str += `${space}${key}: ${value}\n`;
+      }
+    });
+
+    return str;
+  };
+
+  const textContent = formatObject(data);
+
+  // Create blob and trigger download
+  const blob = new Blob([textContent], { type: "text/plain" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};  
+
+const renderData = (obj, parentKey = "") => {
     return Object.entries(obj).map(([key, value]) => {
       const uniqueKey = parentKey ? `${parentKey}.${key}` : key;
 
@@ -63,6 +108,13 @@ const RawData = ({ data }) => {
  hover:scale-105 transition-transform duration-300 ">
         {data ? renderData(data) : <p className="text-white">Loading data...</p>}
       </div>
+      <button
+      onClick={() => downloadAsTxt(data)}
+      className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg shadow hover:bg-green-700"
+    >
+      <FileText className="w-5 h-5" />
+      Download TXT
+    </button>
     </div>
   );
 };
