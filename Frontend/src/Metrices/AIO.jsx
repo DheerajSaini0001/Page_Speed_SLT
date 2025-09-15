@@ -47,15 +47,15 @@ const ScoreBadge = ({ score, out }) => (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>Organization JSON-LD Score</span>
-            <ScoreBadge score={data.jsonData?.G?.G1?.Organization_JSON_LD_Score ?? 0} out={2} />
+            <ScoreBadge score={data.jsonData?.G?.G1?.Organization_JSON_LD_Score.toFixed(1) ?? 0} out={2} />
           </div>
           <div className="flex justify-between items-center">
             <span>Consistent NAP Score</span>
-            <ScoreBadge score={data.jsonData?.G?.G1?.Consistent_NAP_Score ?? 0} out={1} />
+            <ScoreBadge score={data.jsonData?.G?.G1?.Consistent_NAP_Score.toFixed(1) ?? 0} out={1} />
           </div>
           <div className="flex justify-between items-center">
             <span>Humans/Policies Score</span>
-            <ScoreBadge score={data.jsonData?.G?.G1?.Humans_or_Policies_Score ?? 0} out={1} />
+            <ScoreBadge score={data.jsonData?.G?.G1?.Humans_or_Policies_Score.toFixed(1) ?? 0} out={1} />
           </div>
         </div>
       </div>
@@ -74,15 +74,15 @@ const ScoreBadge = ({ score, out }) => (
 
           <div className="flex justify-between items-center">
             <span>FAQ/How-To-JSON-LD Score</span>
-            <ScoreBadge score={data.jsonData?.G?.G2?.FAQ_or_How_To_JSON_LD_Score ?? 0} out={1.5} />
+            <ScoreBadge score={data.jsonData?.G?.G2?.FAQ_or_How_To_JSON_LD_Score.toFixed(1) ?? 0} out={1.5} />
           </div>
           <div className="flex justify-between items-center">
             <span>Section Anchors/TOC Score</span>
-            <ScoreBadge score={data.jsonData?.G?.G2?.Section_Anchors_or_TOC_Score ?? 0} out={1} />
+            <ScoreBadge score={data.jsonData?.G?.G2?.Section_Anchors_or_TOC_Score.toFixed(1) ?? 0} out={1} />
           </div>
           <div className="flex justify-between items-center">
             <span>Descriptive Media Captions/Figcaptions Score</span>
-            <ScoreBadge score={data.jsonData?.G?.G2?.Descriptive_Media_Captions_or_Figcaptions_Score ?? 0} out={0.5} />
+            <ScoreBadge score={data.jsonData?.G?.G2?.Descriptive_Media_Captions_or_Figcaptions_Score.toFixed(1) ?? 0} out={0.5} />
           </div>
         </div>
       </div>
@@ -101,11 +101,11 @@ const ScoreBadge = ({ score, out }) => (
 
           <div className="flex justify-between items-center">
             <span>Correct Schema Types Score</span>
-            <ScoreBadge score={data.jsonData?.A?.A3?.Correct_Schema_Types_Score ?? 0} out={1.5} />
+            <ScoreBadge score={data.jsonData?.G?.G3?.Correct_Schema_Types_Score.toFixed(1) ?? 0} out={1.5} />
           </div>
           <div className="flex justify-between items-center">
             <span>Feed Availability Score</span>
-            <ScoreBadge score={data.jsonData?.A?.A3?.Feed_Availability_Score ?? 0} out={0.5} />
+            <ScoreBadge score={data.jsonData?.G?.G3?.Feed_Availability_Score.toFixed(1) ?? 0} out={0.5} />
           </div>
         </div>
       </div>
@@ -115,13 +115,13 @@ const ScoreBadge = ({ score, out }) => (
         <h2 className="text-xl font-bold text-white mb-4">
           Crawl Friendliness for Knowledge Agents{" "}
           <span className="text-white">
-            ({data.jsonData?.G?.G4?.Total_Score_G4 || 0} out of 1)
+            ({data.jsonData?.G?.G4?.Total_Score_G4.toFixed(1) || 0} out of 1)
           </span>
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>Robots Allowlist Score</span>
-            <ScoreBadge score={data.jsonData?.G?.G4?.Robots_Allowlist_Score ?? 0} out={1} />
+            <ScoreBadge score={data.jsonData?.G?.G4?.Robots_Allowlist_Score.toFixed(1) ?? 0} out={1} />
           </div>
         </div>
       </div>

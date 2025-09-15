@@ -105,11 +105,11 @@ const ScoreBadge = ({ score, out }) => (
           </div>
           <div className="flex justify-between items-center">
             <span>Broken Links Score</span>
-            <ScoreBadge score={data.jsonData?.A?.A3?.Broken_Links_Score ?? 0} out={2} />
+            <ScoreBadge score={data.jsonData?.A?.A3?.Broken_Links_Score.toFixed(1) ?? 0} out={2} />
           </div>
           <div className="flex justify-between items-center">
             <span>Redirect Chains Score</span>
-            <ScoreBadge score={data.jsonData?.A?.A3?.Redirect_Chains_Score ?? 0} out={2} />
+            <ScoreBadge score={data.jsonData?.A?.A3?.Redirect_Chains_Score.toFixed(1) ?? 0} out={2} />
           </div>
         </div>
       </div>

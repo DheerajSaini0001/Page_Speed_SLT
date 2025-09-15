@@ -50,7 +50,7 @@ const ScoreBadge = ({ score, out }) => (
           </div>
           <div className="flex justify-between items-center">
             <span>Canonical Score</span>
-            <ScoreBadge score={data.jsonData?.B?.B1?.Canonical_Score ?? 0} out={2} />
+            <ScoreBadge score={data.jsonData?.B?.B1?.Canonical_Score.toFixed(1) ?? 0} out={2} />
           </div>
           <div className="flex justify-between items-center">
             <span>H1 Score</span>
@@ -75,7 +75,7 @@ const ScoreBadge = ({ score, out }) => (
           </div>
           <div className="flex justify-between items-center">
             <span>Heading Hierarcy Score</span>
-            <ScoreBadge score={data.jsonData?.B?.B2?.Heading_Hierarchy_Score ?? 0} out={2}/>
+            <ScoreBadge score={data.jsonData?.B?.B2?.Heading_Hierarchy_Score.toFixed(1) ?? 0} out={2}/>
           </div>
           <div className="flex justify-between items-center">
             <span>Descriptive Links Score</span>
@@ -96,7 +96,7 @@ const ScoreBadge = ({ score, out }) => (
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>URL Slugs Score</span>
-            <ScoreBadge score={data.jsonData?.B?.B3?.URL_Slugs_Score ?? 0} out={2}/>
+            <ScoreBadge score={data.jsonData?.B?.B3?.URL_Slugs_Score.toFixed(1) ?? 0} out={2}/>
           </div>
           <div className="flex justify-between items-center">
             <span>Duplicate Content Score</span>
