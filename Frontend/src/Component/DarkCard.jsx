@@ -47,7 +47,7 @@ export default function DarkCard() {
 
   return (
    <>
-    <div className="scroll-smooth m-0 min-h-11/12 bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white overflow-x-hidden">
+    <div className="scroll-smooth m-0 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white overflow-x-hidden">
       {/* ✅ Navbar */}
       <nav className="fixed top-0 left-0 w-full h-16 bg-gray-900 border-b border-gray-700 flex items-center justify-between px-4 z-50">
         {/* Hamburger button (mobile only) */}
@@ -169,8 +169,10 @@ export default function DarkCard() {
           </div>
         )}
       </div>
+      <div className="fixed bottom-0 left-0 w-full bg-gray-800 text-white text-center">
+      <Footer/>
+      </div>
     </div>
-        <Footer/>
    </>
   );
 }
