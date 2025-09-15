@@ -2,87 +2,105 @@ import axios from "axios";
 
 export default async function technicalMetrics(url,data,$,robotsText) {
   let totalScore_A3 = 0;
-  
-  // --- Helper functions ---
-  const scoreBrokenLinks = (percent) => {
-    if (percent === 0) return 1;
-    if (percent > 0 && percent <= 2) return 1 - (percent / 2) * 0.5;
-    return 0;
-  };
 
-  const scoreRedirectChains = (percent) => {
-    if (percent === 0) return 1;
-    if (percent > 0 && percent <= 5) return 1 - percent / 5;
-    return 0;
-  };
-
-// --- Fetch robots.txt once ---
-let sitemapScore = 0;
-let robotsScore = 0;
+  let sitemapScore = 0;
 try {
-  // 1️⃣ Sitemap check
   const sitemapMatch = robotsText.match(/Sitemap:\s*(.*)/i);
   if (sitemapMatch) {
     const sitemapUrl = sitemapMatch[1].trim();
     try {
       const sitemapRes = await axios.get(sitemapUrl);
+      // ✅ Only give 1 if sitemap reachable AND listed in robots.txt
       sitemapScore = sitemapRes.status === 200 ? 1 : 0.5;
     } catch {
-      sitemapScore = 0.5;
+      sitemapScore = 0.5; // sitemap listed but unreachable
     }
+  } else {
+    sitemapScore = 0; // sitemap not present
   }
-
-  // 2️⃣ robots.txt validity
-  const hasGlobalDisallow = /Disallow:\s*\/\s*$/mi.test(robotsText);
-  robotsScore = !hasGlobalDisallow ? 1 : 0;
-
 } catch {
   sitemapScore = 0;
-  robotsScore = 0;
+}
+
+let robotsScore = 0;
+try {
+  if (robotsText && typeof robotsText === "string") {
+    // Check for accidental global disallow
+    const hasGlobalDisallow = /Disallow:\s*\/\s*$/mi.test(robotsText);
+    robotsScore = !hasGlobalDisallow ? 1 : 0;
+  } else {
+    robotsScore = 0; // robots.txt missing or unparsable
+  }
+} catch {
+  robotsScore = 0; // any error parsing robots.txt
 }
 
 // Add to total
 totalScore_A3 += sitemapScore * 2;
 totalScore_A3 += robotsScore * 2;
 
-  // --- 3️⃣ Broken links ---
-  let brokenScore = 0;
-  try {
-    const links = $("a[href]")
-      .map((i, el) => $(el).attr("href"))
-      .get()
-      .filter((l) => l && l.startsWith("http"));
+let brokenScore = 0;
+try {
+  const links = $("a[href]")
+    .map((i, el) => $(el).attr("href"))
+    .get()
+    .filter((l) => l && l.startsWith("http"));
 
-    let brokenCount = 0;
-    await Promise.all(
-      links.map(async (link) => {
-        try {
-          const res = await axios.head(link, { validateStatus: null, maxRedirects: 5 });
-          if (res.status >= 400) brokenCount++;
-        } catch {
-          brokenCount++;
-        }
-      })
-    );
+  let brokenCount = 0;
+  await Promise.all(
+    links.map(async (link) => {
+      try {
+        const res = await axios.head(link, { validateStatus: null, maxRedirects: 5 });
+        if (res.status >= 400) brokenCount++;
+      } catch {
+        brokenCount++;
+      }
+    })
+  );
 
-    const brokenPercent = (brokenCount / (links.length || 1)) * 100;
-    brokenScore = scoreBrokenLinks(brokenPercent);
-  } catch {
-    brokenScore = 0;
+  const brokenPercent = (brokenCount / (links.length || 1)) * 100;
+
+  // --- Apply your rubric ---
+  if (brokenPercent === 0) {
+    brokenScore = 1;               // 0% broken
+  } else if (brokenPercent > 0 && brokenPercent <= 2) {
+    brokenScore = 1 - (brokenPercent / 2) * 0.5;  // linear 1 → 0.5
+  } else {
+    brokenScore = 0;               // >2% broken
   }
-  totalScore_A3 += brokenScore * 2;
 
-  // --- 4️⃣ Redirect chains ---
-  let redirectScore = 0;
-  try {
-    const res = await axios.get(url, { maxRedirects: 10, validateStatus: null });
-    const hops = res.request?._redirectable?._redirectCount || 0;
-    const percent = hops > 1 ? 100 : 0;
-    redirectScore = scoreRedirectChains(percent);
-  } catch {
-    redirectScore = 0;
+} catch {
+  brokenScore = 0;                 // error case
+}
+
+// Add weighted score
+totalScore_A3 += brokenScore * 2;
+
+let redirectScore = 0;
+try {
+  const res = await axios.get(url, { maxRedirects: 10, validateStatus: null });
+  const hops = res.request?._redirectable?._redirectCount || 0;
+
+  // Convert hops into a "percent"
+  // 0 hops = 0%, 5 hops = 5%, >5 hops = >5%
+  const percent = hops;
+
+  // --- Apply rubric ---
+  if (percent === 0) {
+    redirectScore = 1;                         // 0% → score 1
+  } else if (percent > 0 && percent <= 5) {
+    redirectScore = 1 - percent / 5;           // 0–5% → linear 1 → 0
+  } else {
+    redirectScore = 0;                         // >5% → score 0
   }
-  totalScore_A3 += redirectScore * 2;
+
+} catch {
+  redirectScore = 0;
+}
+
+// Add weighted score
+totalScore_A3 += redirectScore * 2;
+
 
   // const audits = data?.lighthouseResult?.audits;
 
