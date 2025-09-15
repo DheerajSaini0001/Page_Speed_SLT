@@ -887,19 +887,19 @@ app.post('/data', async (req, res) => {
     const page = await browser.newPage();
   
   const technicalReport = await technicalMetrics(url,data,$,robotsText);
-  console.log("Technical Report:", technicalReport)
   const seoReport = await seoMetrics(url,htmlData,$);
-  console.log("SEO Report (B1+B2+B3):", seoReport);
   const accessibilityReport = await accessibilityMetrics(url,page);
-  console.log("Accessibility C Section Report:", accessibilityReport);
   const securityReport = await securityCompliance(url,html,htmlData,page);
-  console.log("Security/Compliance D Section Report:", securityReport);
   const uxReport = await uxContentStructure(url,$,page);
-  console.log("UX & Content Structure E Section Report:", uxReport);
   const conversionReport = await conversionLeadFlow($);
-  console.log("Conversion & Lead Flow F Section Report:", conversionReport);
   const aioReport = await aioReadiness($,robotsText);
-  console.log("AIO G Section Report:", aioReport);
+  // console.log("Technical Report:", technicalReport)
+  // console.log("SEO Report (B1+B2+B3):", seoReport);
+  // console.log("Accessibility C Section Report:", accessibilityReport);
+  // console.log("Security/Compliance D Section Report:", securityReport);
+  // console.log("UX & Content Structure E Section Report:", uxReport);
+  // console.log("Conversion & Lead Flow F Section Report:", conversionReport);
+  // console.log("AIO G Section Report:", aioReport);
   await browser.close();
 
     const jsonData = {
