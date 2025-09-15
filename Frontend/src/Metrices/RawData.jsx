@@ -52,7 +52,7 @@ const RawData = ({ data }) => {
   };
 
   return (
-    <div id="Rawdata" className="p-6 bg-gray-50 min-h-screen">
+    <div id="Rawdata" className="p-6 bg-gray-50 min-h-fit">
       <h2 className="text-2xl font-bold mb-4">Raw SEO Data Viewer</h2>
       <div className="bg-white shadow rounded p-4">
         {data ? renderData(data) : <p>Loading data...</p>}
