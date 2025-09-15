@@ -22,8 +22,8 @@ export default function Sidebar({ children }) {
     { name: "Security/Compliance", link: "#SecurityCompliance", icon: <Shield size={20} /> },
     { name: "UX & Content Structure", link: "#UXContentStructure", icon: <Layout size={20} /> },
     { name: "Conversion & Lead Flow", link: "#ConversionLeadFlow", icon: <TrendingUp size={20} /> },
-    { name: "AIO (AI-Optimization) Readiness", link: "#AIOReadiness", icon: <Database size={20} /> },
-    { name: "Raw Data", link: "#Rawdata", icon: <Brain size={20} /> },
+    { name: "AIO (AI-Optimization) Readiness", link: "#AIOReadiness", icon: <Brain size={20} /> },
+    { name: "Raw Data", link: "#Rawdata", icon: <Database size={20} /> },
   ];
 
   return (
