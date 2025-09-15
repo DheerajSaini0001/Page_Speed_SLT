@@ -14,7 +14,9 @@ const RawData = ({ data }) => {
 console.log(data);
 
 // Download Function 
-const downloadAsTxt = (data, filename = "seo-report.txt") => {
+ const downloadAsTxt = (data, 
+  filename = `${data.result.url.split("/")[2].split('.')[0]}.txt`
+ ) => {
   // Convert object to readable text
   const formatObject = (obj, indent = 0) => {
     let str = "";

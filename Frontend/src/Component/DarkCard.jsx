@@ -125,7 +125,7 @@ export default function DarkCard() {
               ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} 
               lg:translate-x-0 transition-transform duration-300 ease-in-out overflow-y-auto pb-4`}
             >
-              <Sidebar />
+              <Sidebar data={result} />
             </div>
 
             {/* Mobile overlay */}

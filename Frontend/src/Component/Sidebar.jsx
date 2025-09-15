@@ -10,9 +10,11 @@ import {
   Brain,
   X,
   Database,
+  FileText,
 } from "lucide-react";
 
-export default function Sidebar({ children }) {
+
+export default function Sidebar({ children ,data}) {
   const [isOpen, setIsOpen] = useState(true);
 
   const menuItems = [
@@ -26,6 +28,50 @@ export default function Sidebar({ children }) {
     { name: "Raw Data", link: "#Rawdata", icon: <Database size={20} /> },
   ];
 
+  // Download Button
+  const downloadAsTxt = (data, 
+    filename = `${data.result.url.split("/")[2].split('.')[0]}.txt`
+
+) => {
+    // Convert object to readable text
+    const formatObject = (obj, indent = 0) => {
+      let str = "";
+      const space = " ".repeat(indent);
+  
+      Object.entries(obj).forEach(([key, value]) => {
+        if (value && typeof value === "object" && !Array.isArray(value)) {
+          str += `${space}${key}:\n${formatObject(value, indent + 2)}`;
+        } else if (Array.isArray(value)) {
+          str += `${space}${key}:\n`;
+          value.forEach((item, idx) => {
+            if (typeof item === "object") {
+              str += `${space}  - Item ${idx + 1}:\n${formatObject(
+                item,
+                indent + 4
+              )}`;
+            } else {
+              str += `${space}  - ${item}\n`;
+            }
+          });
+        } else {
+          str += `${space}${key}: ${value}\n`;
+        }
+      });
+  
+      return str;
+    };
+  
+    const textContent = formatObject(data);
+  
+    // Create blob and trigger download
+    const blob = new Blob([textContent], { type: "text/plain" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }; 
   return (
     <div className="flex fixed">
       {/* Top Navbar */}
@@ -54,7 +100,14 @@ export default function Sidebar({ children }) {
            <a href={`${menuItems[5].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition">{menuItems[5].icon} <pre> </pre> {menuItems[5].name} </a>
            <a href={`${menuItems[6].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition">{menuItems[6].icon} <pre> </pre> {menuItems[6].name} </a>
            <a href={`${menuItems[7].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition">{menuItems[7].icon} <pre> </pre> {menuItems[7].name} </a>
-         
+           <button
+      onClick={() => downloadAsTxt(data)}
+      className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition"
+    >
+      <FileText className="w-5 h-5" />
+      <pre> </pre>
+      Download TXT
+    </button>
          
         </nav>
       </aside>
