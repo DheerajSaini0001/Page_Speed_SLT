@@ -174,7 +174,7 @@ export default function DarkCard() {
           </div>
         )}
       </div>
-      <div className="fixed bottom-0 left-0 w-full bg-gray-800 text-white text-center">
+      <div className="bottom-0 left-0 w-full bg-gray-800 text-white text-center">
       <Footer/>
       </div>
     </div>

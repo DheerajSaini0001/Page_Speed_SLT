@@ -18,7 +18,7 @@ const RawData = ({ data }) => {
         return (
           <div key={uniqueKey} className="pl-4 mb-2 border-l border-gray-300">
             <h4
-              className="cursor-pointer font-semibold text-white hover:text-gray-900"
+              className="cursor-pointer font-semibold text-white hover:text-blue-500"
               onClick={() => toggleKey(uniqueKey)}
             >
               {key} {openKeys[uniqueKey] ? "▼" : "▶"}
