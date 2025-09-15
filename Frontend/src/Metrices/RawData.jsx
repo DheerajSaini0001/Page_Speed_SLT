@@ -18,7 +18,7 @@ const RawData = ({ data }) => {
         return (
           <div key={uniqueKey} className="pl-4 mb-2 border-l border-gray-300">
             <h4
-              className="cursor-pointer font-semibold text-gray-700 hover:text-gray-900"
+              className="cursor-pointer font-semibold text-white hover:text-gray-900"
               onClick={() => toggleKey(uniqueKey)}
             >
               {key} {openKeys[uniqueKey] ? "▼" : "▶"}
@@ -29,7 +29,7 @@ const RawData = ({ data }) => {
       } else if (Array.isArray(value)) {
         return (
           <div key={uniqueKey} className="pl-4 mb-2">
-            <h4 className="font-semibold text-gray-700">{key}:</h4>
+            <h4 className="font-semibold text-white">{key}:</h4>
             <ul className="list-disc list-inside pl-4">
               {value.map((item, idx) =>
                 typeof item === "object" ? (
@@ -43,7 +43,7 @@ const RawData = ({ data }) => {
         );
       } else {
         return (
-          <p key={uniqueKey} className="pl-4 text-gray-600">
+          <p key={uniqueKey} className="pl-4 text-white">
             {key}: {value !== null ? value.toString() : "null"}
           </p>
         );
@@ -55,10 +55,13 @@ const RawData = ({ data }) => {
     <div id="Rawdata" className=" min-h-fit pt-20 pb-16 bg-gray-900 border border-gray-700 rounded-2xl 
                  shadow-lg hover:shadow-2xl transform hover:-translate-y-1 
                  transition-all duration-300 m-4 flex flex-col items-center 
-                 justify-start p-6 space-y-6">
-      <h2 className="text-2xl font-bold mb-4">Raw SEO Data Viewer</h2>
-      <div className="bg-white shadow rounded p-4">
-        {data ? renderData(data) : <p>Loading data...</p>}
+                 justify-start p-6 space-y-6 ">
+     <h1 className="text-3xl font-extrabold text-amber-100 mb-6">
+        Raw Data </h1>
+
+      <div className="w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-indigo-500 bg-gradient-to-br from-blue-900 via-gray-900 to-black
+ hover:scale-105 transition-transform duration-300 ">
+        {data ? renderData(data) : <p className="text-white">Loading data...</p>}
       </div>
     </div>
   );
