@@ -1,128 +1,95 @@
-import axios from "axios";
-import { load } from "cheerio"; // ✅ FIXED import
-import PQueue from "p-queue";
-
-// -------------------
-// Helper: Normalize Score
-// -------------------
 const normalizeScore = (passRate, weight) => (passRate / 100) * weight;
 
-<<<<<<< HEAD
 export default async function aioReadiness($,robotsText) {
-=======
-// -------------------
-// Helper: Normalize NAP
-// -------------------
-function normalizePhone(phone) {
-  return phone ? phone.replace(/[\s\-\(\)]/g, "").replace(/^(\+?91|0)/, "") : "";
-}
-
-function normalizeEmail(email) {
-  return email ? email.trim().toLowerCase() : "";
-}
-
-function normalizeAddress(addr) {
-  return addr ? addr.trim().toLowerCase() : "";
-}
-
-function isConsistent(values, normalizer) {
-  if (values.length < 2) return false;
-  const normValues = values.map(normalizer).filter(Boolean);
-  return new Set(normValues).size === 1 && normValues.length >= 2;
-}
-
-// -------------------
-// Main Function
-// -------------------
-export default async function aioReadiness(html, robotsText) {
-  const $ = load(html); // ✅ FIXED usage
->>>>>>> 3a7b1e968aadb92816675e9c46dccf1f30d67e32
   const report = {};
 
   // -------------------
   // G1: Entity & Organization Clarity (4)
   // -------------------
-  const jsonLdScripts = $('script[type="application/ld+json"]')
-    .map((i, el) => {
-      try {
-        return JSON.parse($(el).html());
-      } catch {
-        return null;
-      }
+const jsonLdScripts = $('script[type="application/ld+json"]')
+  .map((i, el) => {
+    try {
+      return JSON.parse($(el).html());
+    } catch {
+      return null;
+    }
+  })
+  .get()
+  .filter(Boolean);
+
+const orgSchemas = jsonLdScripts.filter((s) => s["@type"] === "Organization");
+let orgFieldScore = 0;
+let orgValid = false;
+
+if (orgSchemas.length > 0) {
+  const fields = ["name", "logo", "url", "contactPoint", "address", "sameAs"];
+
+  // ✅ count fields in the best available org schema
+  const bestPercent = Math.max(
+    ...orgSchemas.map((schema) => {
+      const presentFields = fields.reduce(
+        (acc, f) => acc + (schema[f] ? 1 : 0),
+        0
+      );
+      return (presentFields / fields.length) * 100;
     })
-    .get()
-    .filter(Boolean);
-
-  const orgSchemas = jsonLdScripts.filter((s) => s["@type"] === "Organization");
-  let orgFieldScore = 0;
-  let orgValid = false;
-
-  if (orgSchemas.length > 0) {
-    const fields = ["name", "logo", "url", "contactPoint", "address", "sameAs"];
-
-    const bestPercent = Math.max(
-      ...orgSchemas.map((schema) => {
-        const presentFields = fields.reduce(
-          (acc, f) => acc + (schema[f] ? 1 : 0),
-          0
-        );
-        return (presentFields / fields.length) * 100;
-      })
-    );
-
-    orgFieldScore = normalizeScore(bestPercent, 2);
-    orgValid = bestPercent >= 60;
-  }
-
-  // -------------------
-  // Consistent NAP
-  // -------------------
-  const headerText = $("header").text() || "";
-  const footerText = $("footer").text() || "";
-  const bodyText = $("body").text() || "";
-
-  const phoneRegex = /\+?\d[\d\s\-()]{7,}/;
-  const emailRegex = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;
-  const addressRegex = /(street|st\.|road|rd\.|avenue|ave\.|blvd|building)/i;
-
-  const phones = [headerText, footerText, bodyText]
-    .map((t) => t.match(phoneRegex))
-    .filter(Boolean)
-    .map((m) => m[0]);
-
-  const emails = [headerText, footerText, bodyText]
-    .map((t) => t.match(emailRegex))
-    .filter(Boolean)
-    .map((m) => m[0]);
-
-  const addresses = [headerText, footerText, bodyText]
-    .map((t) => t.match(addressRegex))
-    .filter(Boolean)
-    .map((m) => m[0]);
-
-  let consistencyCount = 0;
-  if (isConsistent(phones, normalizePhone)) consistencyCount++;
-  if (isConsistent(emails, normalizeEmail)) consistencyCount++;
-  if (isConsistent(addresses, normalizeAddress)) consistencyCount++;
-
-  const napScore = normalizeScore((consistencyCount / 3) * 100, 1);
-
-  // -------------------
-  // Humans/Policies
-  // -------------------
-  const basePolicies = ["About", "Contact", "Privacy", "Terms"];
-  const ecommercePolicies = ["Returns", "Shipping"];
-  const policies = [...basePolicies, ...ecommercePolicies];
-
-  const bodyLower = bodyText.toLowerCase();
-  const policyPresent = policies.filter((p) =>
-    bodyLower.includes(p.toLowerCase())
-  ).length;
-
-  const policyScore = normalizeScore(
-    (policyPresent / policies.length) * 100,
-    1
   );
+
+  // ✅ weighted score (max = 2)
+  orgFieldScore = normalizeScore(bestPercent, 2);
+
+  // ✅ more lenient validity threshold (60% instead of 80%)
+  orgValid = bestPercent >= 60;
+}
+  // Consistent NAP
+// Extract different sections
+const headerText = $("header").text() || "";
+const footerText = $("footer").text() || "";
+const bodyText = $("body").text() || "";
+
+// Patterns
+const phoneRegex = /\+?\d[\d\s\-]{7,}/;
+const emailRegex = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;
+const addressRegex = /(street|st\.|road|rd\.|avenue|ave\.|blvd|building)/i;
+
+// Match values
+const phones = [headerText.match(phoneRegex), footerText.match(phoneRegex), bodyText.match(phoneRegex)].filter(Boolean).map(m => m[0]);
+const emails = [headerText.match(emailRegex), footerText.match(emailRegex), bodyText.match(emailRegex)].filter(Boolean).map(m => m[0]);
+const addresses = [headerText.match(addressRegex), footerText.match(addressRegex), bodyText.match(addressRegex)].filter(Boolean).map(m => m[0]);
+
+// Helper: check if value appears in at least 2 sections
+function isConsistent(values) {
+  return new Set(values).size === 1 && values.length >= 2; 
+}
+
+// Consistency count
+let consistencyCount = 0;
+if (isConsistent(phones)) consistencyCount++;
+if (isConsistent(emails)) consistencyCount++;
+if (isConsistent(addresses)) consistencyCount++;
+
+// Score scaled with weight = 1
+const napScore = normalizeScore((consistencyCount / 3) * 100, 1);
+
+  // Humans/Policies
+
+// Base policies for all sites
+const basePolicies = ["About", "Contact", "Privacy", "Terms"];
+
+// E-commerce policies (only if site is selling products)
+const ecommercePolicies = ["Returns", "Shipping"];
+
+// Combine policies (you could add a check like: if ($("body").text().match(/cart|checkout|product/i)) ...)
+const policies = [...basePolicies, ...ecommercePolicies];
+
+// Count matches
+const policyPresent = policies.filter((p) => bodyText.includes(p)).length;
+
+// Normalize (weight = 1)
+const policyScore = normalizeScore(
+  (policyPresent / policies.length) * 100,
+  1
+);
 
   // -------------------
   // G2: Content Answerability & Structure (3)
@@ -148,38 +115,26 @@ export default async function aioReadiness(html, robotsText) {
   const productSchemas = jsonLdScripts.filter((s) =>
     ["Product", "Vehicle", "Offer", "AggregateRating"].includes(s["@type"])
   );
-
-  let productPercent = 0;
-  let productValid = false;
-
-  if (productSchemas.length > 0) {
-    productPercent = 100;
-    // Require at least a name + price/offer for validity
-    productValid = productSchemas.some(
-      (s) => s.name && (s.offers || s.price)
-    );
-  }
-
+  const productPercent = productSchemas.length > 0 ? 100 : 0; // placeholder
   const productScore = normalizeScore(productPercent, 1.5);
+  const productValid = productPercent >= 70;
 
-  const hasFeed =
-    $('link[type="application/rss+xml"], link[type="application/atom+xml"], link[type="application/json"]').length >
-    0;
-  const feedScore = hasFeed ? 0.5 : 0;
+const hasFeed = $('link[type="application/rss+xml"], link[type="application/atom+xml"], link[type="application/json"]').length > 0;
+const feedScore = hasFeed ? 0.5 : 0; // weight 0.5
 
   // -------------------
   // G4: Crawl Friendliness (1)
   // -------------------
-  let robotsScore = 1;
-  let robotsOk = true;
-  try {
-    if (/Disallow:\s*\/\s*$/i.test(robotsText)) {
-      robotsScore = 0;
-      robotsOk = false;
-    }
-  } catch {
-    // assume OK if missing
+let robotsScore = 1;
+let robotsOk = true;
+try {
+  if (/Disallow:\s*\/\s*$/i.test(robotsText)) {
+    robotsScore = 0;
+    robotsOk = false;
   }
+} catch {
+  // if robots.txt missing, assume OK
+}
 
   // -------------------
   // Totals
@@ -202,13 +157,16 @@ export default async function aioReadiness(html, robotsText) {
   // Badge logic
   // -------------------
   const aioCompatible =
-    totalGScore >= 7.5 && orgValid && productValid && robotsOk
+    totalGScore >= 7.5 &&
+    orgValid &&
+    productValid &&
+    robotsOk
       ? "Yes"
       : "No";
 
   report.G = {
     orgFields: parseFloat(orgFieldScore.toFixed(2)),
-    napConsistency: parseFloat(napScore.toFixed(2)),
+    napConsistency: napScore,
     policies: parseFloat(policyScore.toFixed(2)),
     faqJsonLd: parseFloat(faqScore.toFixed(2)),
     sectionAnchors: parseFloat(tocScore.toFixed(2)),
