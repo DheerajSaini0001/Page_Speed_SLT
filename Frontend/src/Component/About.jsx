@@ -10,10 +10,10 @@ export default function About() {
     <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-black min-h-screen py-12 px-6">
       {/* Navbar */}
       <nav className="fixed top-0 left-0 w-full h-16 bg-gray-900 border-b border-gray-700 flex items-center justify-between px-6 z-50">
-        <div className="flex items-center gap-3 font-serif text-2xl md:text-3xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent">
+       <a href="/">  <div className="flex flex-col-rev justify-center items-center gap-4 font-serif text-4xl font-bold bg-gradient-to-r from-sky-200 via-rose-200 to-orange-200  bg-clip-text text-transparent">
           <img src={logo} alt="Site Audit Logo" className="h-12 w-12" />
           <span>Site Audits</span>
-        </div>
+        </div></a>
       </nav>
 
       {/* Main Content */}
