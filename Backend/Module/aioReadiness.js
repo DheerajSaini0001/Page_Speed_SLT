@@ -1,51 +1,5 @@
 const normalizeScore = (passRate, weight) => (passRate / 100) * weight;
 
-async function crawlDepthParallel(startUrl, maxDepth = 3, concurrency = 5) {
-  const visited = new Set([startUrl]);
-  let queue = [{ url: startUrl, depth: 0 }];
-  let withinLimit = 0,
-    total = 0;
-
-  const queueExecutor = new PQueue({ concurrency });
-
-  while (queue.length) {
-    const batch = queue.splice(0, concurrency);
-
-    await Promise.all(
-      batch.map((item) =>
-        queueExecutor.add(async () => {
-          const { url: current, depth } = item;
-          if (depth > maxDepth) return;
-
-          try {
-            const res = await axios.get(current);
-            const $ = cheerio.load(res.data);
-            total++;
-            if (depth <= maxDepth) withinLimit++;
-
-            $("a[href]").each((_, el) => {
-              const link = $(el).attr("href");
-              if (
-                link &&
-                !link.startsWith("mailto:") &&
-                !link.startsWith("javascript:")
-              ) {
-                const fullUrl = new URL(link, startUrl).href;
-                if (!visited.has(fullUrl) && fullUrl.startsWith(startUrl)) {
-                  visited.add(fullUrl);
-                  queue.push({ url: fullUrl, depth: depth + 1 });
-                }
-              }
-            });
-          } catch {}
-        })
-      )
-    );
-  }
-
-  return total ? (withinLimit / total) * 100 : 100;
-}
-
 export default async function aioReadiness($,robotsText) {
   const report = {};
 

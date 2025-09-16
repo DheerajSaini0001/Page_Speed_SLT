@@ -139,7 +139,7 @@ app.post('/data', async (req, res) => {
     
   
   const technicalReport = await technicalMetrics(url,data,$,robotsText);
-  const seoReport = await seoMetrics(url,htmlData,$);
+  const seoReport = await seoMetrics(url,$);
   const accessibilityReport = await accessibilityMetrics(url,page);
   const securityReport = await securityCompliance(url);
   const uxReport = await uxContentStructure(url,$,page);
