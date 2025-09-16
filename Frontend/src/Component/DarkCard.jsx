@@ -61,7 +61,7 @@ export default function DarkCard() {
         return false;
       }
     
-      if (inputValue.includes(".")) {
+      if (inputValue.includes(".").length===1) {
         return true;
       } else {
         alert("Invalid URL");
