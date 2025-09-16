@@ -102,7 +102,7 @@ export default function Sidebar({ children ,data}) {
            <a href={`${menuItems[7].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition hover:text-blue-500">{menuItems[7].icon} <pre> </pre> {menuItems[7].name} </a>
            <button
       onClick={() => downloadAsTxt(data)}
-      className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition hover:text-blue-500"
+      className="flex items-center space-x-3 p-4 w-full rounded-md hover:bg-gray-700 transition hover:text-blue-500"
     >
       <FileText className="w-5 h-5" />
       <pre> </pre>
