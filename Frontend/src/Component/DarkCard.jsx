@@ -65,7 +65,7 @@ export default function DarkCard() {
         )}
 
         {/* Logo / Title */}
-        <div className="flex flex-col-rev justify-center items-center gap-4 font-serif text-4xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent">
+        <div className="flex flex-col-rev justify-center items-center gap-4 font-serif text-4xl font-bold bg-gradient-to-r from-sky-200 via-rose-200 to-orange-200  bg-clip-text text-transparent">
           <div>
             <img src={logo} alt="" className="h-14" />
           </div>
