@@ -112,7 +112,7 @@ const renderData = (obj, parentKey = "") => {
       </div>
       <button
       onClick={() => downloadAsTxt(data)}
-      className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg shadow hover:bg-green-700"
+      className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg shadow hover:text-black hover:bg-green-700"
     >
       <FileText className="w-5 h-5" />
       Download TXT
