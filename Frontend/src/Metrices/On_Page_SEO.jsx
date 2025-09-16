@@ -36,7 +36,7 @@ const ScoreBadge = ({ score, out }) => (
         <h2 className="text-xl font-bold text-white mb-4">
           Essentials{" "}
           <span className="text-white">
-            ({data.jsonData?.B?.B1?.Total_Score_B1.toFixed(1) || 0} out of 12)
+            ({data.jsonData?.B?.B1?.Total_Score_B1.toFixed(1) || 0} out of 10)
           </span>
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
