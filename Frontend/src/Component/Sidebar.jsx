@@ -92,17 +92,17 @@ export default function Sidebar({ children ,data}) {
         {/* Menu */}
         <nav className="flex-1 p-2 space-y-2 overflow-y-auto ">
           
-           <a href={`${menuItems[0].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition">{menuItems[0].icon} <pre> </pre> {menuItems[0].name} </a>
-           <a href={`${menuItems[1].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition">{menuItems[1].icon} <pre> </pre> {menuItems[1].name} </a>
-           <a href={`${menuItems[2].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition">{menuItems[2].icon} <pre> </pre> {menuItems[2].name} </a>
-           <a href={`${menuItems[3].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition">{menuItems[3].icon} <pre> </pre> {menuItems[3].name} </a>
-           <a href={`${menuItems[4].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition">{menuItems[4].icon} <pre> </pre> {menuItems[4].name} </a>
-           <a href={`${menuItems[5].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition">{menuItems[5].icon} <pre> </pre> {menuItems[5].name} </a>
-           <a href={`${menuItems[6].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition">{menuItems[6].icon} <pre> </pre> {menuItems[6].name} </a>
-           <a href={`${menuItems[7].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition">{menuItems[7].icon} <pre> </pre> {menuItems[7].name} </a>
+           <a href={`${menuItems[0].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition hover:text-blue-500">{menuItems[0].icon} <pre> </pre> {menuItems[0].name} </a>
+           <a href={`${menuItems[1].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition hover:text-blue-500">{menuItems[1].icon} <pre> </pre> {menuItems[1].name} </a>
+           <a href={`${menuItems[2].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition hover:text-blue-500">{menuItems[2].icon} <pre> </pre> {menuItems[2].name} </a>
+           <a href={`${menuItems[3].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition hover:text-blue-500">{menuItems[3].icon} <pre> </pre> {menuItems[3].name} </a>
+           <a href={`${menuItems[4].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition hover:text-blue-500">{menuItems[4].icon} <pre> </pre> {menuItems[4].name} </a>
+           <a href={`${menuItems[5].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition hover:text-blue-500">{menuItems[5].icon} <pre> </pre> {menuItems[5].name} </a>
+           <a href={`${menuItems[6].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition hover:text-blue-500">{menuItems[6].icon} <pre> </pre> {menuItems[6].name} </a>
+           <a href={`${menuItems[7].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition hover:text-blue-500">{menuItems[7].icon} <pre> </pre> {menuItems[7].name} </a>
            <button
       onClick={() => downloadAsTxt(data)}
-      className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition"
+      className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition hover:text-blue-500"
     >
       <FileText className="w-5 h-5" />
       <pre> </pre>
