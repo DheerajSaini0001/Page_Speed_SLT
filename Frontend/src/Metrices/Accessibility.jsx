@@ -24,9 +24,9 @@ const ScoreBadge = ({ score, out }) => (
                  transition-all duration-300 m-4 flex flex-col items-center 
                  justify-start p-6 space-y-6"
     >
-      <h1 className="text-3xl font-extrabold text-amber-100 mb-6">
+      <h1 className="text-3xl font-extrabold text-white mb-6">
         Accessibility{" "}
-        <span className="text-gray-100">
+        <span className="text-white">
           ({data.jsonData?.C?.Accessibility_Score_Total.toFixed(1)} out of 12)
         </span>
       </h1>

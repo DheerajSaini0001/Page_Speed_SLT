@@ -75,7 +75,7 @@ console.log(data);
     URL - <a href={`${data.jsonData.URL}`} target="-blank" className="text-blue-400 hover:underline">{data.jsonData.URL}</a>
 
   </p>
- <a href="/"> <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition">
+ <a href="/"> <button class="bg-green-500 hover:bg-green-600 hover:text-black text-white font-semibold py-2 px-4 rounded-lg shadow-md transition">
     Check for Other
   </button></a>
 </div>

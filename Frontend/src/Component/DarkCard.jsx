@@ -19,25 +19,78 @@ export default function DarkCard() {
   const [result, setResult] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  // const handleClick = async (e) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+
+  //   try {
+  //     const response = await fetch("http://localhost:2000/data", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify([inputValue]),
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error(`Server error: ${response.status}`);
+  //     }
+
+  //     const result = await response.json();
+  //     setResult(result);
+  //     console.log(result);
+
+  //     setInputValue("");
+  //   } catch (error) {
+  //     alert("Error: " + error.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const handleClick = async (e) => {
     e.preventDefault();
     setLoading(true);
-
+  
+    // ✅ Validation function
+    const checkURL = () => {
+      if (!inputValue) {
+        alert("URL is empty");
+        return false;
+      }
+    
+      if (inputValue.includes(" ")) {
+        alert("Invalid URL: spaces are not allowed");
+        return false;
+      }
+    
+      if (inputValue.includes(".")) {
+        return true;
+      } else {
+        alert("Invalid URL");
+        return false;
+      }
+    };
+    
+  
+    // ✅ Stop execution if invalid
+    if (!inputValue || !checkURL()) {
+      setLoading(false);
+      return; 
+    }
+  
     try {
       const response = await fetch("http://localhost:2000/data", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify([inputValue]),
       });
-
+  
       if (!response.ok) {
         throw new Error(`Server error: ${response.status}`);
       }
-
+  
       const result = await response.json();
       setResult(result);
       console.log(result);
-
+  
       setInputValue("");
     } catch (error) {
       alert("Error: " + error.message);
@@ -45,7 +98,7 @@ export default function DarkCard() {
       setLoading(false);
     }
   };
-
+  
   return (
     <div className="scroll-smooth m-0 bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white overflow-x-hidden flex flex-col min-h-screen">
       {/* ✅ Navbar */}
@@ -65,7 +118,7 @@ export default function DarkCard() {
         )}
 
         {/* Logo / Title */}
-        <div className="flex flex-col-rev justify-center items-center gap-4 font-serif text-4xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent">
+        <div className="flex flex-col-rev justify-center items-center gap-4 font-serif text-4xl font-bold bg-gradient-to-r from-sky-200 via-rose-200 to-orange-200  bg-clip-text text-transparent">
           <div>
             <img src={logo} alt="" className="h-14" />
           </div>

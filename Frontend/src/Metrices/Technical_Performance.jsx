@@ -24,9 +24,9 @@ const ScoreBadge = ({ score, out }) => (
 
   return (
     <div id="TechnicalPerformance" className="min-h-fit pt-20 pb-16 bg-gray-900 border border-gray-700 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300  m-4 flex flex-col items-center justify-start p-6 space-y-6">
-      <h1 className="text-3xl font-extrabold text-amber-100 mb-6">
+      <h1 className="text-3xl font-extrabold text-white mb-6">
         Technical Performance{" "}
-        <span className="text-gray-100">
+        <span className="text-white">
           ({data.jsonData?.A?.Technical_Performance_Score_Total.toFixed(1)} out of 28)
         </span>
       </h1>

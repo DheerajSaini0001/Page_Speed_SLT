@@ -103,7 +103,7 @@ const renderData = (obj, parentKey = "") => {
                  shadow-lg hover:shadow-2xl transform hover:-translate-y-1 
                  transition-all duration-300 m-4 flex flex-col items-center 
                  justify-start p-6 space-y-6 ">
-     <h1 className="text-3xl font-extrabold text-amber-100 mb-6">
+     <h1 className="text-3xl font-extrabold text-white mb-6">
         Raw Data </h1>
 
       <div className="w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-indigo-500 bg-gradient-to-br from-blue-900 via-gray-900 to-black
@@ -112,7 +112,7 @@ const renderData = (obj, parentKey = "") => {
       </div>
       <button
       onClick={() => downloadAsTxt(data)}
-      className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg shadow hover:bg-green-700"
+      className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg shadow hover:text-black hover:bg-green-700"
     >
       <FileText className="w-5 h-5" />
       Download TXT
