@@ -86,7 +86,7 @@ export default function Sidebar({ children ,data}) {
       >
         {/* Logo */}
         <div className="  flex flex-col justify-center items-center text-2xl py-4 border-b border-gray-700">
-          <a href="#deshboard" className="text-4xl font-bold bg-gradient-to-r from-yellow-500 via-green-500 to-red-500 bg-clip-text text-transparent  ">Result</a>
+          <a href="#deshboard" className="text-4xl font-bold bg-green-600 ">Result</a>
         </div>
 
         {/* Menu */}
