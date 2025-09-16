@@ -58,8 +58,6 @@ function normalizeUrl(url) {
 function isValidCanonical(canonical, pageUrl) {
   const c = normalizeUrl(canonical);
   const p = normalizeUrl(pageUrl);
-  console.log(canonical,c,p);
-  
   return c && p && c === p;
 }
 

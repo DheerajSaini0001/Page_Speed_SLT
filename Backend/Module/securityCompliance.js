@@ -46,31 +46,39 @@ async function checkHSTS(headers) {
 
 // Security Headers (weight 3)
 async function checkSecurityHeaders(headers) {
-  const required = [
-    "content-security-policy",
-    "x-content-type-options",
-    "x-frame-options",
-    "cross-origin-opener-policy",
-    "referrer-policy",
+  // Required sets (X-Frame-Options OR COOP counts as one slot)
+  const groups = [
+    ["content-security-policy"],
+    ["x-content-type-options"],
+    ["referrer-policy"],
+    ["x-frame-options", "cross-origin-opener-policy"],
   ];
-  const present = required.filter(
-    h => headers[h] || (h === "x-frame-options" && headers["cross-origin-opener-policy"])
-  ).length;
 
-  return (present / required.length) * 3; // weight 3
+  let present = 0;
+
+  for (const group of groups) {
+    if (group.some(h => headers[h])) {
+      present++;
+    }
+  }
+
+  return (present / groups.length) * 3; // weight 3
 }
+
 
 // Cookie Banner & Consent (weight 1)
 async function checkCookieBanner(page) {
   try {
     const result = await page.evaluate(() => {
       return new Promise((resolve) => {
+        const keywords = [
+          "cookie", "consent", "privacy", "policy", "accept", "gdpr", "tracking"
+        ];
+
         const checkText = () => {
-          const bodyText = document.body.innerText.toLowerCase();
-          const popups = Array.from(document.querySelectorAll("div, section, dialog, cookie-banner"));
-          const popupText = popups.map(el => el.innerText.toLowerCase()).join(" ");
-          const text = bodyText + " " + popupText;
-          return text.includes("cookie") && (text.includes("consent") || text.includes("policy"));
+          const elements = Array.from(document.querySelectorAll("div, section, dialog, aside, footer, iframe, [role='dialog'], [class*='cookie'], [id*='cookie'], [class*='consent'], [id*='consent']"));
+          const combinedText = elements.map(el => el.innerText.toLowerCase()).join(" ");
+          return keywords.some(k => combinedText.includes(k));
         };
 
         if (checkText()) return resolve(1);
@@ -81,19 +89,23 @@ async function checkCookieBanner(page) {
             resolve(1);
           }
         });
+
         observer.observe(document.body, { childList: true, subtree: true });
 
+        // wait longer (10s) for dynamically loaded banners
         setTimeout(() => {
           observer.disconnect();
           resolve(0);
-        }, 5000); // wait 5 seconds for dynamic banners
+        }, 10000);
       });
     });
+
     return result;
-  } catch {
+  } catch (e) {
     return 0;
   }
 }
+
 
 // Custom Error Pages (weight 1)
 async function checkCustomErrorPage(page, url) {
