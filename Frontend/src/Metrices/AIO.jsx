@@ -28,7 +28,7 @@ const ScoreBadge = ({ score, out }) => (
           ({data.jsonData?.G?.AIO_Readiness_Score_Total} out of 10)
         </span>
       </h1>
-      <h1 className="text-3xl font-extrabold text-amber-100 mb-6">
+      <h1 className="text-3xl font-extrabold text-white mb-6">
         AIO Compatibility Badge -{" "}
         <span className="text-white">
           {data.jsonData?.G?.AIO_Compatibility_Badge}
