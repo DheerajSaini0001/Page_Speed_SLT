@@ -58,10 +58,12 @@ function normalizeUrl(url) {
 function isValidCanonical(canonical, pageUrl) {
   const c = normalizeUrl(canonical);
   const p = normalizeUrl(pageUrl);
+  console.log(canonical,c,p);
+  
   return c && p && c === p;
 }
 
-export default async function seoMetrics(url, htmlData, $, otherPages = [], duplicateTitles = new Set(), duplicateMeta = new Set()) {
+export default async function seoMetrics(url, $, otherPages = [], duplicateTitles = new Set(), duplicateMeta = new Set()) {
 
  // --- B1: Essentials ---
 const title = $("title").text().trim();
