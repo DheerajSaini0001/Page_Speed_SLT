@@ -1,118 +1,167 @@
-import axios from "axios";
+import puppeteer from "puppeteer-extra";
+import StealthPlugin from "puppeteer-extra-plugin-stealth";
 
-async function checkHTTPS(htmlData) {
-  try {
-    const mixedContent = htmlData.match(/http:\/\/[^"']+/gi);
-    return res.request.protocol === "https:" && (!mixedContent || mixedContent.length === 0) ? 1 : 0;
-  } catch {
-    return 0;
-  }
+puppeteer.use(StealthPlugin());
+
+// Simple wait function compatible with all Puppeteer versions
+async function wait(ms = 5000) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-// Helper to check HSTS header
-async function checkHSTS(html) {
-  try {
-    const hsts = html.headers["strict-transport-security"];
-    if (!hsts) return 0;
-    if (hsts.includes("preload")) return 1;
-    return 0.5;
-  } catch {
-    return 0;
-  }
-}
-
-// Helper to check security headers
-async function checkSecurityHeaders(html) {
-  try {
-    const headers = html.headers;
-    const requiredHeaders = [
-      "content-security-policy",
-      "x-content-type-options",
-      "x-frame-options",
-      "cross-origin-opener-policy",
-      "referrer-policy",
-    ];
-    const presentCount = requiredHeaders.filter((h) => headers[h]).length;
-    return (presentCount / requiredHeaders.length) * 3; // weight 3
-  } catch {
-    return 0;
-  }
-}
-
-async function checkCookieBanner(url,page) {
-      await page.goto(url, { waitUntil: "networkidle2" });
-  try {
-    // Look for common selectors/keywords
-    const cookieBanner = await page.evaluate(() => {
-      const text = document.body.innerText.toLowerCase();
-      return (
-        text.includes("cookie") &&
-        (text.includes("consent") || text.includes("policy"))
-      );
+// Collect headers from all network responses
+async function getAllHeaders(page) {
+  const headers = {};
+  page.on("response", async (response) => {
+    const h = response.headers();
+    Object.keys(h).forEach((k) => {
+      headers[k.toLowerCase()] = h[k];
     });
-
-    await browser.close();
-    return cookieBanner ? 1 : 0;
-  } catch {
-    return 0;
-  }
+  });
+  return headers;
 }
 
-async function checkCustomErrorPage(url) {
+// HTTPS & Mixed Content (weight 2)
+async function checkHTTPS(page) {
+  const url = page.url();
+  const isHTTPS = url.startsWith("https://") ? 1 : 0;
+
+  const mixedContent = await page.evaluate(() => {
+    const elements = Array.from(document.querySelectorAll("img, script, link, iframe"));
+    return elements.some(el => {
+      const src = el.src || el.href;
+      return src && src.startsWith("http://");
+    });
+  });
+
+  return isHTTPS && !mixedContent ? 1 : 0;
+}
+
+// HSTS (weight 1)
+async function checkHSTS(headers) {
+  const hsts = headers["strict-transport-security"];
+  if (!hsts) return 0;
+  if (hsts.includes("preload")) return 1;
+  return 0.5;
+}
+
+// Security Headers (weight 3)
+async function checkSecurityHeaders(headers) {
+  const required = [
+    "content-security-policy",
+    "x-content-type-options",
+    "x-frame-options",
+    "cross-origin-opener-policy",
+    "referrer-policy",
+  ];
+  const present = required.filter(
+    h => headers[h] || (h === "x-frame-options" && headers["cross-origin-opener-policy"])
+  ).length;
+
+  return (present / required.length) * 3; // weight 3
+}
+
+// Cookie Banner & Consent (weight 1)
+async function checkCookieBanner(page) {
   try {
-    // Add a fake path that likely doesn’t exist
-    const fakeUrl = url.replace(/\/$/, "") + "/nonexistent-" + Date.now();
-    const res = await axios.get(fakeUrl, { validateStatus: () => true });
+    const result = await page.evaluate(() => {
+      return new Promise((resolve) => {
+        const checkText = () => {
+          const bodyText = document.body.innerText.toLowerCase();
+          const popups = Array.from(document.querySelectorAll("div, section, dialog, cookie-banner"));
+          const popupText = popups.map(el => el.innerText.toLowerCase()).join(" ");
+          const text = bodyText + " " + popupText;
+          return text.includes("cookie") && (text.includes("consent") || text.includes("policy"));
+        };
 
-    if (res.status === 404 || res.status === 500) {
-      // Look for custom branding/HTML rather than default server text
-      const html = res.data.toLowerCase();
-      if (
-        html.includes("404") ||
-        html.includes("page not found") ||
-        html.includes("error")
-      ) {
-        return 1; // custom error page detected
-      }
-    }
+        if (checkText()) return resolve(1);
+
+        const observer = new MutationObserver(() => {
+          if (checkText()) {
+            observer.disconnect();
+            resolve(1);
+          }
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+
+        setTimeout(() => {
+          observer.disconnect();
+          resolve(0);
+        }, 5000); // wait 5 seconds for dynamic banners
+      });
+    });
+    return result;
+  } catch {
+    return 0;
+  }
+}
+
+// Custom Error Pages (weight 1)
+async function checkCustomErrorPage(page, url) {
+  try {
+    const fakeUrl = url.replace(/\/$/, "") + "/nonexistent-" + Date.now();
+    await page.goto(fakeUrl, { waitUntil: "networkidle2" });
+
+    // SPA redirect detected
+    if (page.url() !== fakeUrl) return 1;
+
+    const text = await page.evaluate(() => document.body.innerText.toLowerCase());
+    if (text.includes("404") || text.includes("error") || text.includes("not found")) return 1;
+
     return 0;
   } catch {
     return 0;
   }
 }
 
+// Main function: security compliance
+export default async function securityCompliance(url) {
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+  });
+  const page = await browser.newPage();
 
-export default async function securityCompliance(url,html,htmlData,page) {
-  const report = {};
+  // EU simulation for cookie banner detection
+  await page.setExtraHTTPHeaders({ "Accept-Language": "en-GB,en;q=0.9" });
+  await page.setGeolocation({ latitude: 48.8566, longitude: 2.3522 });
+  await page.setViewport({ width: 1200, height: 800 });
 
-  // Run all checks in parallel
+  const allHeaders = await getAllHeaders(page);
+
+  await page.goto(url, { waitUntil: "networkidle2" });
+  await wait(5000); // wait 5 seconds for all async requests
+
   const [
     httpsScore,
     hstsScore,
     headersScore,
     cookieBannerScore,
-    errorPageScore
+    errorPageScore,
   ] = await Promise.all([
-    checkHTTPS(htmlData),           // 1️⃣ HTTPS & mixed content
-    checkHSTS(html),            // 2️⃣ HSTS
-    checkSecurityHeaders(html), // 3️⃣ Security Headers
-    checkCookieBanner(url,page),    // 4️⃣ Cookie Banner & Consent
-    checkCustomErrorPage(url)  // 5️⃣ 404/500 custom error pages
+    checkHTTPS(page),
+    checkHSTS(allHeaders),
+    checkSecurityHeaders(allHeaders),
+    checkCookieBanner(page),
+    checkCustomErrorPage(page, url),
   ]);
 
-  report.D = {
-    httpsMixedContent: httpsScore * 2,
-    hsts: hstsScore * 1,
-    securityHeaders: parseFloat(headersScore.toFixed(2)),
-    cookieConsent: cookieBannerScore,
-    errorPages: errorPageScore,
-    totalDScore:
-      httpsScore * 2 +
-      hstsScore * 1 +
-      parseFloat(headersScore.toFixed(2)) +
-      cookieBannerScore +
-      errorPageScore,
-  };
+  await browser.close();
 
-  return report;
+  const totalDScore =
+    httpsScore * 2 +
+    hstsScore * 1 +
+    parseFloat(headersScore.toFixed(2)) +
+    cookieBannerScore * 1 +
+    errorPageScore * 1;
+
+  return {
+    D: {
+      httpsMixedContent: httpsScore * 2,
+      hsts: hstsScore * 1,
+      securityHeaders: parseFloat(headersScore.toFixed(2)),
+      cookieConsent: cookieBannerScore,
+      errorPages: errorPageScore,
+      totalDScore,
+    },
+  };
 }

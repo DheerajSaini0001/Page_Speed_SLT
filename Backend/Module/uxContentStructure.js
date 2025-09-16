@@ -1,164 +1,110 @@
-import PQueue from "p-queue";
+import puppeteer from "puppeteer";
+import { JSDOM } from "jsdom";
 
+// Helper: estimate readability using simple Flesch reading ease
+function estimateReadability(text) {
+  const words = text.split(/\s+/).length || 1;
+  const sentences = text.split(/[.!?]/).length || 1;
+  const syllables = text
+    .toLowerCase()
+    .split(/\s+/)
+    .reduce((sum, word) => {
+      const syl = word.replace(/[^aeiouy]/g, "").length || 1;
+      return sum + syl;
+    }, 0);
+  const flesch =
+    206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words);
+  return flesch;
+}
 
-const normalizeScore = (passRate, weight) => (passRate / 100) * weight;
+export default async function evaluateMobileUX(url) {
+  const browser = await puppeteer.launch({ headless: true });
+  const page = await browser.newPage();
+  await page.setViewport({ width: 375, height: 812, isMobile: true });
 
-async function crawlDepthParallel(startUrl, maxDepth = 3, concurrency = 5) {
-  const visited = new Set([startUrl]);
-  let queue = [{ url: startUrl, depth: 0 }];
-  let withinLimit = 0,
-    total = 0;
+  const scores = [0, 0, 0, 0, 0]; // [mobile, nav, CLS, readability, interstitials]
 
-  const queueExecutor = new PQueue({ concurrency });
+  try {
+    await page.goto(url, { waitUntil: "networkidle2" });
 
-  while (queue.length) {
-    const batch = queue.splice(0, concurrency);
+    // --- 1. Mobile Friendliness (weight 3) ---
+    const viewport = await page.$("meta[name=viewport]");
+    const fontSizePass = await page.evaluate(() => {
+      const el = document.querySelector("body");
+      const style = window.getComputedStyle(el);
+      return parseInt(style.fontSize) >= 16;
+    });
+    const tapTargetsPass = await page.evaluate(() => {
+      const buttons = Array.from(document.querySelectorAll("button,a"));
+      return buttons.every(
+        (b) => b.getBoundingClientRect().width >= 48 && b.getBoundingClientRect().height >= 48
+      );
+    });
+    scores[0] = viewport && fontSizePass && tapTargetsPass ? 3 : 0;
 
-    await Promise.all(
-      batch.map((item) =>
-        queueExecutor.add(async () => {
-          const { url: current, depth } = item;
-          if (depth > maxDepth) return;
+    // --- 2. Navigation Depth (weight 2) ---
+    const navScore = await page.evaluate(() => {
+      const navLinks = document.querySelectorAll("a");
+      return navLinks.length > 10 ? 2 : 1;
+    });
+    scores[1] = navScore;
 
-          try {
-            const res = await axios.get(current);
-            const $ = cheerio.load(res.data);
-            total++;
-            if (depth <= maxDepth) withinLimit++;
+    // --- 3. Layout Shift (CLS) (weight 2) ---
+    await page.evaluate(() => {
+      window.cumulativeLayoutShiftScore = 0;
+      new PerformanceObserver((list) => {
+        for (const entry of list.getEntries()) {
+          if (!entry.hadRecentInput) {
+            window.cumulativeLayoutShiftScore += entry.value;
+          }
+        }
+      }).observe({ type: "layout-shift", buffered: true });
+    });
 
-            $("a[href]").each((_, el) => {
-              const link = $(el).attr("href");
-              if (
-                link &&
-                !link.startsWith("mailto:") &&
-                !link.startsWith("javascript:")
-              ) {
-                const fullUrl = new URL(link, startUrl).href;
-                if (!visited.has(fullUrl) && fullUrl.startsWith(startUrl)) {
-                  visited.add(fullUrl);
-                  queue.push({ url: fullUrl, depth: depth + 1 });
-                }
-              }
-            });
-          } catch {}
-        })
+    // Wait 3 seconds (Promise-based instead of waitForTimeout)
+    await new Promise(resolve => setTimeout(resolve, 3000));
+
+    const cls = await page.evaluate(() => window.cumulativeLayoutShiftScore);
+    scores[2] = cls < 0.1 ? 2 : 1;
+
+    // --- 4. Readability (weight 2) ---
+    const html = await page.content();
+    const dom = new JSDOM(html);
+    const text = dom.window.document.body.textContent || "";
+    const readabilityScore = estimateReadability(text);
+    scores[3] = readabilityScore >= 40 && readabilityScore <= 70 ? 2 : 1;
+
+    // --- 5. Intrusive Interstitials (weight 1) ---
+    const interstitialScore = await page.evaluate(() => {
+      const overlays = Array.from(document.querySelectorAll("div,dialog"));
+      const vh = window.innerHeight;
+      const vw = window.innerWidth;
+      return overlays.some(
+        (o) =>
+          o.offsetHeight / vh > 0.5 &&
+          o.offsetWidth / vw > 0.5 &&
+          getComputedStyle(o).position === "fixed"
       )
-    );
+        ? 0
+        : 1;
+    });
+    scores[4] = interstitialScore;
+
+  } catch (err) {
+    console.error("Error evaluating UX:", err);
   }
 
-  return total ? (withinLimit / total) * 100 : 100;
-}
+  await browser.close();
 
-function fleschReadingEase(text) {
-  // Simple approximation: can be replaced with proper library
-  const words = text.split(/\s+/).length;
-  const sentences = text.split(/[.!?]/).length;
-  const syllables = text.split(/[aeiouy]+/gi).length - 1;
-  if (sentences === 0 || words === 0) return 0;
-  const score = 206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words);
-   return score;
-}
-
-export default async function uxContentStructure(url, $, page) {
+  // --- Prepare final report ---
   const report = {};
-
-  // Inject CLS observer
-  await page.evaluateOnNewDocument(() => {
-    window.__cls = 0;
-    new PerformanceObserver((list) => {
-      for (const entry of list.getEntries()) {
-        if (!entry.hadRecentInput) window.__cls += entry.value;
-      }
-    }).observe({ type: "layout-shift", buffered: true });
-  });
-
-  await page.goto(url, { waitUntil: "networkidle2" });
-
-  // --- 1️⃣ Mobile Friendliness ---
-  const mobileTask = (async () => {
-    const viewport = $("meta[name='viewport']").attr("content") ? 1 : 0;
-
-    const { avgFontSize, badTapTargets } = await page.evaluate(() => {
-      const elements = [...document.querySelectorAll("p,span,li,a")];
-      const sizes = elements.map(
-        (el) => parseFloat(window.getComputedStyle(el).fontSize) || 16
-      );
-      const avgFontSize = sizes.length
-        ? sizes.reduce((a, b) => a + b, 0) / sizes.length
-        : 16;
-
-      const links = [...document.querySelectorAll("a,button")];
-      const badTapTargets = links.filter((el) => {
-        const r = el.getBoundingClientRect();
-        return r.width < 48 || r.height < 48;
-      }).length;
-
-      return { avgFontSize, badTapTargets };
-    });
-
-    const fontCheck = avgFontSize >= 16 ? 1 : 0;
-    const tapTargetCheck = badTapTargets === 0 ? 1 : 0;
-    return viewport + fontCheck + tapTargetCheck >= 2 ? 3 : 0;
-  })();
-
-  // --- 2️⃣ Navigation Depth ---
-  const navTask = crawlDepthParallel(url, 3, 5).then((passRate) =>
-    normalizeScore(passRate, 2)
-  );
-
-  // --- 3️⃣ Layout Shift (CLS) ---
-  const clsTask = page.evaluate(() => window.__cls || 0).then((clsValue) => {
-    const passRate = clsValue < 0.1 ? 100 : clsValue < 0.25 ? 70 : 30;
-    return normalizeScore(passRate, 2);
-  });
-
-  // --- 4️⃣ Readability ---
-  const readabilityTask = (async () => {
-    const text = $("body").text();
-    const fleschScore = fleschReadingEase(text);
-    const passRate = Math.max(0, Math.min(100, 100 - Math.abs(fleschScore - 60)));
-    return normalizeScore(passRate, 2);
-  })();
-
-  // --- 5️⃣ Intrusive Interstitials ---
-  const interstitialTask = page.evaluate(() => {
-    const els = [...document.querySelectorAll("div,section,aside")];
-    return els.some((el) => {
-      const rect = el.getBoundingClientRect();
-      return rect.width > window.innerWidth * 0.9 && rect.height > window.innerHeight * 0.9;
-    });
-  }).then((hasOverlay) => (hasOverlay ? 0 : 1));
-
-  // --- Run all tasks in parallel ---
-  const [
-    mobileFriendlinessScore,
-    navigationDepthScore,
-    layoutShiftScore,
-    readabilityScore,
-    intrusiveInterstitialScore,
-  ] = await Promise.all([
-    mobileTask,
-    navTask,
-    clsTask,
-    readabilityTask,
-    interstitialTask,
-  ]);
-
   report.E = {
-    mobileFriendliness: mobileFriendlinessScore,
-    navigationDepth: parseFloat(navigationDepthScore.toFixed(2)),
-    layoutShift: parseFloat(layoutShiftScore.toFixed(2)),
-    readability: parseFloat(readabilityScore.toFixed(2)),
-    intrusiveInterstitials: intrusiveInterstitialScore,
-    totalEScore: parseFloat(
-      (
-        mobileFriendlinessScore +
-        navigationDepthScore +
-        layoutShiftScore +
-        readabilityScore +
-        intrusiveInterstitialScore
-      ).toFixed(2)
-    ),
+    mobileFriendliness: parseFloat(scores[0].toFixed(2)),
+    navigationDepth: parseFloat(scores[1].toFixed(2)),
+    layoutShift: parseFloat(scores[2].toFixed(2)),
+    readability: parseFloat(scores[3].toFixed(2)),
+    intrusiveInterstitials: parseFloat(scores[4].toFixed(2)),
+    totalEScore: parseFloat(scores.reduce((a, b) => a + b, 0).toFixed(2))
   };
 
   return report;
