@@ -26,7 +26,7 @@ const ScoreBadge = ({ score, out }) => (
       <h1 className="text-3xl font-extrabold text-white mb-6">
         Security/Compilance{" "}
         <span className="text-white">
-          ({data.jsonData?.D?.Security_or_Compliance_Score_Total.toFixed(1)} out of 8)
+          ({data.jsonData?.D?.Security_or_Compliance_Score_Total} out of 8)
         </span>
       </h1>
 
@@ -36,23 +36,23 @@ const ScoreBadge = ({ score, out }) => (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>HTTPS Score</span>
-            <ScoreBadge score={data.jsonData?.D.HTTPS_Score.toFixed(1) ?? 0} out={2} />
+            <ScoreBadge score={data.jsonData?.D.HTTPS_Score ?? 0} out={2} />
           </div>
           <div className="flex justify-between items-center">
             <span>HSTS Score</span>
-            <ScoreBadge score={data.jsonData?.D.HSTS_Score.toFixed(1) ?? 0} out={1} />
+            <ScoreBadge score={data.jsonData?.D.HSTS_Score ?? 0} out={1} />
           </div>
           <div className="flex justify-between items-center">
             <span>Security Headers Score</span>
-            <ScoreBadge score={data.jsonData?.D.Security_Headers_Score.toFixed(1) ?? 0} out={3} />
+            <ScoreBadge score={data.jsonData?.D.Security_Headers_Score ?? 0} out={3} />
           </div>
           <div className="flex justify-between items-center">
             <span>Cookie Banner & Consent Mode Score</span>
-            <ScoreBadge score={data.jsonData?.D.Cookie_Banner_and_Consent_Mode_Score.toFixed(1) ?? 0} out={1} />
+            <ScoreBadge score={data.jsonData?.D.Cookie_Banner_and_Consent_Mode_Score ?? 0} out={1} />
           </div>
           <div className="flex justify-between items-center">
             <span>404/500 handling Score</span>
-            <ScoreBadge score={data.jsonData?.D.Error_Pages_Score.toFixed(1) ?? 0} out={1} />
+            <ScoreBadge score={data.jsonData?.D.Error_Pages_Score ?? 0} out={1} />
           </div>
         </div>
       </div>

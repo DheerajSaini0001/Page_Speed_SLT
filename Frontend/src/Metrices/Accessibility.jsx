@@ -27,7 +27,7 @@ const ScoreBadge = ({ score, out }) => (
       <h1 className="text-3xl font-extrabold text-white mb-6">
         Accessibility{" "}
         <span className="text-white">
-          ({data.jsonData?.C?.Accessibility_Score_Total.toFixed(1)} out of 12)
+          ({data.jsonData?.C?.Accessibility_Score_Total} out of 12)
         </span>
       </h1>
 
@@ -39,23 +39,23 @@ const ScoreBadge = ({ score, out }) => (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>Color Contrast Score</span>
-            <ScoreBadge score={data.jsonData?.C.Color_Contrast_Score.toFixed(1) ?? 0} out={3} />
+            <ScoreBadge score={data.jsonData?.C.Color_Contrast_Score ?? 0} out={3} />
           </div>
           <div className="flex justify-between items-center">
             <span>Focusable/Keyboard Nav Score</span>
-            <ScoreBadge score={data.jsonData?.C.Focusable_Score.toFixed(1) ?? 0} out={3} />
+            <ScoreBadge score={data.jsonData?.C.Focusable_Score ?? 0} out={3} />
           </div>
           <div className="flex justify-between items-center">
             <span>ARIA/Labelling Score</span>
-            <ScoreBadge score={data.jsonData?.C.ARIA_Score.toFixed(1) ?? 0} out={3} />
+            <ScoreBadge score={data.jsonData?.C.ARIA_Score ?? 0} out={3} />
           </div>
           <div className="flex justify-between items-center">
             <span>Alt/Text Equivalents Score</span>
-            <ScoreBadge score={data.jsonData?.C.Alt_or_Text_Equivalents_Score.toFixed(1) ?? 0} out={2}/>
+            <ScoreBadge score={data.jsonData?.C.Alt_or_Text_Equivalents_Score ?? 0} out={2}/>
           </div>
           <div className="flex justify-between items-center">
             <span>Skip Links/Landmarks Score</span>
-            <ScoreBadge score={data.jsonData?.C.Skip_Links_or_Landmarks_Score.toFixed(1) ?? 0} out={1}/>
+            <ScoreBadge score={data.jsonData?.C.Skip_Links_or_Landmarks_Score ?? 0} out={1}/>
           </div>
         </div>
       </div>
