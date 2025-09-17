@@ -47,6 +47,8 @@ export default function DarkCard() {
   // };
   const handleClick = async (e) => {
     e.preventDefault();
+    console.log(inputValue);
+    
     setLoading(true);
   
     // ✅ Validation function
@@ -61,7 +63,7 @@ export default function DarkCard() {
         return false;
       }
     
-      if (inputValue.includes(".").length===1) {
+      if (inputValue.includes(".")) {
         return true;
       } else {
         alert("Invalid URL");
