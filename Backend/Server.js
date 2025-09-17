@@ -133,18 +133,13 @@ app.post('/data', async (req, res) => {
     const robotsRes = await axios.get(new URL("/robots.txt", url).href);
     const robotsText = robotsRes.data;
 
-    const browser = await puppeteer.launch({ headless: true });
-    const page = await browser.newPage();
-    // console.log(page);
-    
-  
   const technicalReport = await technicalMetrics(url,data,$,robotsText);
   const seoReport = await seoMetrics(url,$);
   const accessibilityReport = await accessibilityMetrics(url);
   const securityReport = await securityCompliance(url);
-  const uxReport = await uxContentStructure(url,$,page);
+  const uxReport = await uxContentStructure(url);
   const conversionReport = await conversionLeadFlow($);
-  const aioReport = await aioReadiness($,robotsText);
+  const aioReport = await aioReadiness(url,robotsText);
   // console.log("Technical Report:", technicalReport)
   // console.log("SEO Report (B1+B2+B3):", seoReport);
   // console.log("Accessibility C Section Report:", accessibilityReport);
@@ -152,7 +147,6 @@ app.post('/data', async (req, res) => {
   // console.log("UX & Content Structure E Section Report:", uxReport);
   // console.log("Conversion & Lead Flow F Section Report:", conversionReport);
   // console.log("AIO G Section Report:", aioReport);
-  await browser.close();
 
     const jsonData = {
       URL:url,

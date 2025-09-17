@@ -1,7 +1,21 @@
+import axios from "axios";
+import * as cheerio from "cheerio";
+
 const normalizeScore = (passRate, weight) => (passRate / 100) * weight;
 
-export default async function aioReadiness($,robotsText) {
+export default async function aioReadiness(url,robotsText) {
   const report = {};
+
+  const { data: html } = await axios.get(url, {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
+          "(KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"
+      }
+    });
+  const $ = cheerio.load(html);
 
   // -------------------
   // G1: Entity & Organization Clarity (4)
@@ -16,6 +30,7 @@ const jsonLdScripts = $('script[type="application/ld+json"]')
   })
   .get()
   .filter(Boolean);
+  
 
 const orgSchemas = jsonLdScripts.filter((s) => s["@type"] === "Organization");
 let orgFieldScore = 0;
@@ -37,39 +52,77 @@ if (orgSchemas.length > 0) {
 
   // ✅ weighted score (max = 2)
   orgFieldScore = normalizeScore(bestPercent, 2);
-
-  // ✅ more lenient validity threshold (60% instead of 80%)
-  orgValid = bestPercent >= 60;
 }
+
   // Consistent NAP
-// Extract different sections
 const headerText = $("header").text() || "";
 const footerText = $("footer").text() || "";
 const bodyText = $("body").text() || "";
 
 // Patterns
-const phoneRegex = /\+?\d[\d\s\-]{7,}/;
-const emailRegex = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;
-const addressRegex = /(street|st\.|road|rd\.|avenue|ave\.|blvd|building)/i;
+const phoneRegex = /\+?\d[\d\s\-]{7,}/g;
+const emailRegex = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi;
+const addressRegex = /(street|st\.|road|rd\.|avenue|ave\.|blvd|building)/gi;
 
-// Match values
-const phones = [headerText.match(phoneRegex), footerText.match(phoneRegex), bodyText.match(phoneRegex)].filter(Boolean).map(m => m[0]);
-const emails = [headerText.match(emailRegex), footerText.match(emailRegex), bodyText.match(emailRegex)].filter(Boolean).map(m => m[0]);
-const addresses = [headerText.match(addressRegex), footerText.match(addressRegex), bodyText.match(addressRegex)].filter(Boolean).map(m => m[0]);
+// Helper: normalize values
+function normalizePhone(phone) {
+  return phone.replace(/\D/g, ""); // remove non-digit characters
+}
+function normalizeEmail(email) {
+  return email.toLowerCase();
+}
+function normalizeAddress(addr) {
+  return addr.toLowerCase().replace(/\s+/g, " ").trim();
+}
 
-// Helper: check if value appears in at least 2 sections
-function isConsistent(values) {
-  return new Set(values).size === 1 && values.length >= 2; 
+// Match all values
+function matchAll(text, regex) {
+  return (text.match(regex) || []).map(m => m.trim());
+}
+
+const phones = [
+  ...matchAll(headerText, phoneRegex),
+  ...matchAll(footerText, phoneRegex),
+  ...matchAll(bodyText, phoneRegex)
+];
+
+const emails = [
+  ...matchAll(headerText, emailRegex),
+  ...matchAll(footerText, emailRegex),
+  ...matchAll(bodyText, emailRegex)
+];
+
+const addresses = [
+  ...matchAll(headerText, addressRegex),
+  ...matchAll(footerText, addressRegex),
+  ...matchAll(bodyText, addressRegex)
+];
+// Check consistency: appears in at least 2 sections after normalization
+function isConsistent(values, type) {
+  if (values.length < 2) return false;
+
+  let normalized;
+  if (type === "phone") normalized = values.map(normalizePhone);
+  else if (type === "email") normalized = values.map(normalizeEmail);
+  else if (type === "address") normalized = values.map(normalizeAddress);
+  else normalized = values;
+
+  // Count each unique value
+  const counts = {};
+  normalized.forEach(v => counts[v] = (counts[v] || 0) + 1);
+
+  // Consistent if any normalized value appears at least twice
+  return Object.values(counts).some(c => c >= 2);
 }
 
 // Consistency count
 let consistencyCount = 0;
-if (isConsistent(phones)) consistencyCount++;
-if (isConsistent(emails)) consistencyCount++;
-if (isConsistent(addresses)) consistencyCount++;
+if (isConsistent(phones, "phone")) consistencyCount++;
+if (isConsistent(emails, "email")) consistencyCount++;
+if (isConsistent(addresses, "address")) consistencyCount++;
 
-// Score scaled with weight = 1
-const napScore = normalizeScore((consistencyCount / 3) * 100, 1);
+const napScore = (consistencyCount / 3)
+
 
   // Humans/Policies
 
@@ -79,17 +132,20 @@ const basePolicies = ["About", "Contact", "Privacy", "Terms"];
 // E-commerce policies (only if site is selling products)
 const ecommercePolicies = ["Returns", "Shipping"];
 
-// Combine policies (you could add a check like: if ($("body").text().match(/cart|checkout|product/i)) ...)
-const policies = [...basePolicies, ...ecommercePolicies];
+  // Detect if site is e-commerce
+  const isEcommerce = /cart|checkout|product/i.test(bodyText);
 
-// Count matches
-const policyPresent = policies.filter((p) => bodyText.includes(p)).length;
+ // Combine policies based on type of site
+  const policies = isEcommerce ? [...basePolicies, ...ecommercePolicies] : [...basePolicies];
+
+ // Count policies present (case-insensitive)
+  const policyPresent = policies.filter(p =>
+    bodyText.toLowerCase().includes(p.toLowerCase())
+  ).length;
 
 // Normalize (weight = 1)
-const policyScore = normalizeScore(
-  (policyPresent / policies.length) * 100,
-  1
-);
+const policyScore = (policyPresent / policies.length)
+
 
   // -------------------
   // G2: Content Answerability & Structure (3)
@@ -97,7 +153,9 @@ const policyScore = normalizeScore(
   const faqSchemas = jsonLdScripts.filter(
     (s) => s["@type"] === "FAQPage" || s["@type"] === "HowTo"
   );
+
   const faqScore = normalizeScore(faqSchemas.length ? 100 : 0, 1.5);
+
 
   const headingsWithId = $("h1[id],h2[id],h3[id]").length;
   const headingsTotal = $("h1,h2,h3").length || 1;
@@ -108,6 +166,7 @@ const policyScore = normalizeScore(
 
   const imgWithFigcaption = $("figure figcaption").length;
   const mediaScore = normalizeScore(imgWithFigcaption ? 100 : 0, 0.5);
+  
 
   // -------------------
   // G3: Product/Inventory Schema & Feeds (2)
@@ -117,7 +176,7 @@ const policyScore = normalizeScore(
   );
   const productPercent = productSchemas.length > 0 ? 100 : 0; // placeholder
   const productScore = normalizeScore(productPercent, 1.5);
-  const productValid = productPercent >= 70;
+
 
 const hasFeed = $('link[type="application/rss+xml"], link[type="application/atom+xml"], link[type="application/json"]').length > 0;
 const feedScore = hasFeed ? 0.5 : 0; // weight 0.5
