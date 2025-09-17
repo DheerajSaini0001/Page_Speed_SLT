@@ -1,11 +1,14 @@
 import AxePuppeteer from "@axe-core/puppeteer";
+import puppeteer from "puppeteer";
 
-export default async function accessibilityMetrics(url, page) {
+export default async function accessibilityMetrics(url) {
   const report = {};
 
+  const browser = await puppeteer.launch({ headless: true });
+  const page = await browser.newPage();
   // --- Ensure page is fully loaded ---
   await page.goto(url, { waitUntil: "networkidle0" }); // wait until no network requests
-  await page.waitForSelector('body', { timeout: 10000 }); // wait for body element
+  // await page.waitForSelector('body', { timeout: 10000 }); // wait for body element
 
   // --- Run axe-core audit safely ---
   let results;
@@ -47,6 +50,7 @@ export default async function accessibilityMetrics(url, page) {
   ]); // ARIA/Labels
   const TX = calculatePassRate(results, ["image-alt"]); // Alt/text equivalents
   const SL = await hasSkipLinksOrLandmarks(page); // Skip links / landmarks
+  await browser.close();
 
   // --- Weighted scoring ---
   const score = (CC * 3) + (KN * 3) + (AL * 3) + (TX * 2) + (SL * 1);

@@ -140,7 +140,7 @@ app.post('/data', async (req, res) => {
   
   const technicalReport = await technicalMetrics(url,data,$,robotsText);
   const seoReport = await seoMetrics(url,$);
-  const accessibilityReport = await accessibilityMetrics(url,page);
+  const accessibilityReport = await accessibilityMetrics(url);
   const securityReport = await securityCompliance(url);
   const uxReport = await uxContentStructure(url,$,page);
   const conversionReport = await conversionLeadFlow($);
