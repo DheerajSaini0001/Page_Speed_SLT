@@ -29,6 +29,7 @@ try {
     const hasGlobalDisallow = /Disallow:\s*\/\s*$/mi.test(robotsText);
     robotsScore = !hasGlobalDisallow ? 1 : 0;
   } else {
+    
     robotsScore = 0; // robots.txt missing or unparsable
   }
 } catch {
@@ -114,27 +115,27 @@ totalScore_A3 += redirectScore * 2;
   const httpscore = (data?.lighthouseResult?.audits?.["uses-http2"]?.score || 1 )*1
   const total_A2 = ttfbScore + compressionScore + cachingscore + httpscore
 
-  const total = total_A1 + total_A2 + totalScore_A3
+  const total = parseFloat(((total_A1 + total_A2 + totalScore_A3).toFixed(2)))
   // const colorContrastScore = audits["color-contrast"]?.score
   // const ariaRolesScore = audits["aria-roles"]?.score
   // const labelsScore = audits["label"]?.score
 
   // --- Return all scores ---
   return {
-    lcpScore:lcpScore,
-    clsScore:clsScore,
-    inpScore:inpScore,
-    total_A1:total_A1,
-    ttfbScore:ttfbScore,
-    compressionScore:compressionScore,
-    cachingscore:cachingscore,
-    httpscore:httpscore,
-    total_A2:total_A2,
-    sitemapScore: sitemapScore * 2,
-    robotsScore: robotsScore * 2,
-    brokenLinksScore: brokenScore * 2,
-    redirectChainsScore: redirectScore * 2,
-    totalScore_A3: totalScore_A3,
+    lcpScore:parseFloat(lcpScore.toFixed(2)),
+    clsScore:parseFloat(clsScore.toFixed(2)),
+    inpScore:parseFloat(inpScore.toFixed(2)),
+    total_A1:parseFloat(total_A1.toFixed(2)),
+    ttfbScore:parseFloat(ttfbScore.toFixed(2)),
+    compressionScore:parseFloat(compressionScore.toFixed(2)),
+    cachingscore:parseFloat(cachingscore.toFixed(2)),
+    httpscore:parseFloat(httpscore.toFixed(2)),
+    total_A2:parseFloat(total_A2.toFixed(2)),
+    sitemapScore: parseFloat((sitemapScore.toFixed(2))*2),
+    robotsScore: parseFloat((robotsScore.toFixed(2))*2),
+    brokenLinksScore: parseFloat((brokenScore.toFixed(2))*2),
+    redirectChainsScore: parseFloat((redirectScore.toFixed(2))*2),
+    totalScore_A3: parseFloat((totalScore_A3.toFixed(2))),
     totalScore: total
   };
 }

@@ -81,11 +81,11 @@ const h1Score =
   h1Count === 1 && h1Text.length > 0 ? 3 : 0; // weight 3
 
 const B1 = {
-  title: titleScore,
-  metaDescription: metaScore,
-  canonical: canonicalScore,
-  h1: h1Score,
-  total: titleScore + metaScore + canonicalScore + h1Score, // max 10
+  title: parseFloat(titleScore.toFixed(2)),
+  metaDescription: parseFloat(metaScore.toFixed(2)),
+  canonical: parseFloat(canonicalScore.toFixed(2)),
+  h1: parseFloat(h1Score.toFixed(2)),
+  total: parseFloat((titleScore + metaScore + canonicalScore + h1Score).toFixed(2)), // max 10
 };
 
 // --- B2: Media & Semantics ---
@@ -131,13 +131,13 @@ const links = $("a").toArray();
 const goodLinks = links.filter(
   (a) => !["click here", "read more"].includes($(a).text().toLowerCase().trim())
 );
-const linkScore = ((goodLinks.length / (links.length || 1)) * 1).toFixed(2); // weight 1
+const linkScore = ((goodLinks.length / (links.length || 1)) * 1); // weight 1
 
 const B2 = {
-  imageAlt: parseFloat(imageAltScore),
-  headingHierarchy: hierarchyScore,
-  descriptiveLinks: parseFloat(linkScore),
-  total: parseFloat(imageAltScore) + hierarchyScore + parseFloat(linkScore), // max 6
+  imageAlt: parseFloat(imageAltScore.toFixed(2)),
+  headingHierarchy: parseFloat(hierarchyScore.toFixed(2)),
+  descriptiveLinks: parseFloat(linkScore.toFixed(2)),
+  total: parseFloat((imageAltScore + hierarchyScore + linkScore).toFixed(2)), // max 6
 };
 
   // --- B3: Structure & Uniqueness ---
@@ -162,13 +162,13 @@ const dupScore = calcDupScore(duplicatePercent);
   const paginationScore = $("link[rel='next'], link[rel='prev']").length ? 1 : 0; // weight 1
 
   const B3 = {
-    urlSlugs: urlSlugScore,
-    duplicateContent: dupScore,
-    pagination: paginationScore,
-    total: urlSlugScore + dupScore + paginationScore,
+    urlSlugs: parseFloat(urlSlugScore.toFixed(2)),
+    duplicateContent: parseFloat(dupScore.toFixed(2)),
+    pagination: parseFloat(paginationScore.toFixed(2)),
+    total: parseFloat((urlSlugScore + dupScore + paginationScore).toFixed(2)),
   };
 
-  const totalSEO = B1.total + B2.total + B3.total;
+  const totalSEO = parseFloat((B1.total + B2.total + B3.total.toFixed(2)));
 
   return {
     B1,

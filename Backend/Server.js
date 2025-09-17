@@ -233,18 +233,18 @@ app.post('/data', async (req, res) => {
           Organization_JSON_LD_Score:aioReport.G.orgFields,
           Consistent_NAP_Score:aioReport.G.napConsistency,
           Humans_or_Policies_Score:aioReport.G.policies,
-          Total_Score_G1:aioReport.G.orgFields + aioReport.G.napConsistency + aioReport.G.policies
+          Total_Score_G1:aioReport.G.totalG1
         },
         G2:{
           FAQ_or_How_To_JSON_LD_Score:aioReport.G.faqJsonLd,
           Section_Anchors_or_TOC_Score:aioReport.G.sectionAnchors,
           Descriptive_Media_Captions_or_Figcaptions_Score:aioReport.G.mediaCaptions,
-          Total_Score_G2: aioReport.G.faqJsonLd + aioReport.G.sectionAnchors + aioReport.G.mediaCaptions
+          Total_Score_G2: aioReport.G.totalG2
         },
         G3:{
           Correct_Schema_Types_Score:aioReport.G.productSchemas,
           Feed_Availability_Score:aioReport.G.feedAvailability,
-          Total_Score_G3: aioReport.G.productSchemas + aioReport.G.feedAvailability
+          Total_Score_G3: aioReport.G.totalG3
         },
         G4:{
           Robots_Allowlist_Score: aioReport.G.crawlFriendliness,

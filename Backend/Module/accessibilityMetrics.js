@@ -61,7 +61,7 @@ export default async function accessibilityMetrics(url) {
     keyboardNavigation: parseFloat(KN.toFixed(2)) * 3,
     ariaLabeling: parseFloat(AL.toFixed(2)) * 3,
     altTextEquivalents: parseFloat(TX.toFixed(2)) * 2,
-    skipLinksLandmarks: SL,
+    skipLinksLandmarks: parseFloat(SL.toFixed(2)),
     totalCScore: parseFloat(score.toFixed(2)),
   };
 

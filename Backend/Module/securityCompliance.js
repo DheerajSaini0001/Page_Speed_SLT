@@ -168,11 +168,11 @@ export default async function securityCompliance(url) {
 
   return {
     D: {
-      httpsMixedContent: httpsScore * 2,
-      hsts: hstsScore * 1,
+      httpsMixedContent: parseFloat(httpsScore.toFixed(2)*2),
+      hsts: parseFloat(hstsScore.toFixed(2)),
       securityHeaders: parseFloat(headersScore.toFixed(2)),
-      cookieConsent: cookieBannerScore,
-      errorPages: errorPageScore,
+      cookieConsent: parseFloat(cookieBannerScore.toFixed(2)),
+      errorPages: parseFloat(errorPageScore.toFixed(2)),
       totalDScore,
     },
   };

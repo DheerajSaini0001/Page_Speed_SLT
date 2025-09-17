@@ -225,14 +225,17 @@ try {
 
   report.G = {
     orgFields: parseFloat(orgFieldScore.toFixed(2)),
-    napConsistency: napScore,
+    napConsistency: parseFloat(napScore.toFixed(2)),
     policies: parseFloat(policyScore.toFixed(2)),
+    totalG1: parseFloat((orgFieldScore + napScore + policyScore).toFixed(2)),
     faqJsonLd: parseFloat(faqScore.toFixed(2)),
     sectionAnchors: parseFloat(tocScore.toFixed(2)),
     mediaCaptions: parseFloat(mediaScore.toFixed(2)),
+    totalG2: parseFloat((faqScore + tocScore + mediaScore).toFixed(2)),
     productSchemas: parseFloat(productScore.toFixed(2)),
-    feedAvailability: feedScore,
-    crawlFriendliness: robotsScore,
+    feedAvailability: parseFloat(feedScore.toFixed(2)),
+    totalG3: parseFloat((productScore + feedScore).toFixed(2)),
+    crawlFriendliness: parseFloat(robotsScore.toFixed(2)),
     totalGScore,
     aioCompatibleBadge: aioCompatible,
   };
