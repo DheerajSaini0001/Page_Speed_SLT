@@ -22,13 +22,13 @@ const API_KEY = 'AIzaSyCww7MhvCEUmHhlACNBqfbzL5PUraT8lkk';
 
 function calculateFinalScore(jsonData) {
   // Section totals
-  const totalA = jsonData.A.Technical_Performance_Score_Total || 0;
-  const totalB = jsonData.B.On_Page_SEO_Score_Total || 0;
-  const totalC = jsonData.C.Accessibility_Score_Total || 0;
-  const totalD = jsonData.D.Security_or_Compliance_Score_Total || 0;
-  const totalE = jsonData.E.UX_and_Content_Structure_Score_Total || 0;
-  const totalF = jsonData.F.Conversion_and_Lead_Flow_Score_Total || 0;
-  const totalG = jsonData.G.AIO_Readiness_Score_Total || 0;
+  const totalA = jsonData.Technical_Performance.Technical_Performance_Score_Total || 0;
+  const totalB = jsonData.On_Page_SEO.On_Page_SEO_Score_Total || 0;
+  const totalC = jsonData.Accessibility.Accessibility_Score_Total || 0;
+  const totalD = jsonData.Security_or_Compliance.Security_or_Compliance_Score_Total || 0;
+  const totalE = jsonData.UX_and_Content_Structure.UX_and_Content_Structure_Score_Total || 0;
+  const totalF = jsonData.Conversion_and_Lead_Flow.Conversion_and_Lead_Flow_Score_Total || 0;
+  const totalG = jsonData.AIO_Readiness.AIO_Readiness_Score_Total || 0;
 
   const scores = [
   { name: "Technical Performance", score: totalA },
@@ -99,7 +99,7 @@ if (totalG < 6) {
       F: totalF,
       G: totalG
     },
-    badge: jsonData.G.AIO_Compatibility_Badge,
+    badge: jsonData.AIO_Readiness.AIO_Compatibility_Badge,
     topFixes,
     recommendations
   };
@@ -148,23 +148,23 @@ app.post('/data', async (req, res) => {
   // console.log("Conversion & Lead Flow F Section Report:", conversionReport);
   // console.log("AIO G Section Report:", aioReport);
 
-    const jsonData = {
+    const Metrices = {
       URL:url,
-      A:{
-        A1:{
+      Technical_Performance:{
+        Core_Web_Vitals:{
           LCP_Score:technicalReport.lcpScore,
           CLS_Score:technicalReport.clsScore,
           INP_Score:technicalReport.inpScore,
           Total_Score_A1:technicalReport.total_A1
         },
-        A2:{
+        Delivery_and_Render:{
           TTFB_Score:technicalReport.ttfbScore,
           Compression_Score:technicalReport.compressionScore,
           Caching_Score:technicalReport.cachingscore,
           HTTP_Score:technicalReport.httpscore,
           Total_Score_A2:technicalReport.total_A2
         },
-        A3:{
+        Crawlability_and_Hygiene:{
           Sitemap_Score:technicalReport.sitemapScore,
           Robots_Score:technicalReport.robotsScore,
           Broken_Links_Score:technicalReport.brokenLinksScore,
@@ -173,21 +173,21 @@ app.post('/data', async (req, res) => {
         },
         Technical_Performance_Score_Total:technicalReport.totalScore
       },
-      B:{
-        B1:{
+       On_Page_SEO:{
+        Essentials:{
           Unique_Title_Score:seoReport.B1.title,
           Meta_Description_Score:seoReport.B1.metaDescription,
           Canonical_Score:seoReport.B1.canonical,
           H1_Score:seoReport.B1.h1,
           Total_Score_B1:seoReport.B1.total
         },
-        B2:{
+        Media_and_Semantics:{
           Image_ALT_Score:seoReport.B2.imageAlt,
           Heading_Hierarchy_Score:seoReport.B2.headingHierarchy,
           Descriptive_Links_Score:seoReport.B2.descriptiveLinks,
           Total_Score_B2:seoReport.B2.total
         },
-        B3:{
+        Structure_and_Uniqueness:{
           URL_Slugs_Score:seoReport.B3.urlSlugs,
           Duplicate_Content_Score:seoReport.B3.duplicateContent,
           Pagination_Tags_Score:seoReport.B3.pagination,
@@ -195,7 +195,7 @@ app.post('/data', async (req, res) => {
         },
         On_Page_SEO_Score_Total:seoReport.B1.total + seoReport.B2.total + seoReport.B3.total
       },
-      C:{
+      Accessibility:{
         Color_Contrast_Score:accessibilityReport.C.colorContrast,
         Focusable_Score:accessibilityReport.C.keyboardNavigation,
         ARIA_Score:accessibilityReport.C.ariaLabeling,
@@ -203,7 +203,7 @@ app.post('/data', async (req, res) => {
         Skip_Links_or_Landmarks_Score:accessibilityReport.C.skipLinksLandmarks,
         Accessibility_Score_Total:accessibilityReport.C.totalCScore
       },
-      D:{
+      Security_or_Compliance:{
         HTTPS_Score:securityReport.D.httpsMixedContent,
         HSTS_Score:securityReport.D.hsts,
         Security_Headers_Score:securityReport.D.securityHeaders,
@@ -211,7 +211,7 @@ app.post('/data', async (req, res) => {
         Error_Pages_Score:securityReport.D.errorPages,
         Security_or_Compliance_Score_Total:securityReport.D.totalDScore
       },
-      E:{
+      UX_and_Content_Structure:{
         Mobile_Friendliness_Score:uxReport.E.mobileFriendliness,
         Navigation_Depth_Score:uxReport.E.navigationDepth,
         Layout_Shift_On_interactions_Score:uxReport.E.layoutShift,
@@ -219,7 +219,7 @@ app.post('/data', async (req, res) => {
         Intrusive_Interstitials_Score:uxReport.E.intrusiveInterstitials,
         UX_and_Content_Structure_Score_Total:uxReport.E.totalEScore
       },
-      F:{
+      Conversion_and_Lead_Flow:{
         Primary_CTAs_Score:conversionReport.F.primaryCTA,
         Forms_Score:conversionReport.F.forms,
         Thank_You_or_Success_State_Score:conversionReport.F.thankYouState,
@@ -228,25 +228,25 @@ app.post('/data', async (req, res) => {
         Load_On_CRM_or_Webhook_Score:conversionReport.F.crmWebhook,
         Conversion_and_Lead_Flow_Score_Total:conversionReport.F.totalFScore
       },
-      G:{
-        G1:{
+      AIO_Readiness:{
+        Entity_and_Organization_Clarity:{
           Organization_JSON_LD_Score:aioReport.G.orgFields,
           Consistent_NAP_Score:aioReport.G.napConsistency,
           Humans_or_Policies_Score:aioReport.G.policies,
           Total_Score_G1:aioReport.G.totalG1
         },
-        G2:{
+        Content_Answerability_and_Structure:{
           FAQ_or_How_To_JSON_LD_Score:aioReport.G.faqJsonLd,
           Section_Anchors_or_TOC_Score:aioReport.G.sectionAnchors,
           Descriptive_Media_Captions_or_Figcaptions_Score:aioReport.G.mediaCaptions,
           Total_Score_G2: aioReport.G.totalG2
         },
-        G3:{
+         Product_or_Inventory_Schema_and_Feeds:{
           Correct_Schema_Types_Score:aioReport.G.productSchemas,
           Feed_Availability_Score:aioReport.G.feedAvailability,
           Total_Score_G3: aioReport.G.totalG3
         },
-        G4:{
+         Crawl_Friendliness_for_Knowledge_Agents:{
           Robots_Allowlist_Score: aioReport.G.crawlFriendliness,
           Total_Score_G4: aioReport.G.crawlFriendliness
         },
@@ -254,10 +254,10 @@ app.post('/data', async (req, res) => {
         AIO_Compatibility_Badge: aioReport.G.aioCompatibleBadge
       }
     }
-  const result = calculateFinalScore(jsonData);
-  res.json({jsonData,result});
-  console.log(jsonData);
-  console.log(result);
+  const Overall_Data = calculateFinalScore(Metrices);
+  res.json({Metrices,Overall_Data});
+  console.log(Metrices);
+  console.log(Overall_Data);
     
   } catch (error) {
     console.error("Error fetching PageSpeed data:", error);
