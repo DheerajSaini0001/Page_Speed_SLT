@@ -2,7 +2,7 @@ import React from 'react';
 
 
 export default function UX_Content_Structure({ data }) {
-  if (!data || !data.jsonData) {
+  if (!data || !data.Metrices) {
     return (
       <div >
      
@@ -26,7 +26,7 @@ const ScoreBadge = ({ score, out }) => (
       <h1 className="text-3xl font-extrabold text-white mb-6">
         UX Content Structure{" "}
         <span className="text-white">
-          ({data.jsonData?.E?.UX_and_Content_Structure_Score_Total} out of 10)
+          ({data.Metrices?.UX_and_Content_Structure?.UX_and_Content_Structure_Score_Total} out of 10)
         </span>
       </h1>
 
@@ -36,23 +36,23 @@ const ScoreBadge = ({ score, out }) => (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>Mobile Friendliness Score</span>
-            <ScoreBadge score={data.jsonData?.E.Mobile_Friendliness_Score ?? 0} out={3} />
+            <ScoreBadge score={data.Metrices?.UX_and_Content_Structure.Mobile_Friendliness_Score ?? 0} out={3} />
           </div>
           <div className="flex justify-between items-center">
             <span>Navigation Depth Score</span>
-            <ScoreBadge score={data.jsonData?.E.Navigation_Depth_Score ?? 0} out={2} />
+            <ScoreBadge score={data.Metrices?.UX_and_Content_Structure.Navigation_Depth_Score ?? 0} out={2} />
           </div>
           <div className="flex justify-between items-center">
             <span>Layout Shift On interactions Score</span>
-            <ScoreBadge score={data.jsonData?.E.Layout_Shift_On_interactions_Score ?? 0} out={2} />
+            <ScoreBadge score={data.Metrices?.UX_and_Content_Structure.Layout_Shift_On_interactions_Score ?? 0} out={2} />
           </div>
           <div className="flex justify-between items-center">
             <span>Readability Score</span>
-            <ScoreBadge score={data.jsonData?.E.Readability_Score ?? 0} out={2} />
+            <ScoreBadge score={data.Metrices?.UX_and_Content_Structure.Readability_Score ?? 0} out={2} />
           </div>
           <div className="flex justify-between items-center">
             <span>Intrusive Interstitials Score</span>
-            <ScoreBadge score={data.jsonData?.E.Intrusive_Interstitials_Score ?? 0} out={1} />
+            <ScoreBadge score={data.Metrices?.UX_and_Content_Structure.Intrusive_Interstitials_Score ?? 0} out={1} />
           </div>
         </div>
       </div>

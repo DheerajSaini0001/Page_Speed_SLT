@@ -15,17 +15,15 @@ import CircularProgress from "./CircularProgress";
 
 export default function Dashboard2({ data }) {
 
-  if (!data || !data.result) return <div />;
+  if (!data || !data.Overall_Data) return <div />;
 
 
-  if (!data || !data.result) {
+  if (!data || !data.Overall_Data) {
     return (
       <div>
       </div>
     );
   }
-
-console.log(data);
 
   const sectionLabels = {
     A: "Technical Performance",
@@ -46,7 +44,7 @@ console.log(data);
     G: 10,
   };
 
-  const { sectionScores, topFixes, totalScore } = data.result;
+  const { sectionScores, topFixes, totalScore } = data.Overall_Data;
 
   const sectionData = Object.entries(sectionScores).map(([key, value]) => ({
     name: sectionLabels[key],
@@ -72,7 +70,7 @@ console.log(data);
 
 
   <p class="text-white text-3xl">
-    URL - <a href={`${data.jsonData.URL}`} target="-blank" className="text-blue-400 hover:underline">{data.jsonData.URL}</a>
+    URL - <a href={`${data.Metrices.URL}`} target="-blank" className="text-blue-400 hover:underline">{data.Metrices.URL}</a>
 
   </p>
  <a href="/"> <button class="bg-green-500 hover:bg-green-600 hover:text-black text-white font-semibold py-2 px-4 rounded-lg shadow-md transition">
@@ -89,8 +87,8 @@ console.log(data);
           <p className="text-gray-200 text-sm sm:text-base mt-1">Website Health Index</p>
         </div>
         <div>
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">Grade - {data.result.grade}</h1>
-          <p className="text-lg sm:text-xl mt-1 font-semibold">AIO Compatibility - {data.result.badge}</p>
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">Grade - {data.Overall_Data.grade}</h1>
+          <p className="text-lg sm:text-xl mt-1 font-semibold">AIO Compatibility - {data.Overall_Data.badge}</p>
         </div>
       </div>
 
@@ -161,7 +159,7 @@ console.log(data);
       </div>
       <div className="bg-gray-900 rounded-xl p-4 shadow-lg border border-gray-700">
          <h3 className=" sm:text-2xl font-semibold text-bold text-green-500 text-2xl mb-4 ">👉 Recommendations to improve Webite Performance -</h3>
-        {data.result.recommendations.map((val,index)=>(
+        {data.Overall_Data.recommendations.map((val,index)=>(
           <div className="text-base sm:text-lg p-2 pl-6 font-semibold mb-4">
             {index+1} - {val}
           </div>

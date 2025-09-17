@@ -91,7 +91,7 @@ export default function DarkCard() {
   
       const result = await response.json();
       setResult(result);
-      console.log(result);
+      // console.log(result);
   
       setInputValue("");
     } catch (error) {
