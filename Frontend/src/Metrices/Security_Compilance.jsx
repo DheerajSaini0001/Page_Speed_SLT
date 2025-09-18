@@ -2,7 +2,7 @@ import React from 'react';
 
 
 export default function Security_Compilance({ data }) {
-  if (!data || !data.Metrices) {
+  if (!data || !data.Metrices_Data) {
     return (
       <div >
      
@@ -26,7 +26,7 @@ const ScoreBadge = ({ score, out }) => (
       <h1 className="text-3xl font-extrabold text-white mb-6">
         Security/Compilance{" "}
         <span className="text-white">
-          ({data.Metrices?.Security_or_Compliance?.Security_or_Compliance_Score_Total} out of 8)
+          ({data.Metrices_Data?.Security_or_Compliance?.Security_or_Compliance_Score_Total} out of 8)
         </span>
       </h1>
 
@@ -36,23 +36,23 @@ const ScoreBadge = ({ score, out }) => (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>HTTPS Score</span>
-            <ScoreBadge score={data.Metrices?.Security_or_Compliance.HTTPS_Score ?? 0} out={2} />
+            <ScoreBadge score={data.Metrices_Data?.Security_or_Compliance.HTTPS_Score ?? 0} out={2} />
           </div>
           <div className="flex justify-between items-center">
             <span>HSTS Score</span>
-            <ScoreBadge score={data.Metrices?.Security_or_Compliance.HSTS_Score ?? 0} out={1} />
+            <ScoreBadge score={data.Metrices_Data?.Security_or_Compliance.HSTS_Score ?? 0} out={1} />
           </div>
           <div className="flex justify-between items-center">
             <span>Security Headers Score</span>
-            <ScoreBadge score={data.Metrices?.Security_or_Compliance.Security_Headers_Score ?? 0} out={3} />
+            <ScoreBadge score={data.Metrices_Data?.Security_or_Compliance.Security_Headers_Score ?? 0} out={3} />
           </div>
           <div className="flex justify-between items-center">
             <span>Cookie Banner & Consent Mode Score</span>
-            <ScoreBadge score={data.Metrices?.Security_or_Compliance.Cookie_Banner_and_Consent_Mode_Score ?? 0} out={1} />
+            <ScoreBadge score={data.Metrices_Data?.Security_or_Compliance.Cookie_Banner_and_Consent_Mode_Score ?? 0} out={1} />
           </div>
           <div className="flex justify-between items-center">
             <span>404/500 handling Score</span>
-            <ScoreBadge score={data.Metrices?.Security_or_Compliance.Error_Pages_Score ?? 0} out={1} />
+            <ScoreBadge score={data.Metrices_Data?.Security_or_Compliance.Error_Pages_Score ?? 0} out={1} />
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import React from "react";
 
 export default function Technical_Performance({ data }) {
-  if (!data || !data.Metrices) {
+  if (!data || !data.Metrices_Data) {
     return (
       <div >
      
@@ -27,7 +27,7 @@ const ScoreBadge = ({ score, out }) => (
       <h1 className="text-3xl font-extrabold text-white mb-6">
         Technical Performance{" "}
         <span className="text-white">
-          ({data.Metrices?.Technical_Performance?.Technical_Performance_Score_Total} out of 28)
+          ({data.Metrices_Data?.Technical_Performance?.Technical_Performance_Score_Total} out of 28)
         </span>
       </h1>
 
@@ -37,21 +37,21 @@ const ScoreBadge = ({ score, out }) => (
         <h2 className="text-xl font-bold text-white mb-4">
           Core Web Vitals{" "}
           <span className="text-white">
-            ({data.Metrices?.Technical_Performance?.Core_Web_Vitals?.Total_Score_A1 || 0} out of 12)
+            ({data.Metrices_Data?.Technical_Performance?.Core_Web_Vitals?.Total_Score_A1 || 0} out of 12)
           </span>
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>Largest Contentful Paint (LCP) Score</span>
-            <ScoreBadge score={data.Metrices?.Technical_Performance?.Core_Web_Vitals?.LCP_Score ?? 0} out={5} />
+            <ScoreBadge score={data.Metrices_Data?.Technical_Performance?.Core_Web_Vitals?.LCP_Score ?? 0} out={5} />
           </div>
           <div className="flex justify-between items-center">
             <span>Cumulative Layout Shift (CLS) Score</span>
-            <ScoreBadge score={data.Metrices?.Technical_Performance?.Core_Web_Vitals?.CLS_Score ?? 0} out={3} />
+            <ScoreBadge score={data.Metrices_Data?.Technical_Performance?.Core_Web_Vitals?.CLS_Score ?? 0} out={3} />
           </div>
           <div className="flex justify-between items-center">
             <span>Interaction to Next Paint (INP) Score</span>
-            <ScoreBadge score={data.Metrices?.Technical_Performance?.Core_Web_Vitals?.INP_Score ?? 0} out={4} />
+            <ScoreBadge score={data.Metrices_Data?.Technical_Performance?.Core_Web_Vitals?.INP_Score ?? 0} out={4} />
           </div>
         </div>
       </div>
@@ -62,25 +62,25 @@ const ScoreBadge = ({ score, out }) => (
         <h2 className="text-xl font-bold text-white mb-4">
           Delivery & Render{" "}
           <span className="text-white">
-            ({data.Metrices?.Technical_Performance?.Delivery_and_Render?.Total_Score_A2 || 0} out of 8)
+            ({data.Metrices_Data?.Technical_Performance?.Delivery_and_Render?.Total_Score_A2 || 0} out of 8)
           </span>
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>Time to First Byte (TTFB) Score</span>
-            <ScoreBadge score={data.Metrices?.Technical_Performance?.Delivery_and_Render?.TTFB_Score ?? 0} out={3} />
+            <ScoreBadge score={data.Metrices_Data?.Technical_Performance?.Delivery_and_Render?.TTFB_Score ?? 0} out={3} />
           </div>
           <div className="flex justify-between items-center">
             <span>Compression Score</span>
-            <ScoreBadge score={data.Metrices?.Technical_Performance?.Delivery_and_Render?.Compression_Score ?? 0} out={2} />
+            <ScoreBadge score={data.Metrices_Data?.Technical_Performance?.Delivery_and_Render?.Compression_Score ?? 0} out={2} />
           </div>
           <div className="flex justify-between items-center">
             <span>Caching Score</span>
-            <ScoreBadge score={data.Metrices?.Technical_Performance?.Delivery_and_Render?.Caching_Score ?? 0} out={2} />
+            <ScoreBadge score={data.Metrices_Data?.Technical_Performance?.Delivery_and_Render?.Caching_Score ?? 0} out={2} />
           </div>
           <div className="flex justify-between items-center">
             <span>HTTP/2 or HTTP/3 Score</span>
-            <ScoreBadge score={data.Metrices?.Technical_Performance?.Delivery_and_Render?.HTTP_Score ?? 0} out={1} />
+            <ScoreBadge score={data.Metrices_Data?.Technical_Performance?.Delivery_and_Render?.HTTP_Score ?? 0} out={1} />
           </div>
         </div>
       </div>
@@ -91,25 +91,25 @@ const ScoreBadge = ({ score, out }) => (
         <h2 className="text-xl font-bold text-white mb-4">
           Crawlability & Hygiene{" "}
           <span className="text-white">
-            ({data.Metrices?.Technical_Performance?.Crawlability_and_Hygiene?.Total_Score_A3 || 0} out of 8)
+            ({data.Metrices_Data?.Technical_Performance?.Crawlability_and_Hygiene?.Total_Score_A3 || 0} out of 8)
           </span>
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>Sitemap Score</span>
-            <ScoreBadge score={data.Metrices?.Technical_Performance?.Crawlability_and_Hygiene?.Sitemap_Score ?? 0} out={2} />
+            <ScoreBadge score={data.Metrices_Data?.Technical_Performance?.Crawlability_and_Hygiene?.Sitemap_Score ?? 0} out={2} />
           </div>
           <div className="flex justify-between items-center">
             <span>Robots Score</span>
-            <ScoreBadge score={data.Metrices?.Technical_Performance?.Crawlability_and_Hygiene?.Robots_Score ?? 0} out={2} />
+            <ScoreBadge score={data.Metrices_Data?.Technical_Performance?.Crawlability_and_Hygiene?.Robots_Score ?? 0} out={2} />
           </div>
           <div className="flex justify-between items-center">
             <span>Broken Links Score</span>
-            <ScoreBadge score={data.Metrices?.Technical_Performance?.Crawlability_and_Hygiene?.Broken_Links_Score ?? 0} out={2} />
+            <ScoreBadge score={data.Metrices_Data?.Technical_Performance?.Crawlability_and_Hygiene?.Broken_Links_Score ?? 0} out={2} />
           </div>
           <div className="flex justify-between items-center">
             <span>Redirect Chains Score</span>
-            <ScoreBadge score={data.Metrices?.Technical_Performance?.Crawlability_and_Hygiene?.Redirect_Chains_Score ?? 0} out={2} />
+            <ScoreBadge score={data.Metrices_Data?.Technical_Performance?.Crawlability_and_Hygiene?.Redirect_Chains_Score ?? 0} out={2} />
           </div>
         </div>
       </div>

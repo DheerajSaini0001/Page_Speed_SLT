@@ -70,7 +70,7 @@ export default function Dashboard2({ data }) {
 
 
   <p class="text-white text-3xl">
-    URL - <a href={`${data.Metrices.URL}`} target="-blank" className="text-blue-400 hover:underline">{data.Metrices.URL}</a>
+    URL - <a href={`${data.Metrices_Data.URL}`} target="-blank" className="text-blue-400 hover:underline">{data.Metrices_Data.URL}</a>
 
   </p>
  <a href="/"> <button class="bg-green-500 hover:bg-green-600 hover:text-black text-white font-semibold py-2 px-4 rounded-lg shadow-md transition">

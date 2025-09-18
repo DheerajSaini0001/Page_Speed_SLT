@@ -1,7 +1,7 @@
 import React from 'react';
 
 export default function Accessibility({ data }) {
-  if (!data || !data.Metrices) {
+  if (!data || !data.Metrices_Data) {
     return <div />;
   }
 
@@ -27,7 +27,7 @@ const ScoreBadge = ({ score, out }) => (
       <h1 className="text-3xl font-extrabold text-white mb-6">
         Accessibility{" "}
         <span className="text-white">
-          ({data.Metrices?.Accessibility?.Accessibility_Score_Total} out of 12)
+          ({data.Metrices_Data?.Accessibility?.Accessibility_Score_Total} out of 12)
         </span>
       </h1>
 
@@ -39,23 +39,23 @@ const ScoreBadge = ({ score, out }) => (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>Color Contrast Score</span>
-            <ScoreBadge score={data.Metrices?.Accessibility.Color_Contrast_Score ?? 0} out={3} />
+            <ScoreBadge score={data.Metrices_Data?.Accessibility.Color_Contrast_Score ?? 0} out={3} />
           </div>
           <div className="flex justify-between items-center">
             <span>Focusable/Keyboard Nav Score</span>
-            <ScoreBadge score={data.Metrices?.Accessibility.Focusable_Score ?? 0} out={3} />
+            <ScoreBadge score={data.Metrices_Data?.Accessibility.Focusable_Score ?? 0} out={3} />
           </div>
           <div className="flex justify-between items-center">
             <span>ARIA/Labelling Score</span>
-            <ScoreBadge score={data.Metrices?.Accessibility.ARIA_Score ?? 0} out={3} />
+            <ScoreBadge score={data.Metrices_Data?.Accessibility.ARIA_Score ?? 0} out={3} />
           </div>
           <div className="flex justify-between items-center">
             <span>Alt/Text Equivalents Score</span>
-            <ScoreBadge score={data.Metrices?.Accessibility.Alt_or_Text_Equivalents_Score ?? 0} out={2}/>
+            <ScoreBadge score={data.Metrices_Data?.Accessibility.Alt_or_Text_Equivalents_Score ?? 0} out={2}/>
           </div>
           <div className="flex justify-between items-center">
             <span>Skip Links/Landmarks Score</span>
-            <ScoreBadge score={data.Metrices?.Accessibility.Skip_Links_or_Landmarks_Score ?? 0} out={1}/>
+            <ScoreBadge score={data.Metrices_Data?.Accessibility.Skip_Links_or_Landmarks_Score ?? 0} out={1}/>
           </div>
         </div>
       </div>

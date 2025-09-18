@@ -2,7 +2,7 @@ import React from 'react';
 
 
 export default function On_Page_SEO({ data }) {
-  if (!data || !data.Metrices) {
+  if (!data || !data.Metrices_Data) {
     return (
       <div >
      
@@ -26,7 +26,7 @@ const ScoreBadge = ({ score, out }) => (
       <h1 className="text-3xl font-extrabold text-white mb-6">
         On-Page SEO{" "}
         <span className="text-white">
-          ({data.Metrices?.On_Page_SEO?.On_Page_SEO_Score_Total} out of 22)
+          ({data.Metrices_Data?.On_Page_SEO?.On_Page_SEO_Score_Total} out of 22)
         </span>
       </h1>
 
@@ -36,25 +36,25 @@ const ScoreBadge = ({ score, out }) => (
         <h2 className="text-xl font-bold text-white mb-4">
           Essentials{" "}
           <span className="text-white">
-            ({data.Metrices?.On_Page_SEO?.Essentials?.Total_Score_B1 || 0} out of 10)
+            ({data.Metrices_Data?.On_Page_SEO?.Essentials?.Total_Score_B1 || 0} out of 10)
           </span>
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>Unique Title Score</span>
-            <ScoreBadge score={data.Metrices?.On_Page_SEO?.Essentials?.Unique_Title_Score ?? 0} out={3} />
+            <ScoreBadge score={data.Metrices_Data?.On_Page_SEO?.Essentials?.Unique_Title_Score ?? 0} out={3} />
           </div>
           <div className="flex justify-between items-center">
             <span>Meta Description Score</span>
-            <ScoreBadge score={data.Metrices?.On_Page_SEO?.Essentials?.Meta_Description_Score ?? 0} out={2} />
+            <ScoreBadge score={data.Metrices_Data?.On_Page_SEO?.Essentials?.Meta_Description_Score ?? 0} out={2} />
           </div>
           <div className="flex justify-between items-center">
             <span>Canonical Score</span>
-            <ScoreBadge score={data.Metrices?.On_Page_SEO?.Essentials?.Canonical_Score ?? 0} out={2} />
+            <ScoreBadge score={data.Metrices_Data?.On_Page_SEO?.Essentials?.Canonical_Score ?? 0} out={2} />
           </div>
           <div className="flex justify-between items-center">
             <span>H1 Score</span>
-            <ScoreBadge score={data.Metrices?.On_Page_SEO?.Essentials?.H1_Score ?? 0} out={3} />
+            <ScoreBadge score={data.Metrices_Data?.On_Page_SEO?.Essentials?.H1_Score ?? 0} out={3} />
           </div>
         </div>
       </div>
@@ -65,21 +65,21 @@ const ScoreBadge = ({ score, out }) => (
         <h2 className="text-xl font-bold text-white mb-4">
           Media & Semantics{" "}
           <span className="text-white">
-            ({data.Metrices?.On_Page_SEO?.Media_and_Semantics?.Total_Score_B2 || 0} out of 6)
+            ({data.Metrices_Data?.On_Page_SEO?.Media_and_Semantics?.Total_Score_B2 || 0} out of 6)
           </span>
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>Image ALT Score</span>
-            <ScoreBadge score={data.Metrices?.On_Page_SEO?.Media_and_Semantics?.Image_ALT_Score ?? 0} out={3}/>
+            <ScoreBadge score={data.Metrices_Data?.On_Page_SEO?.Media_and_Semantics?.Image_ALT_Score ?? 0} out={3}/>
           </div>
           <div className="flex justify-between items-center">
             <span>Heading Hierarcy Score</span>
-            <ScoreBadge score={data.Metrices?.On_Page_SEO?.Media_and_Semantics?.Heading_Hierarchy_Score ?? 0} out={2}/>
+            <ScoreBadge score={data.Metrices_Data?.On_Page_SEO?.Media_and_Semantics?.Heading_Hierarchy_Score ?? 0} out={2}/>
           </div>
           <div className="flex justify-between items-center">
             <span>Descriptive Links Score</span>
-            <ScoreBadge score={data.Metrices?.On_Page_SEO?.Media_and_Semantics?.Descriptive_Links_Score ?? 0} out={1} />
+            <ScoreBadge score={data.Metrices_Data?.On_Page_SEO?.Media_and_Semantics?.Descriptive_Links_Score ?? 0} out={1} />
           </div>
         </div>
       </div>
@@ -90,21 +90,21 @@ const ScoreBadge = ({ score, out }) => (
         <h2 className="text-xl font-bold text-white mb-4">
           Structure & Uniqueness{" "}
           <span className="text-white">
-            ({data.Metrices?.On_Page_SEO?.Structure_and_Uniqueness?.Total_Score_B3 || 0} out of 6)
+            ({data.Metrices_Data?.On_Page_SEO?.Structure_and_Uniqueness?.Total_Score_B3 || 0} out of 6)
           </span>
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
             <span>URL Slugs Score</span>
-            <ScoreBadge score={data.Metrices?.On_Page_SEO?.Structure_and_Uniqueness?.URL_Slugs_Score ?? 0} out={2}/>
+            <ScoreBadge score={data.Metrices_Data?.On_Page_SEO?.Structure_and_Uniqueness?.URL_Slugs_Score ?? 0} out={2}/>
           </div>
           <div className="flex justify-between items-center">
             <span>Duplicate Content Score</span>
-            <ScoreBadge score={data.Metrices?.On_Page_SEO?.Structure_and_Uniqueness?.Duplicate_Content_Score ?? 0} out={3}/>
+            <ScoreBadge score={data.Metrices_Data?.On_Page_SEO?.Structure_and_Uniqueness?.Duplicate_Content_Score ?? 0} out={3}/>
           </div>
           <div className="flex justify-between items-center">
             <span>Pagination Tags Score</span>
-            <ScoreBadge score={data.Metrices?.On_Page_SEO?.Structure_and_Uniqueness?.Pagination_Tags_Score ?? 0} out={1}/>
+            <ScoreBadge score={data.Metrices_Data?.On_Page_SEO?.Structure_and_Uniqueness?.Pagination_Tags_Score ?? 0} out={1}/>
           </div>
         </div>
       </div>
