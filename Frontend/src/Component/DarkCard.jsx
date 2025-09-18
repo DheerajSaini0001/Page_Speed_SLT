@@ -122,7 +122,7 @@ export default function DarkCard() {
         {/* Logo / Title */}
         <div className="flex flex-col-rev justify-center items-center gap-4 font-serif text-4xl font-bold bg-gradient-to-r from-sky-200 via-rose-200 to-orange-200  bg-clip-text text-transparent">
           <div>
-            <img src={logo} alt="" className="h-14" />
+            <img src={logo} alt="" className="h-22" />
           </div>
           <div>Site Audits</div>
         </div>
@@ -152,6 +152,7 @@ export default function DarkCard() {
                 <input
                   type="text"
                   value={inputValue}
+                  disabled={loading}
                   onChange={(e) => setInputValue(e.target.value)}
                   placeholder="Type here..."
                   className="flex-1 px-4 py-2 rounded-lg bg-gray-800 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
