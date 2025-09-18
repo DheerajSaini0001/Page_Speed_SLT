@@ -73,7 +73,7 @@ export default function Sidebar({ children ,data}) {
     document.body.removeChild(link);
   }; 
   return (
-    <div className="flex fixed">
+    <div className="flex fixed overflow-x-hidden">
     
    
 

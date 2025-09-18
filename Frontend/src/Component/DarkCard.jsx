@@ -178,9 +178,9 @@ export default function DarkCard() {
           <div className="relative w-full flex flex-1">
             {/* Sidebar */}
             <div
-              className={`fixed top-16 left-0 z-40 w-64 h-[calc(100vh-4rem)] bg-gray-900 border-r border-gray-700 transform 
+              className={`fixed top-16 left-0 z-40 w-64 h-[calc(100vh-4rem)] overflow-x-hidden bg-gray-900 border-r border-gray-700 transform 
               ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} 
-              lg:translate-x-0 transition-transform duration-300 ease-in-out overflow-y-auto pb-4`}
+              lg:translate-x-0 transition-transform overflow-x-hidden duration-300 ease-in-out overflow-y-auto pb-4`}
             >
               <Sidebar data={result} />
             </div>
