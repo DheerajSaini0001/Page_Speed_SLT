@@ -1,9 +1,9 @@
 import express from "express";
 import cors from "cors";
 import main from "./Main/main.js";
-
-const PORT =2000;
-
+import dotenv from "dotenv";
+dotenv.config();
+const PORT =process.env.PORT;
 const app = express();
 app.use(express.json());
 app.use(cors());

@@ -1,6 +1,8 @@
-const API_KEY = 'AIzaSyCww7MhvCEUmHhlACNBqfbzL5PUraT8lkk';
+import dotenv from 'dotenv'
+dotenv.config()
 
 
+const API_KEY=process.env.API_KEY;
 export default async function googleAPI(url) {
     try{
     const googleAPI =`https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${ encodeURIComponent(url)}&strategy=desktop&key=${API_KEY}`;
