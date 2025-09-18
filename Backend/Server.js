@@ -3,7 +3,6 @@ import cors from "cors";
 import main from "./Main/main.js";
 
 const PORT =2000;
-
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -25,7 +24,6 @@ app.post('/data', async (req, res) => {
     res.status(500).json({ success: false, error: "Failed to fetch PageSpeed data" });
   }
 });
-
 
 app.listen(PORT, () => {
   console.log(`✅ Backend running on http://localhost:${PORT}`);

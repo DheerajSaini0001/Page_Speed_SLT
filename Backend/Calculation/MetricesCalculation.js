@@ -22,7 +22,7 @@ export default async function MetricesCalculation(url,data,$,robotsText) {
     seoMetrics(url, $),
     accessibilityMetrics(url),
     securityCompliance(url),
-    uxContentStructure(url),
+    uxContentStructure(url,$),
     conversionLeadFlow($),
     aioReadiness(url, robotsText)
   ]);

@@ -3,10 +3,6 @@ import StealthPlugin from "puppeteer-extra-plugin-stealth";
 
 puppeteer.use(StealthPlugin());
 
-// Simple wait function compatible with all Puppeteer versions
-async function wait(ms = 5000) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 // Collect headers from all network responses
 async function getAllHeaders(page) {
@@ -141,7 +137,7 @@ export default async function securityCompliance(url) {
   const allHeaders = await getAllHeaders(page);
 
   await page.goto(url, { waitUntil: "networkidle2" });
-  await wait(5000); // wait 5 seconds for all async requests
+  // await wait(5000); // wait 5 seconds for all async requests
 
   const [
     httpsScore,
