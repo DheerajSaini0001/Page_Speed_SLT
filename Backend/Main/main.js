@@ -1,7 +1,7 @@
 import MetricesCalculation from "../Calculation/MetricesCalculation.js";
 import Metrices from "../Data/Metrices.js";
 import OverAll from "../Data/OverAll.js";
-import axios_cheerio from "../Tools/axios_cheerio.js";
+import puppeteer_cheerio from "../Tools/puppeteer_cheerio.js";
 import googleAPI from "../Tools/googleAPI.js";
 import robotsRes from "../Tools/robotsRes.js";
 
@@ -16,7 +16,7 @@ export default async function main(message) {
     console.log(`URL Received: ${url}`);
 
     const googleApi_Data = await googleAPI(url);
-    const axios_cheerio_Data = await axios_cheerio(url);
+    const axios_cheerio_Data = await puppeteer_cheerio(url);
     const robotsRes_Data = await robotsRes(url);
 
     const MetricesCalculation_Data = await MetricesCalculation(url,googleApi_Data,axios_cheerio_Data,robotsRes_Data)

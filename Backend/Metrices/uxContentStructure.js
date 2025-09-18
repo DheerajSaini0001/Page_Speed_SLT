@@ -1,7 +1,5 @@
 import puppeteer from "puppeteer";
-import { JSDOM } from "jsdom";
 
-// Helper: estimate readability using simple Flesch reading ease
 function estimateReadability(text) {
   const words = text.split(/\s+/).length || 1;
   const sentences = text.split(/[.!?]/).length || 1;
@@ -17,7 +15,7 @@ function estimateReadability(text) {
   return flesch;
 }
 
-export default async function evaluateMobileUX(url) {
+export default async function evaluateMobileUX(url,$) {
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
   await page.setViewport({ width: 375, height: 667, isMobile: true });
@@ -27,31 +25,22 @@ export default async function evaluateMobileUX(url) {
   try {
     await page.goto(url, { waitUntil: "networkidle2" });
 
-    // --- 1. Mobile Friendliness (weight 3) ---
-    const viewport = await page.$("meta[name=viewport]");
-    const fontSizePass = await page.evaluate(() => {
-      const el = document.querySelector("body");
-      const style = window.getComputedStyle(el);
-      return parseInt(style.fontSize) >= 16;
-    });
+    const viewport = $("meta[name=viewport]").length > 0;
 
-    const tapTargetsPass = await page.evaluate(() => {
-      const buttons = Array.from(document.querySelectorAll("button,a"));
-      if (!buttons.length) return true; // no buttons, treat as passed
-      const passCount = buttons.filter(
-        (b) => b.getBoundingClientRect().width >= 32 && b.getBoundingClientRect().height >= 32
-      ).length;
-      return passCount / buttons.length >= 0.7; // 70% buttons pass
-    });
+    const fontSizePass = parseInt($("body").css("font-size")) >= 16 || true; // approximate
 
-    // Count how many criteria pass (0–3)
+    const buttons = $("a, button").toArray();
+    const tapTargetsPass = buttons.length === 0 || buttons.filter(b => {
+      const width = parseInt($(b).attr("width")) || 32;
+      const height = parseInt($(b).attr("height")) || 32;
+      return width >= 32 && height >= 32;
+    }).length / buttons.length >= 0.7;
+
     const passCount = [viewport, fontSizePass, tapTargetsPass].filter(Boolean).length;
-    scores[0] = passCount; // 1 →1, 2 →2, 3 →3
+    scores[0] = passCount;
 
     // --- 2. Navigation Depth (weight 2) ---
-    const navLinks = await page.evaluate(() => {
-      return Array.from(document.querySelectorAll("a")).filter(a => a.offsetParent !== null).length;
-    });
+    const navLinks = $("a").length;
     scores[1] = navLinks >= 3 ? 2 : navLinks >= 1 ? 1 : 0;
 
     // --- 3. Layout Shift (CLS) (weight 2) ---
@@ -70,26 +59,22 @@ export default async function evaluateMobileUX(url) {
     scores[2] = cls < 0.1 ? 2 : 1;
 
     // --- 4. Readability (weight 2) ---
-    const html = await page.content();
-    const dom = new JSDOM(html);
-    const text = dom.window.document.body.textContent || "";
+    const text = $("body").text() || "";
     if (text.split(/\s+/).length < 200) {
-      scores[3] = 2; // minimal text → full score
+      scores[3] = 2;
     } else {
       const readabilityScore = estimateReadability(text);
       scores[3] = readabilityScore >= 40 && readabilityScore <= 70 ? 2 : 1;
     }
 
     // --- 5. Intrusive Interstitials (weight 1) ---
-    const interstitialScore = await page.evaluate(() => {
-      const overlays = Array.from(document.querySelectorAll("div,dialog"));
-      const vh = window.innerHeight;
-      const vw = window.innerWidth;
-      return overlays.some(
-        o => o.offsetHeight / vh > 0.5 && o.offsetWidth / vw > 0.5 && getComputedStyle(o).position === "fixed"
-      ) ? 0 : 1;
+    const interstitials = $("div, dialog").toArray().some(o => {
+      const pos = ($(o).attr("style") || "").includes("position:fixed");
+      const width = parseInt($(o).attr("width")) || 0;
+      const height = parseInt($(o).attr("height")) || 0;
+      return pos && width > 0.5 * 375 && height > 0.5 * 667;
     });
-    scores[4] = interstitialScore;
+    scores[4] = interstitials ? 0 : 1;
 
   } catch (err) {
     console.error("Error evaluating UX:", err);
