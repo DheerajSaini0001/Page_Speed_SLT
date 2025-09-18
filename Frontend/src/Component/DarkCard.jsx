@@ -9,9 +9,10 @@ import Security_Compilance from "../Metrices/Security_Compilance";
 import UX_Content_Structure from "../Metrices/UX_Content_Structure";
 import Conversion_Lead_Flow from "../Metrices/Conversion_Lead_Flow";
 import AIO from "../Metrices/AIO";
-import logo from "./android-chrome-192x192.png";
+// import logo from "./android-chrome-192x192.png";
 import Footer from "./Footer";
 import RawData from "../Metrices/RawData";
+import Assets from '../assets/Assets.js'
 
 export default function DarkCard() {
   const [loading, setLoading] = useState(false);
@@ -19,7 +20,7 @@ export default function DarkCard() {
   const [result, setResult] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // const handleClick = async (e) => {
+  
   //   e.preventDefault();
   //   setLoading(true);
 
@@ -122,7 +123,7 @@ export default function DarkCard() {
         {/* Logo / Title */}
         <div className="flex flex-col-rev justify-center items-center gap-4 font-serif text-4xl font-bold bg-gradient-to-r from-sky-200 via-rose-200 to-orange-200  bg-clip-text text-transparent">
           <div>
-            <img src={logo} alt="" className="h-22" />
+            <img src={Assets.Logo} alt="" className="h-22" />
           </div>
           <div>Site Audits</div>
         </div>

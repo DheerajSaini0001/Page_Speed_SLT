@@ -1,17 +1,15 @@
-import logo from "./android-chrome-192x192.png";
-import Footer from "./Footer"
-// import Dheeraj from "./Dheeraj.jpeg";
-// import Piyush from "../Piyush.jpeg";
-// import Mayank from "../Mayank.JPG";
+import Assets from '../assets/Assets.js'
+import Footer from "../Component/Footer"
 
-export default function About() {
+
+export default function AboutPage() {
   return (
    <>
     <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-black min-h-screen py-12 px-6">
       {/* Navbar */}
       <nav className="fixed top-0 left-0 w-full h-16 bg-gray-900 border-b border-gray-700 flex items-center justify-between px-6 z-50">
        <a href="/">  <div className="flex flex-col-rev justify-center items-center gap-4 font-serif text-4xl font-bold bg-gradient-to-r from-sky-200 via-rose-200 to-orange-200  bg-clip-text text-transparent">
-          <img src={logo} alt="Site Audit Logo" className="h-12 w-12" />
+          <img src={Assets.Logo} alt="Site Audit Logo" className="h-12 w-12" />
           <span>Site Audits</span>
         </div></a>
       </nav>
@@ -63,7 +61,7 @@ export default function About() {
             {/* Dheeraj */}
             <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 shadow-lg rounded-2xl p-6 hover:shadow-xl hover:scale-105 transition-transform duration-300">
               <div className="w-24 h-24 mx-auto rounded-full overflow-hidden mb-4">
-                <img src="./Dheeraj.jpeg" alt="Dheeraj Saini - Frontend Developer" className=" object-cover" />
+                <img src={Assets.Dheeraj} alt="Dheeraj Saini - Frontend Developer" className=" object-cover" />
               </div>
               <h3 className="text-lg  text-gray-100 font-extrabold">Dheeraj</h3>
               <p className="text-sm text-gray-100">Frontend Developer</p>
@@ -72,7 +70,7 @@ export default function About() {
             {/* Piyush */}
             <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 shadow-lg rounded-2xl p-6 hover:shadow-xl hover:scale-105 transition-transform duration-300">
               <div className="w-24 h-24 mx-auto rounded-full overflow-hidden mb-4">
-                <img src="./Piyush.jpeg" alt="Piyush - Backend Developer" className="w-full h-full object-cover" />
+                <img src={Assets.Piyush} alt="Piyush - Backend Developer" className="w-full h-full object-cover" />
               </div>
               <h3 className="text-lg font-extrabold text-gray-100">Piyush</h3>
               <p className="text-sm text-gray-100">Backend Developer</p>
@@ -81,7 +79,7 @@ export default function About() {
             {/* Mayank */}
             <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 shadow-lg rounded-2xl p-6 hover:shadow-xl hover:scale-105 transition-transform duration-300">
               <div className="w-24 h-24 mx-auto rounded-full overflow-hidden mb-4">
-                <img src="./Mayank.JPG" alt="Mayank - Backend Developer" className="w-full h-full object-cover" />
+                <img src={Assets.Mayank} alt="Mayank - Backend Developer" className="w-full h-full object-cover" />
               </div>
               <h3 className="text-lg font-extrabold text-gray-100">Mayank</h3>
               <p className="text-sm text-gray-100">Backend Developer</p>
