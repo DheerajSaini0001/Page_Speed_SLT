@@ -74,7 +74,7 @@ export default function Sidebar({ children ,data}) {
   }; 
   return (
     <div className="flex fixed">
-      {/* Top Navbar */}
+    
    
 
       {/* Sidebar */}
