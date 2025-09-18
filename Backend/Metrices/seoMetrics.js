@@ -28,26 +28,23 @@ function computeDuplicatePercent(currentHtml, otherPagesHtml) {
     if (sim > maxSim) maxSim = sim;
   }
 
-  return maxSim * 100; // % duplicate
+  return maxSim * 100; 
 }
 
 function calcDupScore(dupPercent) {
-  if (dupPercent === 0) return 3; // fully unique
+  if (dupPercent === 0) return 3; 
   if (dupPercent > 0 && dupPercent <= 5) {
-    // Linear decay: at 0% → 3, at 5% → 0
     return parseFloat(((1 - dupPercent / 5) * 3).toFixed(2));
   }
-  return 0; // beyond 5% = no score
+  return 0; 
 }
 
 
 function normalizeUrl(url) {
   try {
     const u = new URL(url);
-    // remove www. for comparison
     let hostname = u.hostname.toLowerCase();
     if (hostname.startsWith("www.")) hostname = hostname.slice(4);
-    // remove trailing slash from pathname
     const path = u.pathname.replace(/\/$/, "");
     return hostname + path;
   } catch {
@@ -63,58 +60,56 @@ function isValidCanonical(canonical, pageUrl) {
 
 export default async function seoMetrics(url, $, otherPages = [], duplicateTitles = new Set(), duplicateMeta = new Set()) {
 
- // --- B1: Essentials ---
+
 const title = $("title").text().trim();
 const titleScore =
-  title && title.length <= 60 && !duplicateTitles.has(title) ? 3 : 0; // weight 3
+  title && title.length <= 60 && !duplicateTitles.has(title) ? 3 : 0; 
 
 const metaDesc = $('meta[name="description"]').attr("content") || "";
 const metaScore =
-  metaDesc && metaDesc.length <= 160 && !duplicateMeta.has(metaDesc) ? 2 : 0; // weight 2
+  metaDesc && metaDesc.length <= 160 && !duplicateMeta.has(metaDesc) ? 2 : 0; 
 
 const canonical = $('link[rel="canonical"]').attr("href") || "";
-const canonicalScore = isValidCanonical(canonical, url) ? 2 : 0; // weight 2
+const canonicalScore = isValidCanonical(canonical, url) ? 2 : 0; 
 
 const h1Count = $("h1").length;
 const h1Text = $("h1").first().text().trim();
 const h1Score =
-  h1Count === 1 && h1Text.length > 0 ? 3 : 0; // weight 3
+  h1Count === 1 && h1Text.length > 0 ? 3 : 0; 
 
 const B1 = {
   title: parseFloat(titleScore.toFixed(2)),
   metaDescription: parseFloat(metaScore.toFixed(2)),
   canonical: parseFloat(canonicalScore.toFixed(2)),
   h1: parseFloat(h1Score.toFixed(2)),
-  total: parseFloat((titleScore + metaScore + canonicalScore + h1Score).toFixed(2)), // max 10
+  total: parseFloat((titleScore + metaScore + canonicalScore + h1Score).toFixed(2)),
 };
 
-// --- B2: Media & Semantics ---
-// Get all <img> elements in the page
+
 const images = $("img").toArray();
 
-// Count only meaningful ALT attributes
+
 const meaningfulAlts = images.filter((img) => {
   const alt = $(img).attr("alt")?.trim().toLowerCase() || "";
   const meaningless = ["", "image", "logo", "icon"];
   return !meaningless.includes(alt);
 });
 
-// Calculate partial score
+
 const totalImages = images.length;
 const imageAltScore = totalImages > 0 
   ? parseFloat(((meaningfulAlts.length / totalImages) * 3).toFixed(2))
   : 0;
 
-// Heading hierarchy check: H1 → H2 → H3 in logical order
+
 const headings = $("h1,h2,h3").map((i, el) => el.tagName.toLowerCase()).get();
 
 let hierarchyScore = 0;
 
-// Only award score if there is at least one heading AND order is correct
+
 if (headings.length > 0) {
   let broken = false;
   for (let i = 0; i < headings.length - 1; i++) {
-    // H3 before H1 is a break in hierarchy
     if (headings[i] === "h3" && headings[i + 1] === "h1") {
       broken = true;
       break;
@@ -126,26 +121,26 @@ if (headings.length > 0) {
 }
 
 
-// Descriptive links (avoid "click here", "read more")
+
 const links = $("a").toArray();
 const goodLinks = links.filter(
   (a) => !["click here", "read more"].includes($(a).text().toLowerCase().trim())
 );
-const linkScore = ((goodLinks.length / (links.length || 1)) * 1); // weight 1
+const linkScore = ((goodLinks.length / (links.length || 1)) * 1); 
 
 const B2 = {
   imageAlt: parseFloat(imageAltScore.toFixed(2)),
   headingHierarchy: parseFloat(hierarchyScore.toFixed(2)),
   descriptiveLinks: parseFloat(linkScore.toFixed(2)),
-  total: parseFloat((imageAltScore + hierarchyScore + linkScore).toFixed(2)), // max 6
+  total: parseFloat((imageAltScore + hierarchyScore + linkScore).toFixed(2)),
 };
 
-  // --- B3: Structure & Uniqueness ---
-let urlSlugScore = 2; // default full points
+
+let urlSlugScore = 2; 
 try {
   const slug = new URL(url).pathname.slice(1);
   if (slug && (!/^([a-z0-9]+(-[a-z0-9]+)*)$/.test(slug) || slug.length > 75)) {
-    urlSlugScore = 0; // only fail if slug exists and is invalid
+    urlSlugScore = 0; 
   }
 } catch {
   urlSlugScore = 0;
@@ -153,13 +148,13 @@ try {
 
 const pageText = extractText($);
 
-// Pass in other pages’ raw HTML text array
+
 const duplicatePercent = computeDuplicatePercent(pageText, otherPages);
 
-// Apply rubric scoring
+
 const dupScore = calcDupScore(duplicatePercent);
 
-  const paginationScore = $("link[rel='next'], link[rel='prev']").length ? 1 : 0; // weight 1
+  const paginationScore = $("link[rel='next'], link[rel='prev']").length ? 1 : 0; 
 
   const B3 = {
     urlSlugs: parseFloat(urlSlugScore.toFixed(2)),

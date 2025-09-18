@@ -8,7 +8,6 @@ import robotsRes from "../Tools/robotsRes.js";
 export default async function main(message) {
 
   var url = message[0].trim();
-  // If it doesn't start with http:// or https://, add https://
   if (!/^https?:\/\//i.test(url)) {
     url = "https://" + url;
   }

@@ -28,7 +28,7 @@ export default async function puppeteer_cheerio(url) {
     const $ = cheerio.load(htmlData);
 
     await browser.close();
-    return $; // same $ object as before
+    return $; 
   } catch (error) {
     if (browser) await browser.close();
     console.error("Error fetching Puppeteer data:", error);

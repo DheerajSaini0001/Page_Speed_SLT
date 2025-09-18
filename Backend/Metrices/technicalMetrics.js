@@ -10,13 +10,12 @@ try {
     const sitemapUrl = sitemapMatch[1].trim();
     try {
       const sitemapRes = await axios.get(sitemapUrl);
-      // ✅ Only give 1 if sitemap reachable AND listed in robots.txt
       sitemapScore = sitemapRes.status === 200 ? 1 : 0.5;
     } catch {
-      sitemapScore = 0.5; // sitemap listed but unreachable
+      sitemapScore = 0.5; 
     }
   } else {
-    sitemapScore = 0; // sitemap not present
+    sitemapScore = 0; 
   }
 } catch {
   sitemapScore = 0;
@@ -25,18 +24,17 @@ try {
 let robotsScore = 0;
 try {
   if (robotsText && typeof robotsText === "string") {
-    // Check for accidental global disallow
     const hasGlobalDisallow = /Disallow:\s*\/\s*$/mi.test(robotsText);
     robotsScore = !hasGlobalDisallow ? 1 : 0;
   } else {
     
-    robotsScore = 0; // robots.txt missing or unparsable
+    robotsScore = 0; 
   }
 } catch {
-  robotsScore = 0; // any error parsing robots.txt
+  robotsScore = 0; 
 }
 
-// Add to total
+
 totalScore_A3 += sitemapScore * 2;
 totalScore_A3 += robotsScore * 2;
 
@@ -61,20 +59,20 @@ try {
 
   const brokenPercent = (brokenCount / (links.length || 1)) * 100;
 
-  // --- Apply your rubric ---
+
   if (brokenPercent === 0) {
-    brokenScore = 1;               // 0% broken
+    brokenScore = 1;             
   } else if (brokenPercent > 0 && brokenPercent <= 2) {
-    brokenScore = 1 - (brokenPercent / 2) * 0.5;  // linear 1 → 0.5
+    brokenScore = 1 - (brokenPercent / 2) * 0.5;  
   } else {
-    brokenScore = 0;               // >2% broken
+    brokenScore = 0;           
   }
 
 } catch {
-  brokenScore = 0;                 // error case
+  brokenScore = 0;               
 }
 
-// Add weighted score
+
 totalScore_A3 += brokenScore * 2;
 
 let redirectScore = 0;
@@ -82,24 +80,22 @@ try {
   const res = await axios.get(url, { maxRedirects: 10, validateStatus: null });
   const hops = res.request?._redirectable?._redirectCount || 0;
 
-  // Convert hops into a "percent"
-  // 0 hops = 0%, 5 hops = 5%, >5 hops = >5%
+
   const percent = hops;
 
-  // --- Apply rubric ---
   if (percent === 0) {
-    redirectScore = 1;                         // 0% → score 1
+    redirectScore = 1;                        
   } else if (percent > 0 && percent <= 5) {
-    redirectScore = 1 - percent / 5;           // 0–5% → linear 1 → 0
+    redirectScore = 1 - percent / 5;           
   } else {
-    redirectScore = 0;                         // >5% → score 0
+    redirectScore = 0;                        
   }
 
 } catch {
   redirectScore = 0;
 }
 
-// Add weighted score
+
 totalScore_A3 += redirectScore * 2;
 
 
@@ -120,7 +116,7 @@ totalScore_A3 += redirectScore * 2;
   // const ariaRolesScore = audits["aria-roles"]?.score
   // const labelsScore = audits["label"]?.score
 
-  // --- Return all scores ---
+
   return {
     lcpScore:parseFloat(lcpScore.toFixed(2)),
     clsScore:parseFloat(clsScore.toFixed(2)),

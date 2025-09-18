@@ -20,14 +20,14 @@ export default async function evaluateMobileUX(url,$) {
   const page = await browser.newPage();
   await page.setViewport({ width: 375, height: 667, isMobile: true });
 
-  const scores = [0, 0, 0, 0, 0]; // [mobile, nav, CLS, readability, interstitials]
+  const scores = [0, 0, 0, 0, 0]; 
 
   try {
     await page.goto(url, { waitUntil: "networkidle2" });
 
     const viewport = $("meta[name=viewport]").length > 0;
 
-    const fontSizePass = parseInt($("body").css("font-size")) >= 16 || true; // approximate
+    const fontSizePass = parseInt($("body").css("font-size")) >= 16 || true;
 
     const buttons = $("a, button").toArray();
     const tapTargetsPass = buttons.length === 0 || buttons.filter(b => {
@@ -39,11 +39,11 @@ export default async function evaluateMobileUX(url,$) {
     const passCount = [viewport, fontSizePass, tapTargetsPass].filter(Boolean).length;
     scores[0] = passCount;
 
-    // --- 2. Navigation Depth (weight 2) ---
+
     const navLinks = $("a").length;
     scores[1] = navLinks >= 3 ? 2 : navLinks >= 1 ? 1 : 0;
 
-    // --- 3. Layout Shift (CLS) (weight 2) ---
+
     await page.evaluate(() => {
       window.cumulativeLayoutShiftScore = 0;
       new PerformanceObserver((list) => {
@@ -58,7 +58,7 @@ export default async function evaluateMobileUX(url,$) {
     const cls = await page.evaluate(() => window.cumulativeLayoutShiftScore);
     scores[2] = cls < 0.1 ? 2 : 1;
 
-    // --- 4. Readability (weight 2) ---
+
     const text = $("body").text() || "";
     if (text.split(/\s+/).length < 200) {
       scores[3] = 2;
@@ -67,7 +67,7 @@ export default async function evaluateMobileUX(url,$) {
       scores[3] = readabilityScore >= 40 && readabilityScore <= 70 ? 2 : 1;
     }
 
-    // --- 5. Intrusive Interstitials (weight 1) ---
+
     const interstitials = $("div, dialog").toArray().some(o => {
       const pos = ($(o).attr("style") || "").includes("position:fixed");
       const width = parseInt($(o).attr("width")) || 0;
@@ -82,7 +82,7 @@ export default async function evaluateMobileUX(url,$) {
 
   await browser.close();
 
-  // --- Prepare final report ---
+
   const report = {};
   report.E = {
     mobileFriendliness: parseFloat(scores[0].toFixed(2)),

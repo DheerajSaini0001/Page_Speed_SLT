@@ -1,7 +1,6 @@
 
 export default function OverAll(jsonData) {
 
-     // Section totals
   const totalA = jsonData.Technical_Performance.Technical_Performance_Score_Total || 0;
   const totalB = jsonData.On_Page_SEO.On_Page_SEO_Score_Total || 0;
   const totalC = jsonData.Accessibility.Accessibility_Score_Total || 0;
@@ -24,16 +23,14 @@ export default function OverAll(jsonData) {
     (totalA + totalB + totalC + totalD + totalE + totalF + totalG).toFixed(2)
   );
 
-  // Grade
   let grade = "F";
   if (totalScore >= 90) grade = "A";
   else if (totalScore >= 80) grade = "B";
   else if (totalScore >= 70) grade = "C";
   else if (totalScore >= 60) grade = "D";
 
-  // ✅ Top 5 lowest scores (directly from already-prepared scores[])
   const topFixes = [...scores]
-  .sort((a, b) => a.score - b.score)  // sort ascending
+  .sort((a, b) => a.score - b.score)  
   .slice(0, 5); 
 
 const recommendations = [];
