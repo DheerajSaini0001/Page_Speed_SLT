@@ -8,7 +8,7 @@ export default async function aioReadiness(url, robotsText) {
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
 
-  // Set headers like a real browser
+
   await page.setUserAgent(
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
     "(KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
@@ -17,16 +17,11 @@ export default async function aioReadiness(url, robotsText) {
 
   await page.goto(url, { waitUntil: "networkidle2" });
 
-  // -------------------
-  // Extract DOM content
-  // -------------------
+
   const bodyText = await page.evaluate(() => document.body.innerText || "");
   const headerText = await page.evaluate(() => document.querySelector("header")?.innerText || "");
   const footerText = await page.evaluate(() => document.querySelector("footer")?.innerText || "");
 
-  // -------------------
-  // JSON-LD Scripts
-  // -------------------
   const jsonLdScripts = await page.evaluate(() =>
     Array.from(document.querySelectorAll('script[type="application/ld+json"]'))
       .map(el => {
@@ -35,9 +30,7 @@ export default async function aioReadiness(url, robotsText) {
       .filter(Boolean)
   );
 
-  // -------------------
-  // G1: Organization Schema
-  // -------------------
+  // G1.1
   const orgSchemas = jsonLdScripts.filter(s => s["@type"] === "Organization");
   let orgFieldScore = 0;
   let orgValid = orgSchemas.length > 0;
@@ -53,9 +46,7 @@ export default async function aioReadiness(url, robotsText) {
     orgFieldScore = normalizeScore(bestPercent, 2);
   }
 
-  // -------------------
-  // G1: NAP Consistency
-  // -------------------
+  // G1.2
   const phoneRegex = /\+?\d[\d\s\-]{7,}/g;
   const emailRegex = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi;
   const addressRegex = /(street|st\.|road|rd\.|avenue|ave\.|blvd|building)/gi;
@@ -87,9 +78,7 @@ export default async function aioReadiness(url, robotsText) {
   if (isConsistent(addresses, "address")) consistencyCount++;
   const napScore = consistencyCount / 3;
 
-  // -------------------
-  // Policies
-  // -------------------
+  // G1.3
   const basePolicies = ["About", "Contact", "Privacy", "Terms"];
   const ecommercePolicies = ["Returns", "Shipping"];
   const isEcommerce = /cart|checkout|product/i.test(bodyText);
@@ -97,22 +86,20 @@ export default async function aioReadiness(url, robotsText) {
   const policyPresent = policies.filter(p => bodyText.toLowerCase().includes(p.toLowerCase())).length;
   const policyScore = (policyPresent / policies.length);
 
-  // -------------------
-  // G2: Content Answerability & Structure
-  // -------------------
+  // G2.1
   const faqSchemas = jsonLdScripts.filter(s => s["@type"] === "FAQPage" || s["@type"] === "HowTo");
   const faqScore = normalizeScore(faqSchemas.length ? 100 : 0, 1.5);
 
+  // G2.2
   const headingsWithId = await page.evaluate(() => document.querySelectorAll("h1[id],h2[id],h3[id]").length);
   const headingsTotal = await page.evaluate(() => document.querySelectorAll("h1,h2,h3").length) || 1;
   const tocScore = normalizeScore((headingsWithId / headingsTotal) * 100, 1);
 
+  // G2.3
   const imgWithFigcaption = await page.evaluate(() => document.querySelectorAll("figure figcaption").length);
   const mediaScore = normalizeScore(imgWithFigcaption ? 100 : 0, 0.5);
 
-  // -------------------
-  // G3: Product/Inventory Schema & Feeds
-  // -------------------
+  // G3.1
   const productSchemas = jsonLdScripts.filter(s =>
     ["Product", "Vehicle", "Offer", "AggregateRating"].includes(s["@type"])
   );
@@ -120,14 +107,13 @@ export default async function aioReadiness(url, robotsText) {
   const productScore = normalizeScore(productPercent, 1.5);
   let productValid = productSchemas.length > 0;
 
+  // G3.2
   const hasFeed = await page.evaluate(() =>
     document.querySelectorAll('link[type="application/rss+xml"], link[type="application/atom+xml"], link[type="application/json"]').length > 0
   );
   const feedScore = hasFeed ? 0.5 : 0;
 
-  // -------------------
-  // G4: Crawl Friendliness
-  // -------------------
+  // G4
   let robotsScore = 1;
   let robotsOk = true;
   try {
@@ -137,9 +123,7 @@ export default async function aioReadiness(url, robotsText) {
     }
   } catch {}
 
-  // -------------------
-  // Total Score
-  // -------------------
+
   const totalGScore = parseFloat(
     (
       orgFieldScore +
@@ -156,9 +140,6 @@ export default async function aioReadiness(url, robotsText) {
 
   const aioCompatible = totalGScore >= 7.5 && orgValid && productValid && robotsOk ? "Yes" : "No";
 
-  // -------------------
-  // Final Report
-  // -------------------
   report.G = {
     orgFields: parseFloat(orgFieldScore.toFixed(2)),
     napConsistency: parseFloat(napScore.toFixed(2)),

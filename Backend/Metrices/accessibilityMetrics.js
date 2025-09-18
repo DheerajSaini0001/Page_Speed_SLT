@@ -6,56 +6,55 @@ export default async function accessibilityMetrics(url) {
 
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
-  // --- Ensure page is fully loaded ---
-  await page.goto(url, { waitUntil: "networkidle0" }); // wait until no network requests
-  // await page.waitForSelector('body', { timeout: 10000 }); // wait for body element
 
-  // --- Run axe-core audit safely ---
+  await page.goto(url, { waitUntil: "networkidle0" });
+
+
   let results;
   try {
     results = await new AxePuppeteer(page).analyze();
   } catch (err) {
     console.error("Axe analysis failed:", err.message);
-    results = { violations: [] }; // fallback empty results
+    results = { violations: [] }; 
   }
 
-  // --- Helper: Calculate pass rate for selected Axe rules ---
+
   function calculatePassRate(results, ruleIds) {
     const total = ruleIds.length;
-    if (total === 0) return 1; // if no rules, consider pass
+    if (total === 0) return 1; 
     const violations = results.violations.filter(v => ruleIds.includes(v.id)).length;
-    return (total - violations) / total; // pass rate: 1 = all pass, 0 = all fail
+    return (total - violations) / total; 
   }
 
-  // --- Helper: Check for skip links or landmark elements ---
+
   async function hasSkipLinksOrLandmarks(page) {
-    const skipLink = await page.$('a[href^="#"]:not([hidden])'); // visible skip link
+    const skipLink = await page.$('a[href^="#"]:not([hidden])'); 
     const landmarks = await page.$$('[role="banner"], [role="main"], [role="contentinfo"], [role="navigation"], [role="complementary"]');
     return (skipLink || landmarks.length > 0) ? 1 : 0;
   }
 
-  // --- Calculate each category ---
-  const CC = calculatePassRate(results, ["color-contrast"]); // Color contrast AA
+
+  const CC = calculatePassRate(results, ["color-contrast"]); 
   const KN = calculatePassRate(results, [
     "focus-order",
     "focusable-content",
     "tabindex",
     "interactive-element-affordance"
-  ]); // Keyboard navigation
+  ]); 
   const AL = calculatePassRate(results, [
     "label",
     "aria-allowed-attr",
     "aria-roles",
     "aria-hidden-focus"
-  ]); // ARIA/Labels
-  const TX = calculatePassRate(results, ["image-alt"]); // Alt/text equivalents
-  const SL = await hasSkipLinksOrLandmarks(page); // Skip links / landmarks
+  ]); 
+  const TX = calculatePassRate(results, ["image-alt"]); 
+  const SL = await hasSkipLinksOrLandmarks(page); 
   await browser.close();
 
-  // --- Weighted scoring ---
+
   const score = (CC * 3) + (KN * 3) + (AL * 3) + (TX * 2) + (SL * 1);
 
-  // Combine all C metrics
+
   report.C = {
     colorContrast: parseFloat(CC.toFixed(2)) * 3,
     keyboardNavigation: parseFloat(KN.toFixed(2)) * 3,

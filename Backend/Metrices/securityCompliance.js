@@ -4,7 +4,6 @@ import StealthPlugin from "puppeteer-extra-plugin-stealth";
 puppeteer.use(StealthPlugin());
 
 
-// Collect headers from all network responses
 async function getAllHeaders(page) {
   const headers = {};
   page.on("response", async (response) => {
@@ -16,7 +15,7 @@ async function getAllHeaders(page) {
   return headers;
 }
 
-// HTTPS & Mixed Content (weight 2)
+
 async function checkHTTPS(page) {
   const url = page.url();
   const isHTTPS = url.startsWith("https://") ? 1 : 0;
@@ -32,7 +31,7 @@ async function checkHTTPS(page) {
   return isHTTPS && !mixedContent ? 1 : 0;
 }
 
-// HSTS (weight 1)
+
 async function checkHSTS(headers) {
   const hsts = headers["strict-transport-security"];
   if (!hsts) return 0;
@@ -40,9 +39,8 @@ async function checkHSTS(headers) {
   return 0.5;
 }
 
-// Security Headers (weight 3)
+
 async function checkSecurityHeaders(headers) {
-  // Required sets (X-Frame-Options OR COOP counts as one slot)
   const groups = [
     ["content-security-policy"],
     ["x-content-type-options"],
@@ -58,11 +56,11 @@ async function checkSecurityHeaders(headers) {
     }
   }
 
-  return (present / groups.length) * 3; // weight 3
+  return (present / groups.length) * 3; 
 }
 
 
-// Cookie Banner & Consent (weight 1)
+
 async function checkCookieBanner(page) {
   try {
     const result = await page.evaluate(() => {
@@ -88,7 +86,6 @@ async function checkCookieBanner(page) {
 
         observer.observe(document.body, { childList: true, subtree: true });
 
-        // wait longer (10s) for dynamically loaded banners
         setTimeout(() => {
           observer.disconnect();
           resolve(0);
@@ -103,7 +100,6 @@ async function checkCookieBanner(page) {
 }
 
 
-// Custom Error Pages (weight 1)
 async function checkCustomErrorPage(page, url) {
   try {
     const fakeUrl = url.replace(/\/$/, "") + "/nonexistent-" + Date.now();
@@ -121,7 +117,7 @@ async function checkCustomErrorPage(page, url) {
   }
 }
 
-// Main function: security compliance
+
 export default async function securityCompliance(url) {
   const browser = await puppeteer.launch({
     headless: true,
@@ -129,7 +125,6 @@ export default async function securityCompliance(url) {
   });
   const page = await browser.newPage();
 
-  // EU simulation for cookie banner detection
   await page.setExtraHTTPHeaders({ "Accept-Language": "en-GB,en;q=0.9" });
   await page.setGeolocation({ latitude: 48.8566, longitude: 2.3522 });
   await page.setViewport({ width: 1200, height: 800 });
@@ -137,7 +132,6 @@ export default async function securityCompliance(url) {
   const allHeaders = await getAllHeaders(page);
 
   await page.goto(url, { waitUntil: "networkidle2" });
-  // await wait(5000); // wait 5 seconds for all async requests
 
   const [
     httpsScore,
