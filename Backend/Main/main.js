@@ -13,6 +13,8 @@ export default async function main(message) {
     url = "https://" + url;
   }
 
+    console.log(`URL Received: ${url}`);
+
     const googleApi_Data = await googleAPI(url);
     const axios_cheerio_Data = await axios_cheerio(url);
     const robotsRes_Data = await robotsRes(url);

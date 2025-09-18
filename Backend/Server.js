@@ -11,8 +11,6 @@ app.use(cors());
 app.post('/data', async (req, res) => {
 
   const  message  = req.body;
-  console.log(`URL Received: ${message[0]}`);
-
   try {
   const data = await main(message)
   res.json({
