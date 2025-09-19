@@ -10,9 +10,7 @@ export default function Technical_Performance({ data }) {
 
   const ScoreBadge = ({ score, out }) => (
     <span
-      className="px-2.5 py-1 rounded-full text-white font-semibold text-sm
-                 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500
-                 shadow-md transform transition-transform hover:scale-110"
+      className={darkMode? "px-2.5 py-1 rounded-full   text-black bg-white font-semibold text-sm shadow-md transform transition-transform hover:scale-110":" px-2.5 py-1 rounded-full text-white bg-black font-semibold text-sm shadow-md transform transition-transform hover:scale-110"}
     >
       {score}/{out}
     </span>

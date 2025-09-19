@@ -16,7 +16,7 @@ export default function Accessibility({ data }) {
 
     return (
       <span
-        className={`px-2.5 py-1 rounded-full font-semibold text-sm shadow-md transform transition-transform hover:scale-110 ${badgeBg}`}
+      className={darkMode? "px-2.5 py-1 rounded-full   text-black bg-white font-semibold text-sm shadow-md transform transition-transform hover:scale-110":" px-2.5 py-1 rounded-full text-white bg-black font-semibold text-sm shadow-md transform transition-transform hover:scale-110"}
       >
         {score}/{out}
       </span>

@@ -12,7 +12,7 @@ export default function On_Page_SEO({ data }) {
       : "bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white";
 
     return (
-      <span className={`px-2.5 py-1 rounded-full font-semibold text-sm shadow-md transform transition-transform hover:scale-110 ${badgeBg}`}>
+      <span className={darkMode? "px-2.5 py-1 rounded-full   text-black bg-white font-semibold text-sm shadow-md transform transition-transform hover:scale-110":" px-2.5 py-1 rounded-full text-white bg-black font-semibold text-sm shadow-md transform transition-transform hover:scale-110"}>
         {score}/{out}
       </span>
     );
