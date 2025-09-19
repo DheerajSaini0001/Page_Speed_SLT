@@ -103,9 +103,10 @@ export default function DarkCard() {
 
       <div className="h-16"></div> {/* spacer */}
 
-      <div className=" flex flex-col items-center mx-6 sm:mx-0">
+      <div className=" flex flex-col items-center ">
         {!result && (
-          <div className={darkMode ? "w-full mt-40 max-w-2xl  bg-gray-900 rounded-2xl shadow-2xl p-6 space-y-4 border border-gray-700" : "w-full mt-40 max-w-2xl flex flex-col justify-center items-center mx-auto bg-white rounded-2xl shadow-2xl p-6 space-y-4 border border-gray-300"}>
+          <div className=" mx-6 sm:mx-0">
+            <div className={darkMode ? "w-full mt-40 max-w-2xl  bg-gray-900 rounded-2xl shadow-2xl p-6 space-y-4 border border-gray-700" : "w-full mt-40 max-w-2xl flex flex-col justify-center items-center mx-auto bg-white rounded-2xl shadow-2xl p-6 space-y-4 border border-gray-300"}>
             <h2 className="text-2xl font-bold text-center">Check your Page Audits and Performance</h2>
             <p className={darkMode ? "text-gray-400 text-sm text-center" : "text-gray-600 text-sm text-center"}>Enter URL in the input below and click the Analyze button.</p>
 
@@ -132,6 +133,7 @@ export default function DarkCard() {
                 </button>
               </form>
             </div>
+          </div>
           </div>
         )}
 
