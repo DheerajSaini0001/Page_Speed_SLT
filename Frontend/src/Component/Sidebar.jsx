@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   Accessibility,
   Gauge,
@@ -12,10 +12,11 @@ import {
   Database,
   FileText,
 } from "lucide-react";
+import { ThemeContext } from "../ThemeContext"; // ✅ ThemeContext import
 
-
-export default function Sidebar({ children ,data}) {
+export default function Sidebar({ children, data }) {
   const [isOpen, setIsOpen] = useState(true);
+  const { darkMode } = useContext(ThemeContext); // ✅ ThemeContext
 
   const menuItems = [
     { name: "Technical Performance", link: "#TechnicalPerformance", icon: <Gauge size={20} /> },
@@ -28,16 +29,10 @@ export default function Sidebar({ children ,data}) {
     { name: "Raw Data", link: "#Rawdata", icon: <Database size={20} /> },
   ];
 
-  // Download Button
-  const downloadAsTxt = (data, 
-    filename = `${data.Overall_Data.url.split("/")[2].split('.')[0]}.txt`
-
-) => {
-    // Convert object to readable text
+  const downloadAsTxt = (data, filename = `${data.Overall_Data.url.split("/")[2].split('.')[0]}.txt`) => {
     const formatObject = (obj, indent = 0) => {
       let str = "";
       const space = " ".repeat(indent);
-  
       Object.entries(obj).forEach(([key, value]) => {
         if (value && typeof value === "object" && !Array.isArray(value)) {
           str += `${space}${key}:\n${formatObject(value, indent + 2)}`;
@@ -45,10 +40,7 @@ export default function Sidebar({ children ,data}) {
           str += `${space}${key}:\n`;
           value.forEach((item, idx) => {
             if (typeof item === "object") {
-              str += `${space}  - Item ${idx + 1}:\n${formatObject(
-                item,
-                indent + 4
-              )}`;
+              str += `${space}  - Item ${idx + 1}:\n${formatObject(item, indent + 4)}`;
             } else {
               str += `${space}  - ${item}\n`;
             }
@@ -57,13 +49,10 @@ export default function Sidebar({ children ,data}) {
           str += `${space}${key}: ${value}\n`;
         }
       });
-  
       return str;
     };
-  
+
     const textContent = formatObject(data);
-  
-    // Create blob and trigger download
     const blob = new Blob([textContent], { type: "text/plain" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
@@ -71,44 +60,49 @@ export default function Sidebar({ children ,data}) {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  }; 
+  };
+
+  // ✅ Theme-based classes
+  const sidebarBg = darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-black";
+  const sidebarBorder = darkMode ? "border-gray-700" : "border-gray-300";
+  const hoverClass = darkMode ? "hover:bg-gray-700 hover:text-blue-500" : "hover:bg-gray-200 hover:text-blue-600";
+
   return (
     <div className="flex fixed overflow-x-hidden">
-    
-   
-
       {/* Sidebar */}
       <aside
-        className={`fixed top-12 left-0 h-[calc(100%-3rem)] w-64 bg-gray-900 text-white shadow-lg transform transition-transform duration-300
+        className={`fixed top-12 left-0 h-[calc(100%-3rem)] w-64 shadow-lg transform transition-transform duration-300
           ${isOpen ? "translate-x-0" : "-translate-x-full"} 
           sm:translate-x-0 sm:static sm:top-0 sm:h-full
+          ${sidebarBg} ${sidebarBorder}
         `}
       >
         {/* Logo */}
-        <div className="  flex flex-col justify-center items-center text-2xl py-4 border-b border-gray-700">
-          <a href="#deshboard" className="text-4xl font-bold text-green-300 ">Result</a>
+        <div className={`flex flex-col justify-center items-center text-2xl py-4 border-b ${sidebarBorder}`}>
+          <a href="#deshboard" className="text-4xl font-bold text-green-300">Result</a>
         </div>
 
         {/* Menu */}
-        <nav className="flex-1 p-2 space-y-2 overflow-y-auto ">
-          
-           <a href={`${menuItems[0].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition hover:text-blue-500">{menuItems[0].icon} <pre> </pre> {menuItems[0].name} </a>
-           <a href={`${menuItems[1].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition hover:text-blue-500">{menuItems[1].icon} <pre> </pre> {menuItems[1].name} </a>
-           <a href={`${menuItems[2].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition hover:text-blue-500">{menuItems[2].icon} <pre> </pre> {menuItems[2].name} </a>
-           <a href={`${menuItems[3].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition hover:text-blue-500">{menuItems[3].icon} <pre> </pre> {menuItems[3].name} </a>
-           <a href={`${menuItems[4].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition hover:text-blue-500">{menuItems[4].icon} <pre> </pre> {menuItems[4].name} </a>
-           <a href={`${menuItems[5].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition hover:text-blue-500">{menuItems[5].icon} <pre> </pre> {menuItems[5].name} </a>
-           <a href={`${menuItems[6].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition hover:text-blue-500">{menuItems[6].icon} <pre> </pre> {menuItems[6].name} </a>
-           <a href={`${menuItems[7].link}`} className="flex items-center space-x-3 p-4  rounded-md hover:bg-gray-700 transition hover:text-blue-500">{menuItems[7].icon} <pre> </pre> {menuItems[7].name} </a>
-           <button
-      onClick={() => downloadAsTxt(data)}
-      className="flex items-center space-x-3 p-4 w-full rounded-md hover:bg-gray-700 transition hover:text-blue-500"
-    >
-      <FileText className="w-5 h-5" />
-      <pre> </pre>
-      Download TXT
-    </button>
-         
+        <nav className="flex-1 p-2 space-y-2 overflow-y-auto">
+          {menuItems.map((item, index) => (
+            <a
+              key={index}
+              href={item.link}
+              className={`flex items-center space-x-3 p-4 rounded-md transition ${hoverClass}`}
+            >
+              {item.icon} <pre> </pre> {item.name}
+            </a>
+          ))}
+
+          {/* Download Button */}
+          <button
+            onClick={() => downloadAsTxt(data)}
+            className={`flex items-center space-x-3 p-4 w-full rounded-md transition ${hoverClass}`}
+          >
+            <FileText className="w-5 h-5" />
+            <pre> </pre>
+            Download TXT
+          </button>
         </nav>
       </aside>
 
@@ -119,8 +113,6 @@ export default function Sidebar({ children ,data}) {
           onClick={() => setIsOpen(false)}
         />
       )}
-
-    
     </div>
   );
 }

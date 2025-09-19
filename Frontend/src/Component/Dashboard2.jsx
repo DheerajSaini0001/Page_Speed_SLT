@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Tooltip,
   ResponsiveContainer,
@@ -8,18 +8,12 @@ import {
   Legend,
 } from "recharts";
 import CircularProgress from "./CircularProgress";
+import { ThemeContext } from "../ThemeContext"; // ✅ ThemeContext import
 
 export default function Dashboard2({ data }) {
+  const { darkMode } = useContext(ThemeContext); // ✅ useContext
 
   if (!data || !data.Overall_Data) return <div />;
-
-
-  if (!data || !data.Overall_Data) {
-    return (
-      <div>
-      </div>
-    );
-  }
 
   const sectionLabels = {
     A: "Technical Performance",
@@ -42,12 +36,6 @@ export default function Dashboard2({ data }) {
 
   const { sectionScores, topFixes, totalScore } = data.Overall_Data;
 
-  const sectionData = Object.entries(sectionScores).map(([key, value]) => ({
-    name: sectionLabels[key],
-    score: value,
-    outOf: sectionOutOf[key]
-  }));
-
   const COLORS = [
     "#2563eb",
     "#10b981",
@@ -58,21 +46,28 @@ export default function Dashboard2({ data }) {
     "#d946ef",
   ];
 
+  // ✅ Dynamic theme classes
+  const cardBg = darkMode ? "bg-gray-900 text-white" : "bg-white text-black";
+  const cardBorder = darkMode ? "border-gray-700" : "border-gray-300";
+  const sectionText = darkMode ? "text-gray-400" : "text-gray-600";
+  const btnBg = darkMode ? "bg-green-500 hover:bg-green-600 text-white" : "bg-green-400 hover:bg-green-500 text-black";
+
   return (
-    <div id="deshboard" className="min-h-screen w-full  text-white p-4 sm:p-6 grid grid-cols-1 gap-6">
-     
-<div class="flex justify-between items-center bg-gray-900 p-4 rounded-lg">
-
-
-
-  <p class="text-white text-3xl">
-    URL - <a href={`${data.Metrices_Data.URL}`} target="-blank" className="text-blue-400 hover:underline">{data.Metrices_Data.URL}</a>
-
-  </p>
- <a href="/"> <button class="bg-green-500 hover:bg-green-600 hover:text-black text-white font-semibold py-2 px-4 rounded-lg shadow-md transition">
-    Check for Other
-  </button></a>
-</div>
+    <div
+      id="deshboard"
+      className={`min-h-screen w-full p-4 sm:p-6 grid grid-cols-1 gap-6 ${darkMode ? "text-white" : "text-black"}`}
+    >
+      {/* URL + Button */}
+      <div className={`flex justify-between items-center p-4 rounded-lg ${darkMode ? "bg-gray-900" : "bg-gray-100"}`}>
+        <p className={`${darkMode ? "text-white" : "text-black"} text-3xl`}>
+          URL - <a href={`${data.Metrices_Data.URL}`} target="_blank" className="text-blue-400 hover:underline">{data.Metrices_Data.URL}</a>
+        </p>
+        <a href="/">
+          <button className={`font-semibold py-2 px-4 rounded-lg shadow-md transition ${btnBg}`}>
+            Check for Other
+          </button>
+        </a>
+      </div>
 
       {/* Overall Score */}
       <div className="bg-gradient-to-r from-indigo-500 to-blue-600 rounded-2xl shadow-xl p-6 text-center flex flex-col sm:flex-row sm:justify-center sm:items-center gap-30">
@@ -93,9 +88,9 @@ export default function Dashboard2({ data }) {
         {Object.entries(sectionScores).map(([key, value], index) => (
           <div
             key={key}
-            className="bg-gray-900 rounded-xl p-4 shadow-lg border border-gray-700 text-center"
+            className={`rounded-xl p-4 shadow-lg border ${cardBorder} text-center ${cardBg}`}
           >
-            <h3 className="text-xs sm:text-sm text-gray-400">{sectionLabels[key]} Score</h3>
+            <h3 className={`text-xs sm:text-sm ${sectionText}`}>{sectionLabels[key]} Score</h3>
             <p className="text-lg sm:text-xl lg:text-2xl font-bold" style={{ color: COLORS[index % COLORS.length] }}>
               {value.toFixed(1)}/{sectionOutOf[key]}
             </p>
@@ -103,10 +98,8 @@ export default function Dashboard2({ data }) {
         ))}
       </div>
 
-    
-
       {/* Pie Chart */}
-      <div className="bg-gray-900 rounded-xl p-4 shadow-lg border border-gray-700">
+      <div className={`rounded-xl p-4 shadow-lg border ${cardBorder} ${cardBg}`}>
         <h3 className="text-base sm:text-lg font-semibold mb-4">Top Fixes Needed</h3>
         <div className="w-full h-64 sm:h-72 lg:h-96">
           <ResponsiveContainer width="100%" height="100%">
@@ -129,17 +122,21 @@ export default function Dashboard2({ data }) {
                 layout="horizontal"
                 verticalAlign="bottom"
                 align="center"
-                wrapperStyle={{ fontSize: "12px" }}
+                wrapperStyle={{ fontSize: "12px", color: darkMode ? "white" : "black" }} // ✅ legend text color
               />
             </PieChart>
           </ResponsiveContainer>
         </div>
       </div>
-      <div className="bg-gray-900 rounded-xl p-4 shadow-lg border border-gray-700">
-         <h3 className=" sm:text-2xl font-semibold text-bold text-green-500 text-2xl mb-4 ">👉 Recommendations to improve Webite Performance -</h3>
-        {data.Overall_Data.recommendations.map((val,index)=>(
-          <div className="text-base sm:text-lg p-2 pl-6 font-semibold mb-4">
-            {index+1} - {val}
+
+      {/* Recommendations */}
+      <div className={`rounded-xl p-4 shadow-lg border ${cardBorder} ${cardBg}`}>
+        <h3 className="sm:text-2xl font-semibold text-green-500 mb-4">
+          👉 Recommendations to improve Website Performance -
+        </h3>
+        {data.Overall_Data.recommendations.map((val, index) => (
+          <div key={index} className="text-base sm:text-lg p-2 pl-6 font-semibold mb-4">
+            {index + 1} - {val}
           </div>
         ))}
       </div>

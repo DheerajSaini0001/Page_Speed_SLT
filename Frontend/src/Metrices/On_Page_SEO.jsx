@@ -1,41 +1,48 @@
-import React from 'react';
-
+import React, { useContext } from "react";
+import { ThemeContext } from "../ThemeContext";
 
 export default function On_Page_SEO({ data }) {
-  if (!data || !data.Metrices_Data) {
+  const { darkMode } = useContext(ThemeContext);
+
+  if (!data || !data.Metrices_Data) return <div />;
+
+  const ScoreBadge = ({ score, out }) => {
+    const badgeBg = darkMode
+      ? "bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 text-black"
+      : "bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white";
+
     return (
-      <div >
-     
-      </div>
+      <span className={`px-2.5 py-1 rounded-full font-semibold text-sm shadow-md transform transition-transform hover:scale-110 ${badgeBg}`}>
+        {score}/{out}
+      </span>
     );
-  }
+  };
 
-const ScoreBadge = ({ score, out }) => (
-  <span
-    className="px-2.5 py-1 rounded-full text-white font-semibold text-sm
-               bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500
-               shadow-md transform transition-transform hover:scale-110"
-  >
-    {score}/{out}
-  </span>
-);
+  const containerBg = darkMode
+    ? "bg-gray-900 border-gray-700 text-white"
+    : "bg-gray-100 border-gray-300 text-black";
 
+  const cardBg = darkMode
+    ? "bg-gradient-to-br from-blue-900 via-gray-900 to-black"
+    : "bg-gradient-to-br from-blue-200 via-gray-200 to-white";
 
   return (
-    <div id="OnPageSEO" className="min-h-fit pt-20 pb-16 bg-gray-900 border border-gray-700 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 m-4 flex flex-col items-center justify-start p-6 space-y-6">
-      <h1 className="text-3xl font-extrabold text-white mb-6">
+    <div
+      id="OnPageSEO"
+      className={`min-h-fit pt-20 pb-16 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 m-4 flex flex-col items-center justify-start p-6 space-y-6 ${containerBg}`}
+    >
+      <h1 className="text-3xl font-extrabold mb-6">
         On-Page SEO{" "}
-        <span className="text-white">
+        <span>
           ({data.Metrices_Data?.On_Page_SEO?.On_Page_SEO_Score_Total} out of 22)
         </span>
       </h1>
 
-      {/* Core Web Vitals */}
-      <div className="w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-indigo-500 bg-gradient-to-br from-blue-900 via-gray-900 to-black
- hover:scale-105 transition-transform duration-300">
-        <h2 className="text-xl font-bold text-white mb-4">
+      {/* Essentials */}
+      <div className={`w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-indigo-500 hover:scale-105 transition-transform duration-300 ${cardBg}`}>
+        <h2 className="text-xl font-bold mb-4">
           Essentials{" "}
-          <span className="text-white">
+          <span>
             ({data.Metrices_Data?.On_Page_SEO?.Essentials?.Total_Score_B1 || 0} out of 10)
           </span>
         </h2>
@@ -59,12 +66,11 @@ const ScoreBadge = ({ score, out }) => (
         </div>
       </div>
 
-      {/* Delivery & Render */}
-      <div className="w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-purple-500 bg-gradient-to-br from-blue-900 via-gray-900 to-black
- hover:scale-105 transition-transform duration-300">
-        <h2 className="text-xl font-bold text-white mb-4">
+      {/* Media & Semantics */}
+      <div className={`w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-purple-500 hover:scale-105 transition-transform duration-300 ${cardBg}`}>
+        <h2 className="text-xl font-bold mb-4">
           Media & Semantics{" "}
-          <span className="text-white">
+          <span>
             ({data.Metrices_Data?.On_Page_SEO?.Media_and_Semantics?.Total_Score_B2 || 0} out of 6)
           </span>
         </h2>
@@ -74,7 +80,7 @@ const ScoreBadge = ({ score, out }) => (
             <ScoreBadge score={data.Metrices_Data?.On_Page_SEO?.Media_and_Semantics?.Image_ALT_Score ?? 0} out={3}/>
           </div>
           <div className="flex justify-between items-center">
-            <span>Heading Hierarcy Score</span>
+            <span>Heading Hierarchy Score</span>
             <ScoreBadge score={data.Metrices_Data?.On_Page_SEO?.Media_and_Semantics?.Heading_Hierarchy_Score ?? 0} out={2}/>
           </div>
           <div className="flex justify-between items-center">
@@ -84,12 +90,11 @@ const ScoreBadge = ({ score, out }) => (
         </div>
       </div>
 
-      {/* Crawlability & Hygiene */}
-      <div className="w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-pink-500 bg-gradient-to-br from-blue-900 via-gray-900 to-black
- hover:scale-105 transition-transform duration-300">
-        <h2 className="text-xl font-bold text-white mb-4">
+      {/* Structure & Uniqueness */}
+      <div className={`w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-pink-500 hover:scale-105 transition-transform duration-300 ${cardBg}`}>
+        <h2 className="text-xl font-bold mb-4">
           Structure & Uniqueness{" "}
-          <span className="text-white">
+          <span>
             ({data.Metrices_Data?.On_Page_SEO?.Structure_and_Uniqueness?.Total_Score_B3 || 0} out of 6)
           </span>
         </h2>
@@ -111,4 +116,3 @@ const ScoreBadge = ({ score, out }) => (
     </div>
   );
 }
-

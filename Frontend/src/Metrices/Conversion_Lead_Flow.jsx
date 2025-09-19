@@ -1,42 +1,49 @@
-import React from 'react';
-
+import React, { useContext } from "react";
+import { ThemeContext } from "../ThemeContext";
 
 export default function Conversion_Lead_Flow({ data }) {
-  if (!data || !data.Metrices_Data) {
+  const { darkMode } = useContext(ThemeContext);
+
+  if (!data || !data.Metrices_Data) return <div />;
+
+  // ✅ ScoreBadge theme-aware
+  const ScoreBadge = ({ score, out }) => {
+    const badgeBg = darkMode
+      ? "bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 text-black"
+      : "bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white";
+
     return (
-      <div >
-     
-      </div>
+      <span className={`px-2.5 py-1 rounded-full font-semibold text-sm shadow-md transform transition-transform hover:scale-110 ${badgeBg}`}>
+        {score}/{out}
+      </span>
     );
-  }
+  };
 
-const ScoreBadge = ({ score, out }) => (
-  <span
-    className="px-2.5 py-1 rounded-full text-white font-semibold text-sm
-               bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500
-               shadow-md transform transition-transform hover:scale-110"
-  >
-    {score}/{out}
-  </span>
-);
+  const containerBg = darkMode
+    ? "bg-gray-900 border-gray-700 text-white"
+    : "bg-gray-100 border-gray-300 text-black";
 
+  const cardBg = darkMode
+    ? "bg-gradient-to-br from-blue-900 via-gray-900 to-black"
+    : "bg-gradient-to-br from-blue-200 via-gray-200 to-white";
 
   return (
-    <div id="ConversionLeadFlow" className="min-h-fit pt-20 pb-16 bg-gray-900 border border-gray-700 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300  m-4 flex flex-col items-center justify-start p-6 space-y-6">
-      <h1 className="text-3xl font-extrabold text-white mb-6">
+    <div
+      id="ConversionLeadFlow"
+      className={`min-h-fit pt-20 pb-16 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 m-4 flex flex-col items-center justify-start p-6 space-y-6 ${containerBg}`}
+    >
+      <h1 className="text-3xl font-extrabold mb-6">
         Conversion Lead Flow{" "}
-        <span className="text-white">
+        <span>
           ({data.Metrices_Data?.Conversion_and_Lead_Flow?.Conversion_and_Lead_Flow_Score_Total} out of 10)
         </span>
       </h1>
 
-      {/* Core Web Vitals */}
-      <div className="w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-indigo-500 bg-gradient-to-br from-blue-900 via-gray-900 to-black
- hover:scale-105 transition-transform duration-300">
+      <div className={`w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-indigo-500 hover:scale-105 transition-transform duration-300 ${cardBg}`}>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
-            <span> Primary CTAs Score</span>
-            <ScoreBadge score={data.Metrices_Data?.Conversion_and_Lead_Flow. Primary_CTAs_Score ?? 0} out={2} />
+            <span>Primary CTAs Score</span>
+            <ScoreBadge score={data.Metrices_Data?.Conversion_and_Lead_Flow.Primary_CTAs_Score ?? 0} out={2} />
           </div>
           <div className="flex justify-between items-center">
             <span>Forms Score</span>
@@ -63,4 +70,3 @@ const ScoreBadge = ({ score, out }) => (
     </div>
   );
 }
-
