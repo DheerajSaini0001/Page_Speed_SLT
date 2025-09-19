@@ -103,15 +103,15 @@ export default function DarkCard() {
 
       <div className="h-16"></div> {/* spacer */}
 
-      <div className="flex-1 flex flex-col items-center">
+      <div className=" flex flex-col items-center mx-6 sm:mx-0">
         {!result && (
-          <div className={darkMode ? "w-full mt-40 max-w-2xl mx-auto bg-gray-900 rounded-2xl shadow-2xl p-6 space-y-4 border border-gray-700" : "w-full mt-40 max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-6 space-y-4 border border-gray-300"}>
+          <div className={darkMode ? "w-full mt-40 max-w-2xl  bg-gray-900 rounded-2xl shadow-2xl p-6 space-y-4 border border-gray-700" : "w-full mt-40 max-w-2xl flex flex-col justify-center items-center mx-auto bg-white rounded-2xl shadow-2xl p-6 space-y-4 border border-gray-300"}>
             <h2 className="text-2xl font-bold text-center">Check your Page Audits and Performance</h2>
             <p className={darkMode ? "text-gray-400 text-sm text-center" : "text-gray-600 text-sm text-center"}>Enter URL in the input below and click the Analyze button.</p>
 
-            <div className="w-96 flex flex-col justify-center items-center mx-auto">
-              <form className="flex flex-col sm:flex-row gap-2" onSubmit={handleClick}>
-                <div className="relative w-full">
+            <div className=" flex flex-col justify-center items-center mx-auto">
+              <form className="flex flex-col items-center sm:flex-row gap-2" onSubmit={handleClick}>
+                <div className="relative w-full flex flex-col justify-center items-center">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20}/>
                   <input
                     type="text"
@@ -125,7 +125,7 @@ export default function DarkCard() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex gap-2 items-center justify-center bg-[#c2fbd7] text-green-700 rounded-full font-sans px-5 py-2 text-base border-0 select-none transition duration-250 shadow hover:shadow-lg active:scale-[1.05] active:-rotate-1"
+                  className="flex  w-fit sm:w-0 lg:w-fit gap-2 items-center justify-center bg-[#c2fbd7] text-green-700 rounded-full font-sans px-5 py-2 text-base border-0 select-none transition duration-250 shadow hover:shadow-lg active:scale-[1.05] active:-rotate-1"
                 >
                   {loading && <Loader2 className="animate-spin w-5 h-5" />}
                   {loading ? "Analyzing.." : "Analyze"}
