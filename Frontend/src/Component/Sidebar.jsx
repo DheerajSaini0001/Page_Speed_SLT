@@ -30,7 +30,7 @@ export default function Sidebar({ children ,data}) {
 
   // Download Button
   const downloadAsTxt = (data, 
-    filename = `${data.result.url.split("/")[2].split('.')[0]}.txt`
+    filename = `${data.Overall_Data.url.split("/")[2].split('.')[0]}.txt`
 
 ) => {
     // Convert object to readable text

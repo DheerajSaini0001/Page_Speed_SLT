@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Loader2, Menu, X } from "lucide-react";
+import { Loader2, Menu, X ,Search} from "lucide-react";
 import Sidebar from "./Sidebar";
 import Dashboard2 from "./Dashboard2";
 import Technical_Performance from "../Metrices/Technical_Performance";
@@ -121,9 +121,9 @@ export default function DarkCard() {
         )}
 
         {/* Logo / Title */}
-        <div className="flex flex-col-rev justify-center items-center gap-4 font-serif text-4xl font-bold bg-gradient-to-r from-sky-200 via-rose-200 to-orange-200  bg-clip-text text-transparent">
+        <div className="flex flex-col-rev justify-center  items-center gap-4 font-serif text-4xl font-bold bg-gradient-to-r from-sky-200 via-rose-200 to-orange-200  bg-clip-text text-transparent">
           <div>
-            <img src={Assets.Logo} alt="" className="h-22" />
+            <img src={Assets.Logo} alt="" className="h-14" />
           </div>
           <div>Site Audits</div>
         </div>
@@ -141,8 +141,7 @@ export default function DarkCard() {
               Check your Page Audits and Performance
             </h2>
             <p className="text-gray-400 text-sm text-center">
-              Enter URL in the input below and click the Analyze button. A loader
-              will appear while processing.
+              Enter URL in the input below and click the Analyze button.
             </p>
 
             <div className="w-96 flex flex-col justify-center items-center mx-auto">
@@ -150,23 +149,24 @@ export default function DarkCard() {
                 className="flex flex-col sm:flex-row gap-2"
                 onSubmit={handleClick}
               >
-                <input
+               <div className="relative w-full">
+                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20}/> <input
                   type="text"
                   value={inputValue}
                   disabled={loading}
                   onChange={(e) => setInputValue(e.target.value)}
-                  placeholder="Type here..."
-                  className="flex-1 px-4 py-2 rounded-lg bg-gray-800 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                />
+                  placeholder="Enter URL here..."
+                  className="flex-1 pl-10 pr-4 rounded-4xl py-2 bg-gray-800 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                /></div>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex items-center justify-center bg-blue-600 hover:bg-blue-700 disabled:opacity-50 transition rounded-lg font-semibold px-4"
+                  className="h-10 p-2 w-auto flex items-center justify-center bg-blue-600 hover:bg-blue-700 disabled:opacity-50 transition rounded-lg font-semibold "
                 >
                   {loading && (
-                    <Loader2 className="animate-spin m-2 mr-4 h-fit w-fit" />
+                    <Loader2 className="animate-spin " />
                   )}
-                  {loading ? " Analyzing... Please Wait" : "Analyze"}
+                  {loading ? " Analyzing.." : "Analyze"}
                 </button>
               </form>
             </div>

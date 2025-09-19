@@ -1,0 +1,119 @@
+Metrices_Data:
+  URL: https://gmail.com
+  Technical_Performance:
+    Core_Web_Vitals:
+      LCP_Score: 4.05
+      CLS_Score: 3
+      INP_Score: 3.68
+      Total_Score_A1: 10.73
+    Delivery_and_Render:
+      TTFB_Score: 3
+      Compression_Score: 2
+      Caching_Score: 2
+      HTTP_Score: 1
+      Total_Score_A2: 8
+    Crawlability_and_Hygiene:
+      Sitemap_Score: 2
+      Robots_Score: 2
+      Broken_Links_Score: 0
+      Redirect_Chains_Score: 0.4
+      Total_Score_A3: 4.4
+    Technical_Performance_Score_Total: 23.13
+  On_Page_SEO:
+    Essentials:
+      Unique_Title_Score: 3
+      Meta_Description_Score: 2
+      Canonical_Score: 0
+      H1_Score: 3
+      Total_Score_B1: 8
+    Media_and_Semantics:
+      Image_ALT_Score: 3
+      Heading_Hierarchy_Score: 2
+      Descriptive_Links_Score: 1
+      Total_Score_B2: 6
+    Structure_and_Uniqueness:
+      URL_Slugs_Score: 2
+      Duplicate_Content_Score: 3
+      Pagination_Tags_Score: 0
+      Total_Score_B3: 5
+    On_Page_SEO_Score_Total: 19
+  Accessibility:
+    Color_Contrast_Score: 3
+    Focusable_Score: 3
+    ARIA_Score: 3
+    Alt_or_Text_Equivalents_Score: 2
+    Skip_Links_or_Landmarks_Score: 0
+    Accessibility_Score_Total: 11
+  Security_or_Compliance:
+    HTTPS_Score: 2
+    HSTS_Score: 0.5
+    Security_Headers_Score: 2.25
+    Cookie_Banner_and_Consent_Mode_Score: 1
+    Error_Pages_Score: 1
+    Security_or_Compliance_Score_Total: 6.75
+  UX_and_Content_Structure:
+    Mobile_Friendliness_Score: 3
+    Navigation_Depth_Score: 2
+    Layout_Shift_On_interactions_Score: 2
+    Readability_Score: 1
+    Intrusive_Interstitials_Score: 1
+    UX_and_Content_Structure_Score_Total: 9
+  Conversion_and_Lead_Flow:
+    Primary_CTAs_Score: 2
+    Forms_Score: 2
+    Thank_You_or_Success_State_Score: 0
+    Tracking_Of_Form_Submits_or_Events_Score: 2
+    Contact_Info_Score: 2
+    Load_On_CRM_or_Webhook_Score: 0
+    Conversion_and_Lead_Flow_Score_Total: 8
+  AIO_Readiness:
+    Entity_and_Organization_Clarity:
+      Organization_JSON_LD_Score: 0
+      Consistent_NAP_Score: 0
+      Humans_or_Policies_Score: 0.75
+      Total_Score_G1: 0.75
+    Content_Answerability_and_Structure:
+      FAQ_or_How_To_JSON_LD_Score: 0
+      Section_Anchors_or_TOC_Score: 1
+      Descriptive_Media_Captions_or_Figcaptions_Score: 0
+      Total_Score_G2: 1
+    Product_or_Inventory_Schema_and_Feeds:
+      Correct_Schema_Types_Score: 0
+      Feed_Availability_Score: 0
+      Total_Score_G3: 0
+    Crawl_Friendliness_for_Knowledge_Agents:
+      Robots_Allowlist_Score: 1
+      Total_Score_G4: 1
+    AIO_Readiness_Score_Total: 2.75
+    AIO_Compatibility_Badge: No
+Overall_Data:
+  totalScore: 79.63
+  grade: C
+  url: https://gmail.com
+  sectionScores:
+    A: 23.13
+    B: 19
+    C: 11
+    D: 6.75
+    E: 9
+    F: 8
+    G: 2.75
+  badge: No
+  topFixes:
+    - Item 1:
+      name: AIO Readiness
+      score: 2.75
+    - Item 2:
+      name: Security/Compliance
+      score: 6.75
+    - Item 3:
+      name: Conversion & Lead Flow
+      score: 8
+    - Item 4:
+      name: UX & Content
+      score: 9
+    - Item 5:
+      name: Accessibility
+      score: 11
+  recommendations:
+    - AI-Optimization readiness is low – add structured data (Organization, Product, FAQ).

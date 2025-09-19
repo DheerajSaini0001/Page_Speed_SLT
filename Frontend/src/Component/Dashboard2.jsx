@@ -1,9 +1,5 @@
 import React from "react";
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
   Tooltip,
   ResponsiveContainer,
   PieChart,
@@ -107,25 +103,7 @@ export default function Dashboard2({ data }) {
         ))}
       </div>
 
-      {/* Bar Chart */}
-      <div className="bg-gray-900 rounded-xl p-4 shadow-lg border border-gray-700">
-        <h3 className="text-base sm:text-lg font-semibold mb-4">Section Scores</h3>
-        <div className="w-full h-64 sm:h-72 lg:h-96">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={sectionData}>
-              <XAxis dataKey="name" stroke="#aaa" tick={{ fontSize: 10 }} />
-              <YAxis stroke="#aaa" tick={{ fontSize: 10 }} />
-              <Tooltip />
-              
-              <Bar dataKey="score">
-                {sectionData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+    
 
       {/* Pie Chart */}
       <div className="bg-gray-900 rounded-xl p-4 shadow-lg border border-gray-700">

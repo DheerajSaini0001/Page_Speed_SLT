@@ -4,6 +4,7 @@ import Logo from "./Logo.png";
 import Mayank from "./Mayank.JPG";
 import Piyush from "./Piyush.jpeg";
 import ReactLogo from "./react.svg";
+import Aditya from "./Aditya.jpeg";
 
 // Export them together as "Assets"
 const Assets = {
@@ -12,6 +13,7 @@ const Assets = {
   Mayank,
   Piyush,
   ReactLogo,
+  Aditya
 };
 
 export default Assets;

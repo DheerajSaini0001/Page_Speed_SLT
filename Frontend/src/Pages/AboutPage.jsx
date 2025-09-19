@@ -56,6 +56,16 @@ export default function AboutPage() {
             We are a passionate group of developers and analysts committed 
             to making the web faster and more accessible for everyone.
           </p>
+          <div className=" items-center p-5"> 
+            <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 shadow-lg rounded-2xl p-6 hover:shadow-xl hover:scale-105 transition-transform duration-300">
+              <div className="w-24 h-24 mx-auto rounded-full overflow-hidden mb-4">
+                <img src={Assets.Aditya} alt="Aditya Senior Developer" className=" object-cover" />
+              </div>
+              <h3 className="text-lg  text-gray-100 font-extrabold">Aditya</h3>
+              <p className="text-sm text-gray-100">Senior FullStack Developer</p>
+            </div>
+
+          </div>
 
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-10">
             {/* Dheeraj */}
@@ -64,7 +74,7 @@ export default function AboutPage() {
                 <img src={Assets.Dheeraj} alt="Dheeraj Saini - Frontend Developer" className=" object-cover" />
               </div>
               <h3 className="text-lg  text-gray-100 font-extrabold">Dheeraj</h3>
-              <p className="text-sm text-gray-100">Frontend Developer</p>
+              <p className="text-sm text-gray-100">FullStack Developer</p>
             </div>
 
             {/* Piyush */}
