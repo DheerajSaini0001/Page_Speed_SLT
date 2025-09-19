@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { Loader2, Menu, X, Search } from "lucide-react";
+import { Loader2, Menu, X, Search, Sun, Moon } from "lucide-react";
 import Sidebar from "./Sidebar";
 import Dashboard2 from "./Dashboard2";
 import Technical_Performance from "../Metrices/Technical_Performance";
@@ -59,15 +59,15 @@ export default function DarkCard() {
   // ✅ Theme-aware container classes
   const containerClass = darkMode
     ? "scroll-smooth m-0 bg-gray-900 text-white flex flex-col min-h-screen"
-    : "scroll-smooth m-0 bg-white text-black flex flex-col min-h-screen";
+    : "scroll-smooth m-0 bg-gray-50 text-black flex flex-col min-h-screen";
 
   const inputClass = darkMode
     ? "flex-1 pl-10 pr-4 rounded-4xl py-2 bg-gray-800 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none text-white"
-    : "flex-1 pl-10 pr-4 rounded-4xl py-2 bg-gray-100 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none text-black";
+    : "flex-1 pl-10 pr-4 rounded-4xl py-2 bg-gray-200 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none text-black";
 
   const navbarClass = darkMode
     ? "fixed top-0 left-0 w-full h-16 bg-gray-900 border-b border-gray-700 flex items-center justify-between px-4 z-50"
-    : "fixed top-0 left-0 w-full h-16 bg-gray-100 border-b border-gray-300 flex items-center justify-between px-4 z-50";
+    : "fixed top-0 left-0 w-full h-16 bg-gray-200 border-b border-gray-300 flex items-center justify-between px-4 z-50";
 
   const sidebarClass = darkMode
     ? "fixed top-16 left-0 z-40 w-64 h-[calc(100vh-4rem)] overflow-x-hidden bg-gray-900 border-r border-gray-700 transform"
@@ -85,9 +85,9 @@ export default function DarkCard() {
             {sidebarOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         )}
-        <div className="flex flex-col-rev justify-center items-center gap-4 font-serif text-4xl font-bold bg-gradient-to-r from-sky-200 via-rose-200 to-orange-200 bg-clip-text text-transparent">
+        <div className={darkMode?"flex flex-col-rev justify-center items-center gap-4 font-serif text-4xl font-bold bg-gradient-to-r from-sky-200 via-rose-200 to-orange-200 bg-clip-text text-transparent":"flex flex-col-rev justify-center items-center gap-4 font-serif text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#000428] to-[#004e92]"}>
           <div>
-            <img src={Assets.Logo} alt="" className="h-14" />
+            <img src={darkMode?Assets.Logo:Assets.DarkLogo} alt="" className="h-14" />
           </div>
           <div>Site Audits</div>
         </div>
@@ -95,9 +95,9 @@ export default function DarkCard() {
         {/* Theme Toggle Button */}
         <button
           onClick={toggleTheme}
-          className={darkMode ? "px-4 py-2 bg-gray-700 text-white rounded" : "px-4 py-2 bg-gray-200 text-black rounded"}
+          className={darkMode ? "px-4 py-2  text-white rounded" : "px-4 py-2  text-black rounded"}
         >
-          {darkMode ? "Light Mode" : "Dark Mode"}
+          {darkMode ? <Sun color="#FFD700" strokeWidth={3} size={20}/> : <Moon color="#4B5563" strokeWidth={3} size={20}/>}
         </button>
       </nav>
 

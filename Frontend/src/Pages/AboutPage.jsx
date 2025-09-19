@@ -5,23 +5,30 @@ import { ThemeContext } from "../ThemeContext"; // ThemeContext import
 
 export default function AboutPage() {
   const { theme } = useContext(ThemeContext); // ThemeContext se theme access
+  const { darkMode } = useContext(ThemeContext); 
+  console.log();
 
-  const bgClass = theme === "dark" 
+  const bgClass =darkMode 
     ? "bg-gradient-to-br from-gray-900 via-gray-800 to-black" 
     : "bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300";
 
-  const textClass = theme === "dark" ? "text-white" : "text-gray-900";
-  const subTextClass = theme === "dark" ? "text-gray-300" : "text-gray-700";
-  const navClass = theme === "dark" ? "bg-gray-900 border-b border-gray-700" : "bg-white border-b border-gray-300";
+    const navbarClass = darkMode
+    ? "fixed top-0 left-0 w-full h-16 bg-gray-900 border-b border-gray-700 flex items-center justify-between px-4 z-50"
+    : "fixed top-0 left-0 w-full h-16 bg-gray-200 border-b border-gray-300 flex items-center justify-between px-4 z-50";
+
+ 
+    const textClass =darkMode ? "text-white" : "text-gray-900";
+  const subTextClass =darkMode ? "text-gray-300" : "text-gray-700";
+  const navClass =darkMode ? "bg-gray-900 border-b border-gray-700" : "bg-white border-b border-gray-300";
 
   return (
     <>
-      <div className={`${bgClass} min-h-screen py-12 px-6`}>
+      <div className={`${navClass} min-h-screen py-12 px-6`}>
         {/* Navbar */}
         <nav className={`fixed top-0 left-0 w-full h-16 ${navClass} flex items-center justify-between px-6 z-50`}>
           <a href="/">
-            <div className="flex flex-col-reverse justify-center items-center gap-4 font-serif text-4xl font-bold bg-gradient-to-r from-sky-200 via-rose-200 to-orange-200 bg-clip-text text-transparent">
-              <img src={Assets.Logo} alt="Site Audit Logo" className="h-12 w-12" />
+            <div className={darkMode?"flex flex-col-rev justify-center items-center gap-4 font-serif text-4xl font-bold bg-gradient-to-r from-sky-200 via-rose-200 to-orange-200 bg-clip-text text-transparent":"flex flex-col-rev justify-center items-center gap-4 font-serif text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#000428] to-[#004e92]"}>
+              <img src={darkMode?Assets.Logo:Assets.DarkLogo} alt="Site Audit Logo" className="h-12 w-12" />
               <span>Site Audits</span>
             </div>
           </a>
@@ -70,20 +77,39 @@ export default function AboutPage() {
               to making the web faster and more accessible for everyone.
             </p>
 
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-10">
-              {[Assets.Aditya, Assets.Dheeraj, Assets.Piyush, Assets.Mayank].map((img, idx) => {
-                const names = ["Aditya", "Dheeraj", "Piyush", "Mayank"];
-                const roles = ["Senior FullStack Developer", "FullStack Developer", "Backend Developer", "Backend Developer"];
-                return (
-                  <div key={idx} className="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 shadow-lg rounded-2xl p-6 hover:shadow-xl hover:scale-105 transition-transform duration-300">
+           < div className="bg-gradient-to-r m-4 from-pink-500 via-purple-500 to-indigo-500 shadow-lg rounded-2xl p-6 hover:shadow-xl hover:scale-105 transition-transform duration-300">
                     <div className="w-24 h-24 mx-auto rounded-full overflow-hidden mb-4">
-                      <img src={img} alt={names[idx]} className="w-full h-full object-cover" />
+                      <img src={Assets.Aditya} alt="Aditya Senior Developer" className="w-full h-full object-cover" />
                     </div>
-                    <h3 className="text-lg text-gray-100 font-extrabold">{names[idx]}</h3>
-                    <p className="text-sm text-gray-100">{roles[idx]}</p>
+                    <h3 className="text-lg text-gray-100 font-extrabold">Aditya</h3>
+                    <p className="text-sm text-gray-100">Senior FullStack Developer</p>
                   </div>
-                );
-              })}
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-10">
+            
+               
+                  <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 shadow-lg rounded-2xl p-6 hover:shadow-xl hover:scale-105 transition-transform duration-300">
+                    <div className="w-24 h-24 mx-auto rounded-full overflow-hidden mb-4">
+                      <img src={Assets.Dheeraj} alt="Dheeraj" className=" object-cover" />
+                    </div>
+                    <h3 className="text-lg text-gray-100 font-extrabold">Dheeraj</h3>
+                    <p className="text-sm text-gray-100">FullStack Developer</p>
+                  </div>
+                  <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 shadow-lg rounded-2xl p-6 hover:shadow-xl hover:scale-105 transition-transform duration-300">
+                    <div className="w-24 h-24 mx-auto rounded-full overflow-hidden mb-4">
+                      <img src={Assets.Piyush} alt="Piyush" className="w-full h-full object-cover" />
+                    </div>
+                    <h3 className="text-lg text-gray-100 font-extrabold">Piyush</h3>
+                    <p className="text-sm text-gray-100">FullStack Developer</p>
+                  </div>
+                  <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 shadow-lg rounded-2xl p-6 hover:shadow-xl hover:scale-105 transition-transform duration-300">
+                    <div className="w-24 h-24 mx-auto rounded-full overflow-hidden mb-4">
+                      <img src={Assets.Mayank} alt="Mayank" className="w-full h-full object-cover" />
+                    </div>
+                    <h3 className="text-lg text-gray-100 font-extrabold">Mayank</h3>
+                    <p className="text-sm text-gray-100">FullStack Developer</p>
+                  </div>
+              
+            
             </div>
           </section>
         </div>

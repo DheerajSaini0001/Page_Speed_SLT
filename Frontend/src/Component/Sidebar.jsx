@@ -63,7 +63,7 @@ export default function Sidebar({ children, data }) {
   };
 
   // ✅ Theme-based classes
-  const sidebarBg = darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-black";
+  const sidebarBg = darkMode ? "bg-gray-900 text-white" : "bg-gray-200 text-black";
   const sidebarBorder = darkMode ? "border-gray-700" : "border-gray-300";
   const hoverClass = darkMode ? "hover:bg-gray-700 hover:text-blue-500" : "hover:bg-gray-200 hover:text-blue-600";
 
@@ -79,7 +79,7 @@ export default function Sidebar({ children, data }) {
       >
         {/* Logo */}
         <div className={`flex flex-col justify-center items-center text-2xl py-4 border-b ${sidebarBorder}`}>
-          <a href="#deshboard" className="text-4xl font-bold text-green-300">Result</a>
+          <a href="#deshboard" className={darkMode?"text-4xl font-bold text-green-100":"text-4xl font-bold text-green-500"}>Result</a>
         </div>
 
         {/* Menu */}
