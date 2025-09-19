@@ -161,10 +161,10 @@ export default function DarkCard() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="h-10 p-2 w-auto flex items-center justify-center bg-blue-600 hover:bg-blue-700 disabled:opacity-50 transition rounded-lg font-semibold "
+                   className= " flex  gap-2 items-center justify-center bg-[#c2fbd7] text-green-700 rounded-full   font-sans px-5 py-2 text-base border-0 select-none touch-manipulation transition duration-250 shadow-[rgba(44,187,99,0.2)_0_-25px_18px_-14px_inset,rgba(44,187,99,0.15)_0_1px_2px,rgba(44,187,99,0.15)_0_2px_4px,rgba(44,187,99,0.15)_0_4px_8px,rgba(44,187,99,0.15)_0_8px_16px,rgba(44,187,99,0.15)_0_16px_32px] hover:shadow-[rgba(44,187,99,0.35)_0_-25px_18px_-14px_inset,rgba(44,187,99,0.25)_0_1px_2px,rgba(44,187,99,0.25)_0_2px_4px,rgba(44,187,99,0.25)_0_4px_8px,rgba(44,187,99,0.25)_0_8px_16px,rgba(44,187,99,0.25)_0_16px_32px] active:scale-[1.05] active:-rotate-1 "
                 >
                   {loading && (
-                    <Loader2 className="animate-spin " />
+                    <Loader2 className="animate-spin w-5 h-5" />
                   )}
                   {loading ? " Analyzing.." : "Analyze"}
                 </button>
