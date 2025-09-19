@@ -70,7 +70,7 @@ export default function Dashboard2({ data }) {
       </div>
 
       {/* Overall Score */}
-      <div className="bg-gradient-to-r from-indigo-500 to-blue-600 rounded-2xl shadow-xl p-6 text-center flex flex-col sm:flex-row sm:justify-center sm:items-center gap-30">
+      <div className="bg-gradient-to-r from-indigo-200 via-blue-400 to-indigo-200 rounded-2xl shadow-xl p-6 text-center flex flex-col sm:flex-row sm:justify-center sm:items-center gap-30">
         <CircularProgress value={totalScore} size={120} stroke={10} />
         <div>
           <h2 className="text-xl sm:text-2xl font-bold">Overall Score</h2>
