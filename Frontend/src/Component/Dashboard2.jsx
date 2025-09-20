@@ -50,7 +50,7 @@ export default function Dashboard2({ data }) {
   const cardBg = darkMode ? "bg-gray-900 text-white" : "bg-white text-black";
   const cardBorder = darkMode ? "border-gray-700" : "border-gray-300";
   const sectionText = darkMode ? "text-gray-400" : "text-gray-600";
-  const btnBg = darkMode ? "bg-green-500 hover:bg-green-600 text-white" : "bg-green-400 hover:bg-green-500 text-black";
+  const btnBg = darkMode ? "bg-green-500 hover:bg-green-600 text-white " : "bg-green-400 hover:bg-green-500 text-black";
 
   return (
     <div
@@ -59,18 +59,19 @@ export default function Dashboard2({ data }) {
     >
       {/* URL + Button */}
       <div className={`flex justify-between items-center p-4 rounded-lg ${darkMode ? "bg-gray-900" : "bg-gray-100"}`}>
-        <p className={`${darkMode ? "text-white" : "text-black"} text-3xl`}>
+        <p className={`${darkMode ? "text-white" : "text-black"} sm:text-xl lg:text-3xl`}>
           URL - <a href={`${data.Metrices_Data.URL}`} target="_blank" className="text-blue-400 hover:underline">{data.Metrices_Data.URL}</a>
         </p>
         <a href="/">
-          <button className={`font-semibold py-2 px-4 rounded-lg shadow-md transition ${btnBg}`}>
+          <button className={`font-semibold lg:py-2 lg:px-4  sm:pr-4 sm:pl-2 rounded-lg shadow-md transition ${btnBg}`}>
             Check for Other
           </button>
         </a>
       </div>
 
       {/* Overall Score */}
-      <div className="bg-gradient-to-r from-indigo-200 via-blue-400 to-indigo-200 rounded-2xl shadow-xl p-6 text-center flex flex-col sm:flex-row sm:justify-center sm:items-center gap-30">
+      <div className="bg-gradient-to-r from-indigo-200 via-blue-400 to-indigo-200 rounded-2xl shadow-xl p-6 text-center flex flex-col sm:flex-row sm:justify-center sm:items-center sm:gap-20
+       lg:gap-30">
         <CircularProgress value={totalScore} size={120} stroke={10} />
         <div>
           <h2 className="text-xl sm:text-2xl font-bold">Overall Score</h2>

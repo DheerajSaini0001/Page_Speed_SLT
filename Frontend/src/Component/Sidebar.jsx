@@ -71,7 +71,7 @@ export default function Sidebar({ children, data }) {
     <div className="flex fixed overflow-x-hidden">
       {/* Sidebar */}
       <aside
-        className={`fixed top-12 left-0 h-[calc(100%-3rem)] w-64 shadow-lg transform transition-transform duration-300
+        className={`min-h-screen mt-6 mb-0  fixed top-12 left-0 h-[calc(100%-3rem)] w-64 shadow-lg transform transition-transform duration-300
           ${isOpen ? "translate-x-0" : "-translate-x-full"} 
           sm:translate-x-0 sm:static sm:top-0 sm:h-full
           ${sidebarBg} ${sidebarBorder}
@@ -83,7 +83,7 @@ export default function Sidebar({ children, data }) {
         </div>
 
         {/* Menu */}
-        <nav className="flex-1 p-2 space-y-2 overflow-y-auto">
+        <nav className=" flex-1 p-2 space-y-2 -y-auto">
           {menuItems.map((item, index) => (
             <a
               key={index}
