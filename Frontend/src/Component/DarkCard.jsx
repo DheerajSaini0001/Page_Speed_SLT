@@ -87,7 +87,7 @@ export default function DarkCard() {
         )}
         <div className={darkMode?"flex flex-col-rev justify-center items-center gap-4 font-serif text-4xl font-bold bg-gradient-to-r from-sky-200 via-rose-200 to-orange-200 bg-clip-text text-transparent":"flex flex-col-rev justify-center items-center gap-4 font-serif text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#000428] to-[#004e92]"}>
           <div>
-           <img src={darkMode?Assets.Logo:Assets.DarkLogo} alt="" className="sm:h-1 h-12 sm:hidden lg:h-14" />
+           <img src={darkMode?Assets.Logo:Assets.DarkLogo} alt="" className="sm:h-1 h-12  lg:h-14" />
           </div>
           <div>Site Audits</div>
         </div>
