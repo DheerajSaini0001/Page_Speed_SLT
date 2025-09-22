@@ -2,3 +2,12 @@ html{
     scroll-behavior: smooth;
 }
 @import "tailwindcss";
+
+@media (max-width: 600px) {
+    .text-custom-18 {
+      font-size: 16px;
+    }
+    .text-heading-25{
+        font-size: 25px;
+    }
+  }
