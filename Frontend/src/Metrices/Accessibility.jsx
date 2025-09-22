@@ -38,7 +38,7 @@ export default function Accessibility({ data }) {
       <h1 className={`text-3xl text-heading-25 text-heading-25 font-extrabold mb-6 ${textColor}`}>
         Accessibility{" "}
         <span className={textColor}>
-          ({data.Metrices_Data?.Accessibility?.Accessibility_Score_Total} out of 12)
+          ({data.Metrices_Data?.Accessibility?.Accessibility_Score_Total}/12)
         </span>
       </h1>
 

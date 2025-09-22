@@ -27,8 +27,8 @@ export default function Technical_Performance({ data }) {
     >
       <h1 className={`text-3xl font-extrabold mb-6 ${textColor}`}>
         Technical Performance{" "}
-        <span className={textColor}>
-          ({data.Metrices_Data?.Technical_Performance?.Technical_Performance_Score_Total} out of 28)
+        <span className={`${textColor} text-custom-18`}>
+          ({data.Metrices_Data?.Technical_Performance?.Technical_Performance_Score_Total}/28)
         </span>
       </h1>
 
@@ -37,7 +37,7 @@ export default function Technical_Performance({ data }) {
         <h2 className={`text-xl font-bold mb-4 ${textColor}`}>
           Core Web Vitals{" "}
           <span className={textColor}>
-            ({data.Metrices_Data?.Technical_Performance?.Core_Web_Vitals?.Total_Score_A1 || 0} out of 12)
+            ({data.Metrices_Data?.Technical_Performance?.Core_Web_Vitals?.Total_Score_A1 || 0}/12)
           </span>
         </h2>
         <div className={`grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm ${textColor}`}>
@@ -61,7 +61,7 @@ export default function Technical_Performance({ data }) {
         <h2 className={`text-xl font-bold mb-4 ${textColor}`}>
           Delivery & Render{" "}
           <span className={textColor}>
-            ({data.Metrices_Data?.Technical_Performance?.Delivery_and_Render?.Total_Score_A2 || 0} out of 8)
+            ({data.Metrices_Data?.Technical_Performance?.Delivery_and_Render?.Total_Score_A2 || 0}/8)
           </span>
         </h2>
         <div className={`grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm ${textColor}`}>
@@ -89,7 +89,7 @@ export default function Technical_Performance({ data }) {
         <h2 className={`text-xl font-bold mb-4 ${textColor}`}>
           Crawlability & Hygiene{" "}
           <span className={textColor}>
-            ({data.Metrices_Data?.Technical_Performance?.Crawlability_and_Hygiene?.Total_Score_A3 || 0} out of 8)
+            ({data.Metrices_Data?.Technical_Performance?.Crawlability_and_Hygiene?.Total_Score_A3 || 0}/8)
           </span>
         </h2>
         <div className={`grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm ${textColor}`}>

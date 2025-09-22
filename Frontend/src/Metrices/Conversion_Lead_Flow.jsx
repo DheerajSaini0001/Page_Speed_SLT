@@ -30,12 +30,12 @@ export default function Conversion_Lead_Flow({ data }) {
   return (
     <div
       id="ConversionLeadFlow"
-      className={`min-h-fit pt-20 pb-16 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 m-4 flex flex-col items-center justify-start p-6 space-y-6 ${containerBg}`}
+      className={` min-h-fit pt-20 pb-16 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 m-4 flex flex-col items-center justify-start p-6 space-y-6 ${containerBg}`}
     >
-      <h1 className="text-3xl font-extrabold mb-6">
+      <h1 className="text-3xl font-extrabold mb-6 text-heading-25">
         Conversion Lead Flow{" "}
-        <span>
-          ({data.Metrices_Data?.Conversion_and_Lead_Flow?.Conversion_and_Lead_Flow_Score_Total} out of 10)
+        <span className="text-custom-18">
+          ({data.Metrices_Data?.Conversion_and_Lead_Flow?.Conversion_and_Lead_Flow_Score_Total}/10)
         </span>
       </h1>
 

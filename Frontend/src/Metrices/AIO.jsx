@@ -32,8 +32,8 @@ export default function AIO({ data }) {
     >
       <h1 className="text-3xl font-extrabold mb-6 text-heading-25">
         AIO (AI-Optimization) Readiness{" "}
-        <span>
-          ({data.Metrices_Data?.AIO_Readiness?.AIO_Readiness_Score_Total} out of 10)
+        <span className="text-custom-18">
+          ({data.Metrices_Data?.AIO_Readiness?.AIO_Readiness_Score_Total}/10)
         </span>
       </h1>
 
@@ -77,13 +77,13 @@ export default function AIO({ data }) {
         >
           <h2 className="text-xl font-bold mb-4">
             {section.title}{" "}
-            <span>
+            <span className="text-custom-18">
               ({section.scores?.Total_Score_G1 ??
                 section.scores?.Total_Score_G2 ??
                 section.scores?.Total_Score_G3 ??
                 section.scores?.Total_Score_G4 ??
                 0}{" "}
-              out of {section.outTotal})
+            / {section.outTotal})
             </span>
           </h2>
 

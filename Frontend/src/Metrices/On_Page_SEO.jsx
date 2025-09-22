@@ -33,8 +33,8 @@ export default function On_Page_SEO({ data }) {
     >
       <h1 className="text-3xl font-extrabold mb-6">
         On-Page SEO{" "}
-        <span>
-          ({data.Metrices_Data?.On_Page_SEO?.On_Page_SEO_Score_Total} out of 22)
+        <span className="text-custom-18">
+          ({data.Metrices_Data?.On_Page_SEO?.On_Page_SEO_Score_Total}/22)
         </span>
       </h1>
 
@@ -43,7 +43,7 @@ export default function On_Page_SEO({ data }) {
         <h2 className="text-xl font-bold mb-4">
           Essentials{" "}
           <span>
-            ({data.Metrices_Data?.On_Page_SEO?.Essentials?.Total_Score_B1 || 0} out of 10)
+            ({data.Metrices_Data?.On_Page_SEO?.Essentials?.Total_Score_B1 || 0}/10)
           </span>
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
@@ -71,7 +71,7 @@ export default function On_Page_SEO({ data }) {
         <h2 className="text-xl font-bold mb-4">
           Media & Semantics{" "}
           <span>
-            ({data.Metrices_Data?.On_Page_SEO?.Media_and_Semantics?.Total_Score_B2 || 0} out of 6)
+            ({data.Metrices_Data?.On_Page_SEO?.Media_and_Semantics?.Total_Score_B2 || 0}/6)
           </span>
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4  text-sm">
@@ -95,7 +95,7 @@ export default function On_Page_SEO({ data }) {
         <h2 className="text-xl font-bold mb-4">
           Structure & Uniqueness{" "}
           <span>
-            ({data.Metrices_Data?.On_Page_SEO?.Structure_and_Uniqueness?.Total_Score_B3 || 0} out of 6)
+            ({data.Metrices_Data?.On_Page_SEO?.Structure_and_Uniqueness?.Total_Score_B3 || 0}/6)
           </span>
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
