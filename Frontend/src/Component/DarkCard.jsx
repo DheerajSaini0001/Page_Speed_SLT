@@ -58,8 +58,8 @@ export default function DarkCard() {
 
   // ✅ Theme-aware container classes
   const containerClass = darkMode
-    ? "scroll-smooth m-0 bg-gray-900 text-white flex flex-col min-h-screen"
-    : "scroll-smooth m-0 bg-gray-50 text-black flex flex-col min-h-screen";
+    ? "scroll-smooth m-0 bg-gray-800 text-white flex flex-col min-h-screen"
+    : "scroll-smooth m-0 bg-gray-100 text-black flex flex-col min-h-screen";
 
   const inputClass = darkMode
     ? "flex-1 pl-10 pr-4 rounded-4xl py-2 bg-gray-800 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none text-white"
@@ -138,7 +138,7 @@ export default function DarkCard() {
         )}
 
         {result && (
-          <div className="relative w-full flex flex-1">
+          <div className={`${containerClass} relative w-full  flex flex-1`}>
             {/* Sidebar */}
             <div
               className={`${sidebarClass} ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0 transition-transform duration-300 ease-in-out min-h-screen overflow-y-auto pb-4`}
@@ -149,7 +149,7 @@ export default function DarkCard() {
             {sidebarOpen && <div className="fixed inset-0 bg-black/50 z-30 lg:hidden" onClick={() => setSidebarOpen(false)} />}
 
             {/* Dashboard */}
-            <div className="flex-1 lg:ml-64 pb-0 flex-col justify-center pr-4 pt-4 space-y-8">
+            <div className="flex-1 lg:ml-64 pb-0 flex-col justify-center pr-4 pt-2 space-y-8">
               <section id="deshboard" className="scroll-mt-20"><Dashboard2 data={result} /></section>
               <section id="technical-performance" className="scroll-mt-20"><Technical_Performance data={result} /></section>
               <section id="on-page-seo" className="scroll-mt-20"><On_Page_SEO data={result} /></section>

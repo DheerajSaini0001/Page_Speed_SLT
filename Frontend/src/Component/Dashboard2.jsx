@@ -37,17 +37,17 @@ export default function Dashboard2({ data }) {
   const { sectionScores, topFixes, totalScore } = data.Overall_Data;
 
   const COLORS = [
-    "#2563eb",
-    "#10b981",
-    "#f59e0b",
-    "#ef4444",
-    "#8b5cf6",
-    "#06b6d4",
-    "#d946ef",
+  "#3B82F6", // soft blue
+  "#34D399", // soft emerald
+  "#FBBF24", // warm amber
+  "#F87171", // soft red
+  "#A78BFA", // soft violet
+  "#22D3EE", // soft cyan
+  "#E879F9", // soft fuchsia
   ];
 
   // ✅ Dynamic theme classes
-  const cardBg = darkMode ? "bg-gray-900 text-white" : "bg-white text-black";
+  const cardBg = darkMode ? "bg-zinc-900 text-white" : "bg-white text-black";
   const cardBorder = darkMode ? "border-gray-700" : "border-gray-300";
   const sectionText = darkMode ? "text-gray-400" : "text-gray-600";
   const btnBg = darkMode ? "bg-green-500 hover:bg-green-600 text-white " : "bg-green-400 hover:bg-green-500 text-black";
@@ -55,10 +55,10 @@ export default function Dashboard2({ data }) {
   return (
     <div
       id="deshboard"
-      className={`min-h-screen w-full p-4 sm:p-6 grid grid-cols-1 gap-6 ${darkMode ? "text-white" : "text-black"}`}
+      className={`min-h-screen w-full p-4 sm:p-6 grid grid-cols-1 gap-6 ${darkMode ? "text-white bg-gray-800 " : "text-black bg-gray-100"}`}
     >
       {/* URL + Button */}
-      <div className={`flex justify-between items-center p-4 rounded-lg ${darkMode ? "bg-gray-900" : "bg-gray-100"}`}>
+      <div className={`flex justify-between items-center p-4 rounded-lg ${darkMode ? "bg-zinc-900" : "bg-gray-300"}`}>
         <p className={`${darkMode ? "text-white" : "text-black"} sm:text-xl lg:text-3xl`}>
           URL - <a href={`${data.Metrices_Data.URL}`} target="_blank" className="text-blue-400 hover:underline">{data.Metrices_Data.URL}</a>
         </p>
