@@ -93,7 +93,7 @@ const RawData = ({ data }) => {
     });
   };
 
-  const containerBg = darkMode ? "bg-gray-900 border-gray-700" : "bg-gray-100 border-gray-300";
+  const containerBg = darkMode ? "bg-zinc-900 border-gray-700" : "bg-gray-100 border-gray-300";
   const cardBg = darkMode ? "bg-gradient-to-br from-blue-900 via-gray-900 to-black" : "bg-gradient-to-br from-blue-200 via-gray-200 to-white";
 
   return (

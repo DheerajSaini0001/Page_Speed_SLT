@@ -20,7 +20,7 @@ export default function Conversion_Lead_Flow({ data }) {
   };
 
   const containerBg = darkMode
-    ? "bg-gray-900 border-gray-700 text-white "
+    ? "bg-zinc-900 border-gray-700 text-white "
     : "bg-gray-100 border-gray-300 text-black ";
 
   const cardBg = darkMode
