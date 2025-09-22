@@ -9,23 +9,14 @@ import aioReadiness from "../Metrices/aioReadiness.js";
 
 export default async function MetricesCalculation(url,data,$,robotsText) {
 
-  const [
-    technicalReport,
-    seoReport,
-    accessibilityReport,
-    securityReport,
-    uxReport,
-    conversionReport,
-    aioReport
-  ] = await Promise.all([
-    technicalMetrics(url, data, $, robotsText),
-    seoMetrics(url, $),
-    accessibilityMetrics(url),
-    securityCompliance(url),
-    uxContentStructure(url,$),
-    conversionLeadFlow($),
-    aioReadiness(url, robotsText)
-  ]);
+ const technicalReport = await technicalMetrics(url, data, $, robotsText);
+const seoReport = await seoMetrics(url, $);
+const accessibilityReport = await accessibilityMetrics(url);
+const securityReport = await securityCompliance(url);
+const uxReport = await uxContentStructure(url, $);
+const conversionReport = await conversionLeadFlow($);
+const aioReport = await aioReadiness(url, robotsText);
+
   // console.log("Technical Report:", technicalReport)
   // console.log("SEO Report (B1+B2+B3):", seoReport);
   // console.log("Accessibility C Section Report:", accessibilityReport);

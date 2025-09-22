@@ -64,7 +64,7 @@ export default async function evaluateMobileUX(url,$) {
       scores[3] = 2;
     } else {
       const readabilityScore = estimateReadability(text);
-      scores[3] = readabilityScore >= 40 && readabilityScore <= 70 ? 2 : 1;
+      scores[3] = readabilityScore >= 40 && readabilityScore <= 60 ? 2 : 1;
     }
 
 
