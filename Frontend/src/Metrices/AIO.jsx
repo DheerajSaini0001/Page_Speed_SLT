@@ -20,7 +20,7 @@ export default function AIO({ data }) {
   };
 
   // Theme-based classes
-  const containerBg = darkMode ? "bg-gray-900 border-gray-700 text-white" : "bg-gray-100 border-gray-300 text-black";
+  const containerBg = darkMode ? "bg-gray-900 border-gray-700 text-white  " : "bg-gray-100 border-gray-300 text-black ";
   const cardBg = darkMode
     ? "bg-gradient-to-br from-blue-900 via-gray-900 to-black"
     : "bg-gradient-to-br from-blue-200 via-gray-200 to-white";
@@ -30,14 +30,14 @@ export default function AIO({ data }) {
       id="AIOReadiness"
       className={`min-h-fit pt-20 pb-16 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 m-4 flex flex-col items-center justify-start p-6 space-y-6 ${containerBg}`}
     >
-      <h1 className="text-3xl font-extrabold mb-6">
+      <h1 className="text-3xl font-extrabold mb-6 text-heading-25">
         AIO (AI-Optimization) Readiness{" "}
         <span>
           ({data.Metrices_Data?.AIO_Readiness?.AIO_Readiness_Score_Total} out of 10)
         </span>
       </h1>
 
-      <h1 className="text-3xl font-extrabold mb-6">
+      <h1 className="text-3xl font-extrabold mb-6  text-heading-25">
         AIO Compatibility Badge -{" "}
         <span>
           {data.Metrices_Data?.AIO_Readiness?.AIO_Compatibility_Badge}
@@ -87,12 +87,12 @@ export default function AIO({ data }) {
             </span>
           </h2>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 text-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-custom-18">
             {section.scores &&
               Object.entries(section.scores).map(([key, value], i) => {
                 if (key.includes("Total_Score")) return null; // Skip total
                 return (
-                  <div key={i} className="flex justify-between items-center">
+                  <div key={i} className="flex  justify-between items-center ">
                     <span>{key.replace(/_/g, " ")}</span>
                     <ScoreBadge score={value ?? 0} out={section.outTotal} />
                   </div>
