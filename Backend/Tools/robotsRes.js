@@ -13,7 +13,8 @@ export default async function robotsRes(url) {
 
     return robotsText;
   } catch (error) {
-    console.error("Error fetching robots.txt:", error);
+    console.error("Error fetching robots.txt", error);
+    res.status(500).json({ success: false, error: "Failed to fetch robots.txt" });
     return null;
   } finally {
     if (browser) {
