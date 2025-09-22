@@ -73,7 +73,7 @@ export default function AIO({ data }) {
       ].map((section, idx) => (
         <div
           key={idx}
-          className={`w-full max-w-4xl p-6 rounded-2xl shadow-lg ${section.borderColor} bg-gradient-to-br hover:scale-105 transition-transform duration-300 ${cardBg}`}
+          className={`w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-indigo-500 hover:scale-105 transition-transform duration-300 ${cardBg}`}
         >
           <h2 className="text-xl font-bold mb-4">
             {section.title}{" "}

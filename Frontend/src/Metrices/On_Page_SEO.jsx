@@ -46,7 +46,7 @@ export default function On_Page_SEO({ data }) {
             ({data.Metrices_Data?.On_Page_SEO?.Essentials?.Total_Score_B1 || 0} out of 10)
           </span>
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
           <div className="flex justify-between items-center">
             <span>Unique Title Score</span>
             <ScoreBadge score={data.Metrices_Data?.On_Page_SEO?.Essentials?.Unique_Title_Score ?? 0} out={3} />
@@ -74,7 +74,7 @@ export default function On_Page_SEO({ data }) {
             ({data.Metrices_Data?.On_Page_SEO?.Media_and_Semantics?.Total_Score_B2 || 0} out of 6)
           </span>
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 text-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4  text-sm">
           <div className="flex justify-between items-center">
             <span>Image ALT Score</span>
             <ScoreBadge score={data.Metrices_Data?.On_Page_SEO?.Media_and_Semantics?.Image_ALT_Score ?? 0} out={3}/>
@@ -98,7 +98,7 @@ export default function On_Page_SEO({ data }) {
             ({data.Metrices_Data?.On_Page_SEO?.Structure_and_Uniqueness?.Total_Score_B3 || 0} out of 6)
           </span>
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 text-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
           <div className="flex justify-between items-center">
             <span>URL Slugs Score</span>
             <ScoreBadge score={data.Metrices_Data?.On_Page_SEO?.Structure_and_Uniqueness?.URL_Slugs_Score ?? 0} out={2}/>

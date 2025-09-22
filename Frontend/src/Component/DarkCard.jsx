@@ -126,7 +126,7 @@ export default function DarkCard() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex  w-fit sm:w-0 lg:w-fit gap-2 items-center justify-center bg-[#c2fbd7] text-green-700 rounded-full font-sans px-5 py-2 text-base border-0 select-none transition duration-250 shadow hover:shadow-lg active:scale-[1.05] active:-rotate-1"
+                  className="flex  w-fit md:w-fit sm:w-fit  lg:w-fit gap-2 items-center justify-center bg-[#c2fbd7] text-green-700 rounded-full font-sans px-5 py-2 text-base border-0 select-none transition duration-250 shadow hover:shadow-lg active:scale-[1.05] active:-rotate-1"
                 >
                   {loading && <Loader2 className="animate-spin w-5 h-5" />}
                   {loading ? "Analyzing.." : "Analyze"}

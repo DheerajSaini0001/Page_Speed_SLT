@@ -63,7 +63,7 @@ export default function Dashboard2({ data }) {
           URL - <a href={`${data.Metrices_Data.URL}`} target="_blank" className="text-blue-400 hover:underline">{data.Metrices_Data.URL}</a>
         </p>
         <a href="/">
-          <button className={`font-semibold lg:py-2 lg:px-4  sm:pr-4 sm:pl-2 rounded-lg shadow-md transition ${btnBg}`}>
+          <button className={`font-semibold px-2 py-2 sm:px-2 md:px-2 lg:px-4 lg:py-2   rounded-xl shadow-md transition ${btnBg}`}>
             Check for Other
           </button>
         </a>

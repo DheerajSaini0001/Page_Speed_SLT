@@ -68,16 +68,16 @@ export default function Sidebar({ children, data }) {
   const hoverClass = darkMode ? "hover:bg-gray-700 hover:text-blue-500" : "hover:bg-gray-200 hover:text-blue-600";
 
   return (
-    <div className="flex fixed overflow-x-hidden">
+    <div className="flex fixed overflow-y-auto">
       {/* Sidebar */}
       <aside
-        className={`min-h-screen mt-6 mb-0  fixed top-12 left-0 h-[calc(100%-3rem)] w-64 shadow-lg transform transition-transform duration-300
-          ${isOpen ? "translate-x-0" : "-translate-x-full"} 
+        className={`min-h-screen  sm: mt-[-10px] lg:mt-6 mb-0 overflow-y-hidden  fixed top-12 left-0 h-[calc(100%-3rem)] w-64 shadow-lg transform transition-transform duration-300
+          ${isOpen ? "translate-x-0 " : "-translate-x-full"} 
           sm:translate-x-0 sm:static sm:top-0 sm:h-full
           ${sidebarBg} ${sidebarBorder}
         `}
       >
-        {/* Logo */}
+        
         <div className={`flex flex-col justify-center items-center text-2xl py-4 border-b ${sidebarBorder}`}>
           <a href="#deshboard" className={darkMode?"text-4xl font-bold text-green-100":"text-4xl font-bold text-green-500"}>Result</a>
         </div>

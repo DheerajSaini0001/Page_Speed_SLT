@@ -40,7 +40,7 @@ export default function Technical_Performance({ data }) {
             ({data.Metrices_Data?.Technical_Performance?.Core_Web_Vitals?.Total_Score_A1 || 0} out of 12)
           </span>
         </h2>
-        <div className={`grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm ${textColor}`}>
+        <div className={`grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm ${textColor}`}>
           <div className="flex justify-between items-center">
             <span>Largest Contentful Paint (LCP) Score</span>
             <ScoreBadge score={data.Metrices_Data?.Technical_Performance?.Core_Web_Vitals?.LCP_Score ?? 0} out={5} />
@@ -64,7 +64,7 @@ export default function Technical_Performance({ data }) {
             ({data.Metrices_Data?.Technical_Performance?.Delivery_and_Render?.Total_Score_A2 || 0} out of 8)
           </span>
         </h2>
-        <div className={`grid grid-cols-2 sm:grid-cols-3 gap-6 text-sm ${textColor}`}>
+        <div className={`grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm ${textColor}`}>
           <div className="flex justify-between items-center">
             <span>Time to First Byte (TTFB) Score</span>
             <ScoreBadge score={data.Metrices_Data?.Technical_Performance?.Delivery_and_Render?.TTFB_Score ?? 0} out={3} />
@@ -92,7 +92,7 @@ export default function Technical_Performance({ data }) {
             ({data.Metrices_Data?.Technical_Performance?.Crawlability_and_Hygiene?.Total_Score_A3 || 0} out of 8)
           </span>
         </h2>
-        <div className={`grid grid-cols-2 sm:grid-cols-3 gap-6 text-sm ${textColor}`}>
+        <div className={`grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm ${textColor}`}>
           <div className="flex justify-between items-center">
             <span>Sitemap Score</span>
             <ScoreBadge score={data.Metrices_Data?.Technical_Performance?.Crawlability_and_Hygiene?.Sitemap_Score ?? 0} out={2} />
