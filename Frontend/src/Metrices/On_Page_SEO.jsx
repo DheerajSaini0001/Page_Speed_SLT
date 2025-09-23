@@ -1,19 +1,27 @@
 import React, { useContext } from "react";
 import { ThemeContext } from "../ThemeContext";
+import { Check, X } from "lucide-react";
 
 export default function On_Page_SEO({ data }) {
   const { darkMode } = useContext(ThemeContext);
 
   if (!data || !data.Metrices_Data) return <div />;
 
+  
   const ScoreBadge = ({ score, out }) => {
+    const cssscore=score?"bg-green-300":"bg-red-300"
+    const hasValue = score ? <Check size={18}/> : <X size={18}/>;
     const badgeBg = darkMode
       ? "bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 text-black"
       : "bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white";
 
     return (
-      <span className={darkMode? "px-2.5 py-1 rounded-full   text-black bg-white font-semibold text-sm shadow-md transform transition-transform hover:scale-110":" px-2.5 py-1 rounded-full text-white bg-black font-semibold text-sm shadow-md transform transition-transform hover:scale-110"}>
-        {score}/{out}
+      <span className={`${
+        darkMode
+          ? "px-2.5 py-1 rounded-full text-white font-semibold text-sm shadow-md transform transition-transform hover:scale-110"
+          : "px-2.5 py-1 rounded-full text-black  font-semibold text-sm shadow-md transform transition-transform hover:scale-110"
+      } ${cssscore}`}>
+        {hasValue}
       </span>
     );
   };
@@ -34,7 +42,7 @@ export default function On_Page_SEO({ data }) {
       <h1 className="text-3xl font-extrabold mb-6">
         On-Page SEO{" "}
         <span className="text-custom-18">
-          ({data.Metrices_Data?.On_Page_SEO?.On_Page_SEO_Score_Total}/22)
+          
         </span>
       </h1>
 
@@ -42,13 +50,11 @@ export default function On_Page_SEO({ data }) {
       <div className={`w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-indigo-500 hover:scale-105 transition-transform duration-300 ${cardBg}`}>
         <h2 className="text-xl font-bold mb-4">
           Essentials{" "}
-          <span>
-            ({data.Metrices_Data?.On_Page_SEO?.Essentials?.Total_Score_B1 || 0}/10)
-          </span>
+      
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
           <div className="flex justify-between items-center">
-            <span>Unique Title Score</span>
+            <span>Title Score</span>
             <ScoreBadge score={data.Metrices_Data?.On_Page_SEO?.Essentials?.Unique_Title_Score ?? 0} out={3} />
           </div>
           <div className="flex justify-between items-center">
@@ -70,9 +76,7 @@ export default function On_Page_SEO({ data }) {
       <div className={`w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-purple-500 hover:scale-105 transition-transform duration-300 ${cardBg}`}>
         <h2 className="text-xl font-bold mb-4">
           Media & Semantics{" "}
-          <span>
-            ({data.Metrices_Data?.On_Page_SEO?.Media_and_Semantics?.Total_Score_B2 || 0}/6)
-          </span>
+         
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4  text-sm">
           <div className="flex justify-between items-center">
@@ -94,9 +98,7 @@ export default function On_Page_SEO({ data }) {
       <div className={`w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-pink-500 hover:scale-105 transition-transform duration-300 ${cardBg}`}>
         <h2 className="text-xl font-bold mb-4">
           Structure & Uniqueness{" "}
-          <span>
-            ({data.Metrices_Data?.On_Page_SEO?.Structure_and_Uniqueness?.Total_Score_B3 || 0}/6)
-          </span>
+         
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
           <div className="flex justify-between items-center">
