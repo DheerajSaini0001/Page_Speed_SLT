@@ -28,25 +28,39 @@ export default function Metrices(url,technicalReport,seoReport,accessibilityRepo
       },
        On_Page_SEO:{
         Essentials:{
-          Unique_Title_Score:seoReport.B1.title,
-          Meta_Description_Score:seoReport.B1.metaDescription,
-          Canonical_Score:seoReport.B1.canonical,
-          H1_Score:seoReport.B1.h1,
+          Unique_Title_Score:{
+            title: seoReport.B1.title,
+            titleLength: seoReport.B1.titleLength,
+            titleScore: seoReport.B1.titleScore,
+          },
+          Meta_Description_Score:{
+            metaDescription: seoReport.B1.metaDesc,
+            metaDescLength: seoReport.B1.metaDescLength,
+            metaDescScore: seoReport.B1.metaDescScore
+          },
+          Canonical_Score:{
+            canonical: seoReport.B1.canonical,
+            canonicalScore: seoReport.B1.canonicalScore
+          },
+          H1_Score:{
+            h1Count:seoReport.B1.h1Count,
+            h1Score:seoReport.B1.h1Score
+          },
           Total_Score_B1:seoReport.B1.total
         },
         Media_and_Semantics:{
-          Image_ALT_Score:seoReport.B2.imageAlt,
-          Heading_Hierarchy_Score:seoReport.B2.headingHierarchy,
-          Descriptive_Links_Score:seoReport.B2.descriptiveLinks,
+          Image_ALT_Score:seoReport.B2.imageAltScore,
+          Heading_Hierarchy_Score:seoReport.B2.hierarchyScore,
+          Descriptive_Links_Score:seoReport.B2.linkScore,
           Total_Score_B2:seoReport.B2.total
         },
         Structure_and_Uniqueness:{
-          URL_Slugs_Score:seoReport.B3.urlSlugs,
+          URL_Slugs_Score:seoReport.B3.urlSlugScore,
           Duplicate_Content_Score:seoReport.B3.duplicateContent,
-          Pagination_Tags_Score:seoReport.B3.pagination,
+          Pagination_Tags_Score:seoReport.B3.paginationScore,
           Total_Score_B3:seoReport.B3.total
         },
-        On_Page_SEO_Score_Total:seoReport.B1.total + seoReport.B2.total + seoReport.B3.total
+        On_Page_SEO_Score_Total:seoReport.totalSEO
       },
       Accessibility:{
         Color_Contrast_Score:accessibilityReport.C.colorContrast,

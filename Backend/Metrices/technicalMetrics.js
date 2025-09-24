@@ -100,7 +100,8 @@ totalScore_A3 += redirectScore * 2;
 
 
   // const audits = data?.lighthouseResult?.audits;
-
+  // console.log(audits);
+  
   const lcpScore = (data?.lighthouseResult?.audits?.["largest-contentful-paint"]?.score || 1)*5
   const clsScore =  (data?.lighthouseResult?.audits?.["cumulative-layout-shift"]?.score || 1)*3
   const inpScore = (data?.lighthouseResult?.audits?.["interactive"]?.score|| 1)*4
