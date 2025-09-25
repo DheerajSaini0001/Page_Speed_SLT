@@ -43,11 +43,11 @@ export default function Security_Compilance({ data }) {
       >
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
           <div className={`flex justify-between items-center ${textColor}`}>
-            <span>HTTPS</span>
+            <span>Hypertext Transfer Protocol Secure (HTTPS)</span>
             <ScoreBadge score={data.Security_or_Compliance.HTTPS.Score} />
           </div>
           <div className={`flex justify-between items-center ${textColor}`}>
-            <span>HSTS</span>
+            <span>HTTP Strict Transport Security (HSTS)</span>
             <ScoreBadge score={data.Security_or_Compliance.HSTS.Score} />
           </div>
           <div className={`flex justify-between items-center ${textColor}`}>
@@ -59,7 +59,7 @@ export default function Security_Compilance({ data }) {
             <ScoreBadge score={data.Security_or_Compliance.Cookie_Banner_and_Consent_Mode.Score} />
           </div>
           <div className={`flex justify-between items-center ${textColor}`}>
-            <span>404/500 handling</span>
+            <span>404/500 Handling</span>
             <ScoreBadge score={data.Security_or_Compliance.Error_Pages.Score} />
           </div>
         </div>
