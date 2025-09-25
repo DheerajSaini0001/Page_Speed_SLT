@@ -76,8 +76,10 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data) {
       },
       Structure_and_Uniqueness: {
          URL_Slugs:{
+          Slug:MetricesCalculation_Data.seoReport.B3.slug,
           Parameter:'Slug must be meanoingfull & length must be less than 75 characters ',
-          Score:MetricesCalculation_Data.seoReport.B3.urlSlugScore
+          Score:MetricesCalculation_Data.seoReport.B3.urlSlugScore,
+          URL_Slugs_Length:MetricesCalculation_Data.seoReport.B3.slugLength
         },
         Duplicate_Content:{
           Parameter:' Duplicate contnent occured within the page less than 50 %',

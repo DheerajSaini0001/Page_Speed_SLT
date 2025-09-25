@@ -152,12 +152,18 @@ const B2 = {
 };
 
 
-let urlSlugScore = 1; 
+let urlSlugScore = 0; 
 const slug = new URL(url).pathname.slice(1);
-if (slug && (!/^([a-z0-9]+(-[a-z0-9]+)*)$/.test(slug) && slug.length > 75)) {
-    urlSlugScore = 0; 
-  }
-
+const slugLength = slug.length 
+if(!slug){
+  urlSlugScore = 1
+}
+else if(slug && (!/^([a-z0-9]+(-[a-z0-9]+)*)$/.test(slug) && slugLength > 75)) {
+    urlSlugScore = 2; 
+}
+else{
+    urlSlugScore = 3;
+} 
 
 const pageText = extractText($);
 // const duplicatePercent = computeDuplicatePercent(pageText, otherPages);
@@ -167,7 +173,9 @@ const dupScore = simpleDuplicateCheck(pageText);
 const paginationScore = $("link[rel='next'], link[rel='prev']").length ? 1 : 0; 
 
   const B3 = {
+    slug:slug,
     urlSlugScore: urlSlugScore,
+    slugLength:slugLength,
     duplicateContent: dupScore,
     paginationScore: paginationScore,
     total: (urlSlugScore + dupScore + paginationScore),

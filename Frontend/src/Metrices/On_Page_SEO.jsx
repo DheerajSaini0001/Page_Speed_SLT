@@ -53,7 +53,7 @@ export default function On_Page_SEO({ data }) {
           Essentials{" "}
       
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div className="flex justify-between items-center">
             <span>Title Score</span>
             <ScoreBadge score={data.On_Page_SEO.Essentials.Unique_Title.Score} 
@@ -87,7 +87,7 @@ export default function On_Page_SEO({ data }) {
           Media & Semantics{" "}
          
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4  text-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4  text-sm">
           <div className="flex justify-between items-center">
             <span>Image ALT Score</span>
             <ScoreBadge score={data.On_Page_SEO.Media_and_Semantics.Image_ALT.Score} out={data.On_Page_SEO.Media_and_Semantics.Image_ALT.Score?"Meaningfull Alt":"Miningless Alt"}/>
@@ -109,10 +109,10 @@ export default function On_Page_SEO({ data }) {
           Structure & Uniqueness{" "}
          
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div className="flex justify-between items-center">
             <span>URL Slugs Score</span>
-            <ScoreBadge score={data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score } out={data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score} des={data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score ?"":"" }/>
+            <ScoreBadge score={data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score==1?0:data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score==2?1:0 } out={data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score==2?data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.URL_Slugs_Length:""} des={data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score ==1?"No Slug":data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score ==2?"Slug is meaningfull & length < 75":"Slug is meaningless & length > 75"}/>
           </div>
           <div className="flex justify-between items-center">
             <span>Duplicate Content Score</span>
