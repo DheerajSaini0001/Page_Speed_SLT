@@ -3,12 +3,13 @@ import { ThemeContext } from "../ThemeContext";
 import { Check, X } from "lucide-react";
 
 export default function On_Page_SEO({ data }) {
+  
   const { darkMode } = useContext(ThemeContext);
 
-  if (!data || !data.Metrices_Data) return <div />;
+  if (!data) return <div />;
 
   
-  const ScoreBadge = ({ score, out }) => {
+  const ScoreBadge = ({score,out,des}) => {
     const cssscore=score?"bg-green-300":"bg-red-300"
     const hasValue = score ? <Check size={18}/> : <X size={18}/>;
     const badgeBg = darkMode
@@ -18,10 +19,10 @@ export default function On_Page_SEO({ data }) {
     return (
       <span className={`${
         darkMode
-          ? "px-2.5 py-1 rounded-full text-white font-semibold text-sm shadow-md transform transition-transform hover:scale-110"
-          : "px-2.5 py-1 rounded-full text-black  font-semibold text-sm shadow-md transform transition-transform hover:scale-110"
+          ? "px-2.5 flex py-1 rounded-full text-white font-semibold text-sm shadow-md transform transition-transform "
+          : "px-2.5 flex py-1 rounded-full text-black  font-semibold text-sm shadow-md transform transition-transform "
       } ${cssscore}`}>
-        {hasValue}
+        {hasValue} {out} {des}
       </span>
     );
   };
@@ -52,22 +53,30 @@ export default function On_Page_SEO({ data }) {
           Essentials{" "}
       
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
           <div className="flex justify-between items-center">
             <span>Title Score</span>
-            <ScoreBadge score={data.Metrices_Data?.On_Page_SEO?.Essentials?.Unique_Title_Score ?? 0} out={3} />
+            <ScoreBadge score={data.On_Page_SEO.Essentials.Unique_Title.Score} 
+            out={data.On_Page_SEO.Essentials.Unique_Title.Title_Length}
+             des={"characters"}/>
           </div>
           <div className="flex justify-between items-center">
             <span>Meta Description Score</span>
-            <ScoreBadge score={data.Metrices_Data?.On_Page_SEO?.Essentials?.Meta_Description_Score ?? 0} out={2} />
+            <ScoreBadge score={data.On_Page_SEO.Essentials.Meta_Description.Score} 
+            out={data.On_Page_SEO.Essentials.Meta_Description.MetaDescription_Length} 
+            des={"characters"} />
           </div>
           <div className="flex justify-between items-center">
             <span>Canonical Score</span>
-            <ScoreBadge score={data.Metrices_Data?.On_Page_SEO?.Essentials?.Canonical_Score ?? 0} out={2} />
+            <ScoreBadge score={data.On_Page_SEO.Essentials.Canonical.Score} 
+            des={data.On_Page_SEO.Essentials.Canonical.Score ? "Self-refercing":
+              "No Self-refercing"
+            } 
+            />
           </div>
           <div className="flex justify-between items-center">
             <span>H1 Score</span>
-            <ScoreBadge score={data.Metrices_Data?.On_Page_SEO?.Essentials?.H1_Score ?? 0} out={3} />
+            <ScoreBadge score={data.On_Page_SEO.Essentials.H1.Score} out={data.On_Page_SEO.Essentials.H1.Score?"Exectly One":"More than One"} />
           </div>
         </div>
       </div>
@@ -78,18 +87,18 @@ export default function On_Page_SEO({ data }) {
           Media & Semantics{" "}
          
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4  text-sm">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4  text-sm">
           <div className="flex justify-between items-center">
             <span>Image ALT Score</span>
-            <ScoreBadge score={data.Metrices_Data?.On_Page_SEO?.Media_and_Semantics?.Image_ALT_Score ?? 0} out={3}/>
+            <ScoreBadge score={data.On_Page_SEO.Media_and_Semantics.Image_ALT.Score} out={data.On_Page_SEO.Media_and_Semantics.Image_ALT.Score?"Meaningfull Alt":"Miningless Alt"}/>
           </div>
           <div className="flex justify-between items-center">
             <span>Heading Hierarchy Score</span>
-            <ScoreBadge score={data.Metrices_Data?.On_Page_SEO?.Media_and_Semantics?.Heading_Hierarchy_Score ?? 0} out={2}/>
+            <ScoreBadge score={data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Score } out={data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Score?"h1->h2..":"h1->h2.."}/>
           </div>
           <div className="flex justify-between items-center">
             <span>Descriptive Links Score</span>
-            <ScoreBadge score={data.Metrices_Data?.On_Page_SEO?.Media_and_Semantics?.Descriptive_Links_Score ?? 0} out={1} />
+            <ScoreBadge score={data.On_Page_SEO.Media_and_Semantics.Descriptive_Links.Score} out={data.On_Page_SEO.Media_and_Semantics.Descriptive_Links.Score?"Button Text MeaningFull":"Button Text Meaningless"} />
           </div>
         </div>
       </div>
@@ -100,18 +109,18 @@ export default function On_Page_SEO({ data }) {
           Structure & Uniqueness{" "}
          
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
           <div className="flex justify-between items-center">
             <span>URL Slugs Score</span>
-            <ScoreBadge score={data.Metrices_Data?.On_Page_SEO?.Structure_and_Uniqueness?.URL_Slugs_Score ?? 0} out={2}/>
+            <ScoreBadge score={data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score } out={data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score} des={data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score ?"":"" }/>
           </div>
           <div className="flex justify-between items-center">
             <span>Duplicate Content Score</span>
-            <ScoreBadge score={data.Metrices_Data?.On_Page_SEO?.Structure_and_Uniqueness?.Duplicate_Content_Score ?? 0} out={3}/>
+            <ScoreBadge score={!data.On_Page_SEO.Structure_and_Uniqueness.Duplicate_Content.Score} out={!data.On_Page_SEO.Structure_and_Uniqueness.Duplicate_Content.Score ?"No Duplicate Content":"Duplicate Content"}/>
           </div>
           <div className="flex justify-between items-center">
             <span>Pagination Tags Score</span>
-            <ScoreBadge score={data.Metrices_Data?.On_Page_SEO?.Structure_and_Uniqueness?.Pagination_Tags_Score ?? 0} out={1}/>
+            <ScoreBadge score={data.On_Page_SEO.Structure_and_Uniqueness.Pagination_Tags.Score } out={data.On_Page_SEO.Structure_and_Uniqueness.Pagination_Tags.Score?"Pagination Not found":"Pagination found"}/>
           </div>
         </div>
       </div>

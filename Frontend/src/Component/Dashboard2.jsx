@@ -13,7 +13,7 @@ import { ThemeContext } from "../ThemeContext"; // ✅ ThemeContext import
 export default function Dashboard2({ data }) {
   const { darkMode } = useContext(ThemeContext); // ✅ useContext
 
-  if (!data || !data.Overall_Data) return <div />;
+  if (!data) return <div />;
 
   const sectionLabels = {
     A: "Technical Performance",
@@ -34,7 +34,7 @@ export default function Dashboard2({ data }) {
     G: 10,
   };
 
-  const { sectionScores, topFixes, totalScore } = data.Overall_Data;
+  const { Section_Score, Top_Fixes} = data;
 
   const COLORS = [
   "#3B82F6", // soft blue
@@ -60,7 +60,7 @@ export default function Dashboard2({ data }) {
       {/* URL + Button */}
       <div className={`flex justify-between items-center p-4 rounded-lg ${darkMode ? "bg-zinc-900" : "bg-gray-300"}`}>
         <p className={`${darkMode ? "text-white" : "text-black"} sm:text-xl lg:text-3xl`}>
-          URL - <a href={`${data.Metrices_Data.URL}`} target="_blank" className="text-blue-400 hover:underline">{data.Metrices_Data.URL}</a>
+          URL - <a href={`${data.Site}`} target="_blank" className="text-blue-400 hover:underline">{data.Site}</a>
         </p>
         <a href="/">
           <button className={`font-semibold px-2 py-2 sm:px-2 md:px-2 lg:px-4 lg:py-2   rounded-xl shadow-md transition ${btnBg}`}>
@@ -72,70 +72,84 @@ export default function Dashboard2({ data }) {
       {/* Overall Score */}
       <div className="bg-gradient-to-r from-indigo-200 via-blue-400 to-indigo-200 rounded-2xl shadow-xl p-6 text-center flex flex-col sm:flex-row sm:justify-center sm:items-center sm:gap-20
        lg:gap-30">
-        <CircularProgress value={totalScore} size={120} stroke={10} />
+        <CircularProgress value={data.Score} size={120} stroke={10} />
         <div>
           <h2 className="text-xl sm:text-2xl font-bold">Overall Score</h2>
-          <p className="text-4xl sm:text-5xl font-extrabold mt-2">{totalScore.toFixed(1)}/100</p>
+          <p className="text-4xl sm:text-5xl font-extrabold mt-2">{data.Score.toFixed(1)}/100</p>
           <p className="text-gray-200 text-sm sm:text-base mt-1">Website Health Index</p>
         </div>
         <div>
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">Grade - {data.Overall_Data.grade}</h1>
-          <p className="text-lg sm:text-xl mt-1 font-semibold">AIO Compatibility - {data.Overall_Data.badge}</p>
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">Grade - {data.Grade}</h1>
+          <p className="text-lg sm:text-xl mt-1 font-semibold">AIO Compatibility - {data.AIO_Compatibility_Badge}</p>
         </div>
       </div>
 
       {/* Section Score Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {Object.entries(sectionScores).map(([key, value], index) => (
-          <div
-            key={key}
-            className={`rounded-xl p-4 shadow-lg border ${cardBorder} text-center ${cardBg}`}
-          >
-            <h3 className={`text-xs sm:text-sm ${sectionText}`}>{sectionLabels[key]} Score</h3>
-            <p className="text-lg sm:text-xl lg:text-2xl font-bold" style={{ color: COLORS[index % COLORS.length] }}>
-              {value.toFixed(1)}/{sectionOutOf[key]}
-            </p>
-          </div>
-        ))}
-      </div>
+<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+  {data.Section_Score.map((item, index) => (
+    <div
+      key={item.name}
+      className={`rounded-xl p-4 shadow-lg border ${cardBorder} text-center ${cardBg}`}
+    >
+      <h3 className={`text-xs sm:text-sm ${sectionText}`}>
+        {item.name}
+      </h3>
+      <p
+        className="text-lg sm:text-xl lg:text-2xl font-bold"
+        style={{ color: COLORS[index % COLORS.length] }}
+      >
+        {item.score.toFixed(1)}%
+      </p>
+    </div>
+  ))}
+</div>
 
       {/* Pie Chart */}
-      <div className={`rounded-xl p-4 shadow-lg border ${cardBorder} ${cardBg}`}>
-        <h3 className="text-base sm:text-lg font-semibold mb-4">Top Fixes Needed</h3>
-        <div className="w-full h-64 sm:h-72 lg:h-96">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={topFixes}
-                dataKey="score"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius="70%"
-                label={({ name }) => (name.length > 14 ? name.slice(0, 14) + "..." : name)}
-              >
-                {topFixes.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend
-                layout="horizontal"
-                verticalAlign="bottom"
-                align="center"
-                wrapperStyle={{ fontSize: "12px", color: darkMode ? "white" : "black" }} // ✅ legend text color
-              />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+<div className={`rounded-xl p-4 shadow-lg border ${cardBorder} ${cardBg}`}>
+  <h3 className="text-base sm:text-lg font-semibold mb-4">Top Fixes Needed</h3>
+  <div className="w-full h-64 sm:h-72 lg:h-96">
+    <ResponsiveContainer width="100%" height="100%">
+      <PieChart>
+        <Pie
+          data={data.Top_Fixes}   // ✅ use your array directly
+          dataKey="score"
+          nameKey="name"
+          cx="50%"
+          cy="50%"
+          outerRadius="70%"
+          label={({ name }) =>
+            name.length > 14 ? name.slice(0, 14) + "..." : name
+          }
+        >
+          {data.Top_Fixes.map((item, index) => (
+            <Cell
+              key={`cell-${index}`}
+              fill={COLORS[index % COLORS.length]}
+            />
+          ))}
+        </Pie>
+        <Tooltip />
+        <Legend
+          layout="horizontal"
+          verticalAlign="bottom"
+          align="center"
+          wrapperStyle={{
+            fontSize: "12px",
+            color: darkMode ? "white" : "black", // ✅ legend text color
+          }}
+        />
+      </PieChart>
+    </ResponsiveContainer>
+  </div>
+</div>
+
 
       {/* Recommendations */}
       <div className={`rounded-xl p-4 shadow-lg border ${cardBorder} ${cardBg}`}>
         <h3 className="sm:text-2xl font-semibold text-green-500 mb-4">
           👉 Recommendations to improve Website Performance -
         </h3>
-        {data.Overall_Data.recommendations.map((val, index) => (
+        {data.recommendations.map((val, index) => (
           <div key={index} className="text-base sm:text-lg p-2 pl-6 font-semibold mb-4">
             {index + 1} - {val}
           </div>

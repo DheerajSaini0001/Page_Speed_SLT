@@ -15,12 +15,8 @@ app.post('/data', async (req, res) => {
   const  message  = req.body;
   try {
   const data = await main(message)
-  res.json({
-  Metrices_Data: data.Metrices_Data,
-  Overall_Data: data.Overall_Data
-});
-  console.log(data.Metrices_Data);
-  console.log(data.Overall_Data);
+  res.json(data);
+  console.log(data);
     
   } catch (error) {
     console.error("Error fetching PageSpeed data:", error);

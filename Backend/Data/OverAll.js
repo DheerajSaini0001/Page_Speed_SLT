@@ -1,13 +1,13 @@
 
-export default function OverAll(jsonData) {
+export default function OverAll(MetricesCalculation_Data) {
 
-  const totalA = jsonData.Technical_Performance.Technical_Performance_Score_Total || 0;
-  const totalB = jsonData.On_Page_SEO.On_Page_SEO_Score_Total || 0;
-  const totalC = jsonData.Accessibility.Accessibility_Score_Total || 0;
-  const totalD = jsonData.Security_or_Compliance.Security_or_Compliance_Score_Total || 0;
-  const totalE = jsonData.UX_and_Content_Structure.UX_and_Content_Structure_Score_Total || 0;
-  const totalF = jsonData.Conversion_and_Lead_Flow.Conversion_and_Lead_Flow_Score_Total || 0;
-  const totalG = jsonData.AIO_Readiness.AIO_Readiness_Score_Total || 0;
+  const totalA = MetricesCalculation_Data.technicalReport.totalScore || 0;
+  const totalB = MetricesCalculation_Data.seoReport.totalSEO || 0;
+  const totalC = MetricesCalculation_Data.accessibilityReport.C.totalCScore || 0;
+  const totalD = MetricesCalculation_Data.securityReport.D.totalDScore || 0;
+  const totalE = MetricesCalculation_Data.uxReport.E.totalEScore || 0;
+  const totalF = MetricesCalculation_Data.conversionReport.F.totalFScore || 0;
+  const totalG = MetricesCalculation_Data.aioReport.G.totalGScore || 0;
 
   const scores = [
   { name: "Technical Performance", score: totalA },
@@ -66,19 +66,9 @@ if (totalG < 6) {
   return {
     totalScore,
     grade,
-    url:jsonData.URL,
-    sectionScores: {
-      A: totalA,
-      B: totalB,
-      C: totalC,
-      D: totalD,
-      E: totalE,
-      F: totalF,
-      G: totalG
-    },
-    badge: jsonData.AIO_Readiness.AIO_Compatibility_Badge,
+    sectionScores: scores,
     topFixes,
-    recommendations
+    recommendations,
   };
 
 }

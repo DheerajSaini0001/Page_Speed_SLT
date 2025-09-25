@@ -80,7 +80,7 @@ export default async function seoMetrics(url, $) {
 
 const title = $("title").text().trim() || "";
 const titleLength = title.length;
-const titleScore = titleLength <= 49 ? 1 : 0 ; 
+const titleScore = titleLength >= 30 && titleLength <= 60 ? 1 : 0 ; 
 
 const metaDesc = $('meta[name="description"]').attr("content") || "";
 const metaDescLength = metaDesc.length
@@ -154,7 +154,7 @@ const B2 = {
 
 let urlSlugScore = 1; 
 const slug = new URL(url).pathname.slice(1);
-if (slug && (!/^([a-z0-9]+(-[a-z0-9]+)*)$/.test(slug) || slug.length > 75)) {
+if (slug && (!/^([a-z0-9]+(-[a-z0-9]+)*)$/.test(slug) && slug.length > 75)) {
     urlSlugScore = 0; 
   }
 

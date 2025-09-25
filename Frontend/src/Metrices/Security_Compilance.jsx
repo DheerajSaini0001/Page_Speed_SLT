@@ -16,7 +16,7 @@ export default function Security_Compilance({ data }) {
 
     return (
       <span
-        className={`px-2.5 py-1 rounded-full text-black font-semibold text-sm shadow-md transform transition-transform hover:scale-110 ${cssscore}`}
+        className={`px-2.5 py-1 rounded-full text-black font-semibold text-sm shadow-md transform transition-transform  ${cssscore}`}
       >
         {hasValue}
       </span>

@@ -20,8 +20,8 @@ export default function Accessibility({ data }) {
       <span
         className={`${
           darkMode
-            ? "px-2.5 py-1 rounded-full text-black font-semibold text-sm shadow-md transform transition-transform hover:scale-110"
-            : "px-2.5 py-1 rounded-full text-black font-semibold text-sm shadow-md transform transition-transform hover:scale-110"
+            ? "px-2.5 py-1 rounded-full text-black font-semibold text-sm shadow-md transform transition-transform "
+            : "px-2.5 py-1 rounded-full text-black font-semibold text-sm shadow-md transform transition-transform "
         } ${cssscore}`}
       >
         {hasValue}

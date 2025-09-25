@@ -19,15 +19,10 @@ export default async function main(message) {
     const robotsRes_Data = await robotsRes(url);
 
     const MetricesCalculation_Data = await MetricesCalculation(url,googleApi_Data,axios_cheerio_Data,robotsRes_Data)
-    const Metrices_Data = await Metrices(url,MetricesCalculation_Data.technicalReport,MetricesCalculation_Data.seoReport,MetricesCalculation_Data.accessibilityReport,MetricesCalculation_Data.securityReport,MetricesCalculation_Data.uxReport,MetricesCalculation_Data.conversionReport,MetricesCalculation_Data.aioReport)
+    const Overall_Data = await OverAll(MetricesCalculation_Data)
+    const Metrices_Data = Metrices(url,MetricesCalculation_Data,Overall_Data)
 
-    const Overall_Data = OverAll(Metrices_Data)
-
-    return {
-        Metrices_Data,
-        Overall_Data
-
-    }
+    return  Metrices_Data
 
 
 }

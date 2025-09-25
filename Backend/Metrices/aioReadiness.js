@@ -141,6 +141,7 @@ export default async function aioReadiness(url, robotsText) {
   const aioCompatible = totalGScore >= 7.5 && orgValid && productValid && robotsOk ? "Yes" : "No";
 
   report.G = {
+    jsonLdScripts:jsonLdScripts,
     orgFields: parseFloat(orgFieldScore.toFixed(2)),
     napConsistency: parseFloat(napScore.toFixed(2)),
     policies: parseFloat(policyScore.toFixed(2)),
