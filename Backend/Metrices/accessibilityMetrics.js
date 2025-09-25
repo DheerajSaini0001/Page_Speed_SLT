@@ -20,7 +20,7 @@ export default async function accessibilityMetrics(url,device = 'desktop') {
   try {
     await page.goto(url, {
       waitUntil: "networkidle2", 
-      timeout: 200000,         
+      timeout: 240000,         
     });
   } catch (err) {
     console.error("Page navigation failed:", err.message);
@@ -113,7 +113,7 @@ await page.setUserAgent(
   try {
     await page.goto(url, {
       waitUntil: "networkidle2", 
-      timeout: 200000,         
+      timeout: 240000,         
     });
   } catch (err) {
     console.error("Page navigation failed:", err.message);
