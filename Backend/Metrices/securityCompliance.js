@@ -131,7 +131,7 @@ export default async function securityCompliance(url) {
 
   const allHeaders = await getAllHeaders(page);
 
-  await page.goto(url, { waitUntil: "networkidle2" });
+  await page.goto(url, { waitUntil: "networkidle2",timeout: 240000});
 
   const [
     httpsScore,
