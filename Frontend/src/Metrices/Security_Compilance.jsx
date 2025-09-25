@@ -51,7 +51,7 @@ export default function Security_Compilance({ data }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
 
           <div className="flex justify-between items-center">
-            <span className={textColor}>HTTPS</span>
+            <span className={textColor}>Hypertext Transfer Protocol Secure (HTTPS)</span>
             <ScoreBadge 
               score={data.Security_or_Compliance.HTTPS.Score} 
               textGood="HTTPS enabled" 
@@ -59,7 +59,7 @@ export default function Security_Compilance({ data }) {
             />
           </div>
           <div className="flex justify-between items-center">
-            <span className={textColor}>HSTS</span>
+            <span className={textColor}>HTTP Strict Transport Security (HSTS)</span>
             <ScoreBadge 
               score={data.Security_or_Compliance.HSTS.Score} 
               textGood="HSTS enabled" 
@@ -85,7 +85,7 @@ export default function Security_Compilance({ data }) {
           </div>
 
           <div className="flex justify-between items-center">
-            <span className={textColor}>404/500 handling</span>
+            <span className={textColor}>404/500 Handling</span>
             <ScoreBadge 
               score={data.Security_or_Compliance.Error_Pages.Score} 
               textGood="Custom error page" 

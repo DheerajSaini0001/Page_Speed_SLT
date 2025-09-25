@@ -79,7 +79,7 @@ export default async function accessibilityMetrics(url,device = 'desktop') {
     altTextEquivalents: TX,
     skipLinks:SL,
     Landmark:LM,
-    totalCScore:parseFloat(score.toFixed(1)) ,
+    totalCScore:parseFloat(score.toFixed(0)) ,
   };
 
   return report;

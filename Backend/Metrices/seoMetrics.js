@@ -191,6 +191,6 @@ const paginationScore = $("link[rel='next'], link[rel='prev']").length ? 1 : 0;
     B1,
     B2,
     B3,
-    totalSEO:parseFloat(totalSEO.toFixed(1)),
+    totalSEO:parseFloat(totalSEO.toFixed(0)),
   };
 }

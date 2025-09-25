@@ -158,7 +158,7 @@ export default async function securityCompliance(url) {
       securityHeaders: headersScore,
       cookieConsent: cookieBannerScore,
       errorPages: errorPageScore,
-      totalDScore:parseFloat(totalDScore.toFixed(1)),
+      totalDScore:parseFloat(totalDScore.toFixed(0)),
     },
   };
 }
