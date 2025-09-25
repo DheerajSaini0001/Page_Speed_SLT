@@ -43,7 +43,7 @@ export default function On_Page_SEO({ data }) {
     >
       <h1 className="flex items-center justify-center sm:gap-10 text-3xl font-extrabold mb-6">
         On-Page SEO{" "} 
-         <CircularProgress value={data.On_Page_SEO.On_Page_SEO_Score_Total} size={70} stroke={10} />
+         <CircularProgress value={data.On_Page_SEO.On_Page_SEO_Score_Total} size={70} stroke={5} />
         
       </h1>
 
