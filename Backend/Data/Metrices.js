@@ -121,11 +121,26 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data) {
       Accessibility_Score_Total: MetricesCalculation_Data.accessibilityReport.C.totalCScore,
     },
     Security_or_Compliance: {
-      HTTPS_Score: MetricesCalculation_Data.securityReport.D.httpsMixedContent,
-      HSTS_Score: MetricesCalculation_Data.securityReport.D.hsts,
-      Security_Headers_Score: MetricesCalculation_Data.securityReport.D.securityHeaders,
-      Cookie_Banner_and_Consent_Mode_Score: MetricesCalculation_Data.securityReport.D.cookieConsent,
-      Error_Pages_Score: MetricesCalculation_Data.securityReport.D.errorPages,
+      HTTPS:{
+        Score:MetricesCalculation_Data.securityReport.D.httpsMixedContent,
+        Parameter:'HTTPS missing in provided URL'
+      },
+      HSTS:{
+        Score:MetricesCalculation_Data.securityReport.D.hsts,
+        Parameter:'Strict transport security is not available'
+      },
+      Security_Headers:{
+        Score:MetricesCalculation_Data.securityReport.D.securityHeaders,
+        Parameter:'All security headers are not present (content-security-policy,x-content-type-options,referrer-policy,x-frame-options,cross-origin-opener-policy)'
+      },
+      Cookie_Banner_and_Consent_Mode:{
+        Score:MetricesCalculation_Data.securityReport.D.cookieConsent,
+        Parameter:'No banner found (cookie,consent,privacy,policy,accept,gdpr,tracking)'
+      },
+      Error_Pages:{
+        Score:MetricesCalculation_Data.securityReport.D.errorPages,
+        Parameter:'Site not have proper custom error page'
+      },
       Security_or_Compliance_Score_Total: MetricesCalculation_Data.securityReport.D.totalDScore,
     },
     UX_and_Content_Structure: {

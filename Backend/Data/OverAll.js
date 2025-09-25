@@ -19,9 +19,7 @@ export default function OverAll(MetricesCalculation_Data) {
   { name: "AIO Readiness", score: totalG }
 ];
 
-  const totalScore = parseFloat(
-    (totalA + totalB + totalC + totalD + totalE + totalF + totalG).toFixed(2)
-  );
+  const totalScore = (totalA + totalB + totalC + totalD + totalE + totalF + totalG);
 
   let grade = "F";
   if (totalScore >= 90) grade = "A";

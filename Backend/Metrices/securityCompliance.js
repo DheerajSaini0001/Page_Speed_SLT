@@ -20,27 +20,28 @@ async function checkHTTPS(page) {
   const url = page.url();
   const isHTTPS = url.startsWith("https://") ? 1 : 0;
 
-  const mixedContent = await page.evaluate(() => {
-    const elements = Array.from(document.querySelectorAll("img, script, link, iframe"));
-    return elements.some(el => {
-      const src = el.src || el.href;
-      return src && src.startsWith("http://");
-    });
-  });
+  // const mixedContent = await page.evaluate(() => {
+  //   const elements = Array.from(document.querySelectorAll("img, script, link, iframe"));
+  //   return elements.some(el => {
+  //     const src = el.src || el.href;
+  //     return src && src.startsWith("http://");
+  //   });
+  // });
 
-  return isHTTPS && !mixedContent ? 1 : 0;
+  //  && !mixedContent
+  return isHTTPS ? 1 : 0;
 }
 
 
-async function checkHSTS(headers) {
+function checkHSTS(headers) {
   const hsts = headers["strict-transport-security"];
   if (!hsts) return 0;
-  if (hsts.includes("preload")) return 1;
-  return 0.5;
+  return hsts.includes("preload") ? 0: 1;
+
 }
 
 
-async function checkSecurityHeaders(headers) {
+function checkSecurityHeaders(headers) {
   const groups = [
     ["content-security-policy"],
     ["x-content-type-options"],
@@ -55,8 +56,8 @@ async function checkSecurityHeaders(headers) {
       present++;
     }
   }
-
-  return (present / groups.length) * 3; 
+  const result =  (present / groups.length) * 100; 
+  return result > 75 ? 1 : 0
 }
 
 
@@ -89,11 +90,11 @@ async function checkCookieBanner(page) {
         setTimeout(() => {
           observer.disconnect();
           resolve(0);
-        }, 10000);
+        }, 240000);
       });
     });
 
-    return result;
+    return result ? 1 : 0;
   } catch (e) {
     return 0;
   }
@@ -105,7 +106,6 @@ async function checkCustomErrorPage(page, url) {
     const fakeUrl = url.replace(/\/$/, "") + "/nonexistent-" + Date.now();
     await page.goto(fakeUrl, { waitUntil: "networkidle2" });
 
-    // SPA redirect detected
     if (page.url() !== fakeUrl) return 1;
 
     const text = await page.evaluate(() => document.body.innerText.toLowerCase());
@@ -149,21 +149,16 @@ export default async function securityCompliance(url) {
 
   await browser.close();
 
-  const totalDScore =
-    httpsScore * 2 +
-    hstsScore * 1 +
-    parseFloat(headersScore.toFixed(2)) +
-    cookieBannerScore * 1 +
-    errorPageScore * 1;
+  const totalDScore = ((httpsScore + hstsScore  + headersScore + cookieBannerScore+ errorPageScore)/5)*100;
 
   return {
     D: {
-      httpsMixedContent: parseFloat(httpsScore.toFixed(2)*2),
-      hsts: parseFloat(hstsScore.toFixed(2)),
-      securityHeaders: parseFloat(headersScore.toFixed(2)),
-      cookieConsent: parseFloat(cookieBannerScore.toFixed(2)),
-      errorPages: parseFloat(errorPageScore.toFixed(2)),
-      totalDScore,
+      httpsMixedContent: httpsScore,
+      hsts: hstsScore,
+      securityHeaders: headersScore,
+      cookieConsent: cookieBannerScore,
+      errorPages: errorPageScore,
+      totalDScore:parseFloat(totalDScore.toFixed(1)),
     },
   };
 }

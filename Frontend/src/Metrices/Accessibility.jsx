@@ -50,7 +50,7 @@ export default function Accessibility({ data }) {
       <h1 className="flex items-center justify-center sm:gap-10 text-3xl font-extrabold mb-6">
         Accessibility{" "}
         <CircularProgress
-          value={data.Accessibility.Accessibility_Score_Total.toFixed(0)}
+          value={data.Accessibility.Accessibility_Score_Total}
           size={70}
           stroke={5}
         />

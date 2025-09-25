@@ -5,7 +5,7 @@ import { Check, X } from "lucide-react"; // Imported Check and X icons
 export default function Security_Compilance({ data }) {
   const { darkMode } = useContext(ThemeContext);
 
-  if (!data || !data.Metrices_Data) {
+  if (!data) {
     return <div></div>;
   }
 
@@ -44,23 +44,23 @@ export default function Security_Compilance({ data }) {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
           <div className={`flex justify-between items-center ${textColor}`}>
             <span>HTTPS Score</span>
-            <ScoreBadge score={data.Metrices_Data?.Security_or_Compliance.HTTPS_Score ?? 0} />
+            <ScoreBadge score={data.Security_or_Compliance.HTTPS.Score} />
           </div>
           <div className={`flex justify-between items-center ${textColor}`}>
             <span>HSTS Score</span>
-            <ScoreBadge score={data.Metrices_Data?.Security_or_Compliance.HSTS_Score ?? 0} />
+            <ScoreBadge score={data.Security_or_Compliance.HSTS.Score} />
           </div>
           <div className={`flex justify-between items-center ${textColor}`}>
             <span>Security Headers Score</span>
-            <ScoreBadge score={data.Metrices_Data?.Security_or_Compliance.Security_Headers_Score ?? 0} />
+            <ScoreBadge score={data.Security_or_Compliance.Security_Headers.Score} />
           </div>
           <div className={`flex justify-between items-center ${textColor}`}>
             <span>Cookie Banner & Consent Mode Score</span>
-            <ScoreBadge score={data.Metrices_Data?.Security_or_Compliance.Cookie_Banner_and_Consent_Mode_Score ?? 0} />
+            <ScoreBadge score={data.Security_or_Compliance.Cookie_Banner_and_Consent_Mode.Score} />
           </div>
           <div className={`flex justify-between items-center ${textColor}`}>
             <span>404/500 handling Score</span>
-            <ScoreBadge score={data.Metrices_Data?.Security_or_Compliance.Error_Pages_Score ?? 0} />
+            <ScoreBadge score={data.Security_or_Compliance.Error_Pages.Score} />
           </div>
         </div>
       </div>

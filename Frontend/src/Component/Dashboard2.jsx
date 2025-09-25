@@ -75,7 +75,7 @@ export default function Dashboard2({ data }) {
         <CircularProgress value={data.Score} size={120} stroke={10} />
         <div>
           <h2 className="text-xl sm:text-2xl font-bold">Overall Score</h2>
-          <p className="text-4xl sm:text-5xl font-extrabold mt-2">{data.Score.toFixed(1)}/100</p>
+          <p className="text-4xl sm:text-5xl font-extrabold mt-2">{data.Score}/100</p>
           <p className="text-gray-200 text-sm sm:text-base mt-1">Website Health Index</p>
         </div>
         <div>
@@ -98,7 +98,7 @@ export default function Dashboard2({ data }) {
         className="text-lg sm:text-xl lg:text-2xl font-bold"
         style={{ color: COLORS[index % COLORS.length] }}
       >
-        {item.score.toFixed(1)}%
+        {item.score}%
       </p>
     </div>
   ))}
