@@ -152,7 +152,7 @@ const B2 = {
 };
 
 
-let urlSlugScore = 0; 
+let urlSlugScore; 
 const slug = new URL(url).pathname.slice(1);
 const slugLength = slug.length 
 if(!slug){
@@ -164,6 +164,10 @@ else if(slug && (!/^([a-z0-9]+(-[a-z0-9]+)*)$/.test(slug) && slugLength > 75)) {
 else{
     urlSlugScore = 3;
 } 
+
+let urlScore;
+if(urlSlugScore==1 && urlSlugScore == 3){urlScore = 0}
+else{urlScore=1}
 
 const pageText = extractText($);
 // const duplicatePercent = computeDuplicatePercent(pageText, otherPages);
@@ -178,7 +182,7 @@ const paginationScore = $("link[rel='next'], link[rel='prev']").length ? 1 : 0;
     slugLength:slugLength,
     duplicateContent: dupScore,
     paginationScore: paginationScore,
-    total: (urlSlugScore + dupScore + paginationScore),
+    total: (urlScore + dupScore + paginationScore),
   };
 
   const totalSEO = ((B1.total + B2.total + B3.total)/10)*100;

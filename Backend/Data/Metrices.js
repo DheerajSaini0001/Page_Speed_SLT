@@ -77,7 +77,7 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data) {
       Structure_and_Uniqueness: {
          URL_Slugs:{
           Slug:MetricesCalculation_Data.seoReport.B3.slug,
-          Parameter:'Slug must be meanoingfull & length must be less than 75 characters ',
+          Parameter:'Slug must be meaningfull & length must be less than 75 characters ',
           Score:MetricesCalculation_Data.seoReport.B3.urlSlugScore,
           URL_Slugs_Length:MetricesCalculation_Data.seoReport.B3.slugLength
         },
