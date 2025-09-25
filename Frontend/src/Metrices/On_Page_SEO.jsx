@@ -1,7 +1,8 @@
 import React, { useContext } from "react";
 import { ThemeContext } from "../ThemeContext";
-import { Check, X } from "lucide-react";
-
+import { Check, TriangleAlert, X } from "lucide-react";
+import CircularProgress from "../Component/CircularProgress";
+import { AlertTriangle } from "lucide-react";
 export default function On_Page_SEO({ data }) {
   
   const { darkMode } = useContext(ThemeContext);
@@ -40,11 +41,10 @@ export default function On_Page_SEO({ data }) {
       id="OnPageSEO"
       className={`min-h-fit pt-20 pb-16 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 m-4 flex flex-col items-center justify-start p-6 space-y-6 ${containerBg}`}
     >
-      <h1 className="text-3xl font-extrabold mb-6">
-        On-Page SEO{" "}
-        <span className="text-custom-18">
-          
-        </span>
+      <h1 className="flex items-center justify-center sm:gap-10 text-3xl font-extrabold mb-6">
+        On-Page SEO{" "} 
+         <CircularProgress value={data.On_Page_SEO.On_Page_SEO_Score_Total} size={70} stroke={10} />
+        
       </h1>
 
       {/* Essentials */}
@@ -79,6 +79,16 @@ export default function On_Page_SEO({ data }) {
             <ScoreBadge score={data.On_Page_SEO.Essentials.H1.Score} out={data.On_Page_SEO.Essentials.H1.Score?"Exectly One":"More than One"} />
           </div>
         </div>
+        {(data.On_Page_SEO.Essentials.Unique_Title.Score==0 || data.On_Page_SEO.Essentials.Meta_Description.Score==0 || data.On_Page_SEO.Essentials.Canonical.Score==0 || data.On_Page_SEO.Essentials.H1.Score==0) &&( <hr className="text-black mt-3" />)}
+       
+        <div className="p-1 mt-2">
+        {data.On_Page_SEO.Essentials.Unique_Title.Score==0&&(<h1 className="flex gap-2"><AlertTriangle size={20} className="text-red-700"/> {data.On_Page_SEO.Essentials.Unique_Title.Parameter}</h1>)}
+          {data.On_Page_SEO.Essentials.Meta_Description.Score==0&&(<h1 className="flex gap-2"><AlertTriangle size={20} className="text-red-700"/> {data.On_Page_SEO.Essentials.Meta_Description.Parameter}</h1>)}
+          {data.On_Page_SEO.Essentials.Canonical.Score==0&&(<h1 className="flex gap-2"><AlertTriangle size={20} className="text-red-700"/> {data.On_Page_SEO.Essentials.Canonical.Parameter}</h1>)}
+          {data.On_Page_SEO.Essentials.H1.Score==0&&(<h1 className="flex gap-2"><AlertTriangle size={20} className="text-red-700"/> {data.On_Page_SEO.Essentials.H1.Parameter}</h1>)}
+          
+          
+        </div>
       </div>
 
       {/* Media & Semantics */}
@@ -101,6 +111,16 @@ export default function On_Page_SEO({ data }) {
             <ScoreBadge score={data.On_Page_SEO.Media_and_Semantics.Descriptive_Links.Score} out={data.On_Page_SEO.Media_and_Semantics.Descriptive_Links.Score?"Button Text MeaningFull":"Button Text Meaningless"} />
           </div>
         </div>
+        {(data.On_Page_SEO.Media_and_Semantics.Image_ALT.Score==0 || data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Score==0 || data.On_Page_SEO.Media_and_Semantics.Descriptive_Links.Score==0) &&(  <hr className="text-black mt-3" /> )}
+       
+        <div className="p-1 mt-2">
+        {data.On_Page_SEO.Media_and_Semantics.Image_ALT.Score==0&&(<h1 className="flex gap-2"><AlertTriangle size={20} className="text-red-700"/> {data.On_Page_SEO.Media_and_Semantics.Image_ALT.Parameter}</h1>)}
+          {data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Score==0&&(<h1 className="flex gap-2"><AlertTriangle size={20} className="text-red-700"/> {data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Parameter}</h1>)}
+          {data.On_Page_SEO.Media_and_Semantics.Descriptive_Links.Score==0&&(<h1 className="flex gap-2"><AlertTriangle size={20} className="text-red-700"/> {data.On_Page_SEO.Media_and_Semantics.Descriptive_Links.Parameter}</h1>)}
+          
+          
+          
+        </div>
       </div>
 
       {/* Structure & Uniqueness */}
@@ -122,6 +142,16 @@ export default function On_Page_SEO({ data }) {
             <span>Pagination Tags Score</span>
             <ScoreBadge score={data.On_Page_SEO.Structure_and_Uniqueness.Pagination_Tags.Score } out={data.On_Page_SEO.Structure_and_Uniqueness.Pagination_Tags.Score?"Pagination Not found":"Pagination found"}/>
           </div>
+        </div>
+        {(data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score==1 || data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score==3 || !data.On_Page_SEO.Structure_and_Uniqueness.Duplicate_Content.Score==0 || data.On_Page_SEO.Structure_and_Uniqueness.Pagination_Tags.Score==0) &&( <hr className="text-black mt-3" /> )}
+        
+        <div className="p-1 mt-2">
+        {(data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score==1 || data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score==3) &&(<h1 className="flex gap-2"><AlertTriangle size={20} className="text-red-700"/> {data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score==1?"No Slug Found you are at home page":data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Parameter}</h1>)}
+          {!data.On_Page_SEO.Structure_and_Uniqueness.Duplicate_Content.Score==0&&(<h1 className="flex gap-2"><AlertTriangle size={20} className="text-red-700"/> {!data.On_Page_SEO.Structure_and_Uniqueness.Duplicate_Content.Parameter}</h1>)}
+          {data.On_Page_SEO.Structure_and_Uniqueness.Pagination_Tags.Score==0&&(<h1 className="flex gap-2"><AlertTriangle size={20} className="text-red-700"/> {data.On_Page_SEO.Structure_and_Uniqueness.Pagination_Tags.Parameter}</h1>)}
+          
+          
+          
         </div>
       </div>
     </div>
