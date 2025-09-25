@@ -112,7 +112,7 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data) {
       },
       Skip_Links:{
         Score:MetricesCalculation_Data.accessibilityReport.C.skipLinks,
-        Parameter:'Skip Link is missing or hidden'
+        Parameter:'Skip Link is present'
       },
       Landmarks:{
         Score:MetricesCalculation_Data.accessibilityReport.C.Landmark,
