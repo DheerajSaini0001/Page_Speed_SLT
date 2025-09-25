@@ -75,7 +75,7 @@ export default function On_Page_SEO({ data }) {
             />
           </div>
           <div className="flex justify-between items-center">
-            <span>H1</span>
+            <span>H1 tag</span>
             <ScoreBadge score={data.On_Page_SEO.Essentials.H1.Score} out={data.On_Page_SEO.Essentials.H1.Score?"Exactly One":"More than One"} />
           </div>
         </div>
