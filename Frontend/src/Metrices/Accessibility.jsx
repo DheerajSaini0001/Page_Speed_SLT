@@ -5,7 +5,7 @@ import { Check, X } from "lucide-react"; // Imported Check and X icons
 export default function Accessibility({ data }) {
   const { darkMode } = useContext(ThemeContext);
 
-  if (!data || !data.Metrices_Data) {
+  if (!data) {
     return <div />;
   }
 
@@ -54,23 +54,27 @@ export default function Accessibility({ data }) {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
           <div className="flex justify-between items-center">
             <span className={`${textColor}`}>Color Contrast Score</span>
-            <ScoreBadge score={data.Metrices_Data?.Accessibility?.Color_Contrast_Score ?? 0} />
+            <ScoreBadge score={data.Accessibility.Color_Contrast.Score} />
           </div>
           <div className="flex justify-between items-center">
             <span className={`${textColor}`}>Focusable/Keyboard Nav Score</span>
-            <ScoreBadge score={data.Metrices_Data?.Accessibility?.Focusable_Score ?? 0} />
+            <ScoreBadge score={data.Accessibility.Focusable.Score} />
           </div>
           <div className="flex justify-between items-center">
             <span className={`${textColor}`}>ARIA/Labelling Score</span>
-            <ScoreBadge score={data.Metrices_Data?.Accessibility?.ARIA_Score ?? 0} />
+            <ScoreBadge score={data.Accessibility.ARIA.Score} />
           </div>
           <div className="flex justify-between items-center">
             <span className={`${textColor}`}>Alt/Text Equivalents Score</span>
-            <ScoreBadge score={data.Metrices_Data?.Accessibility?.Alt_or_Text_Equivalents_Score ?? 0} />
+            <ScoreBadge score={data.Accessibility.Alt_or_Text_Equivalents.Score} />
           </div>
           <div className="flex justify-between items-center">
-            <span className={`${textColor}`}>Skip Links/Landmarks Score</span>
-            <ScoreBadge score={data.Metrices_Data?.Accessibility?.Skip_Links_or_Landmarks_Score ?? 0} />
+            <span className={`${textColor}`}>Skip Links Score</span>
+            <ScoreBadge score={data.Accessibility.Skip_Links.Score} />
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={`${textColor}`}>Landmarks Score</span>
+            <ScoreBadge score={data.Accessibility.Landmarks.Score} />
           </div>
         </div>
       </div>

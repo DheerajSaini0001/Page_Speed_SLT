@@ -94,11 +94,30 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data) {
       On_Page_SEO_Score_Total: MetricesCalculation_Data.seoReport.totalSEO,
     },
     Accessibility: {
-      Color_Contrast_Score: MetricesCalculation_Data.accessibilityReport.C.colorContrast,
-      Focusable_Score: MetricesCalculation_Data.accessibilityReport.C.keyboardNavigation,
-      ARIA_Score: MetricesCalculation_Data.accessibilityReport.C.ariaLabeling,
-      Alt_or_Text_Equivalents_Score: MetricesCalculation_Data.accessibilityReport.C.altTextEquivalents,
-      Skip_Links_or_Landmarks_Score: MetricesCalculation_Data.accessibilityReport.C.skipLinksLandmarks,
+      Color_Contrast:{
+        Score:MetricesCalculation_Data.accessibilityReport.C.colorContrast,
+        Parameter:'color-contrast attribute missing'
+      },
+      Focusable:{
+        Score:MetricesCalculation_Data.accessibilityReport.C.keyboardNavigation,
+        Parameter:'There are some missing attribute (focus-order,focusable-content,tabindex,interactive-element-affordance)'
+      },
+      ARIA:{
+        Score:MetricesCalculation_Data.accessibilityReport.C.ariaLabeling,
+        Parameter:'There are some missing attribute (label,aria-allowed-attr,aria-roles,aria-hidden-focus)'
+      },
+      Alt_or_Text_Equivalents:{
+        Score:MetricesCalculation_Data.accessibilityReport.C.altTextEquivalents,
+        Parameter:'image-alt attribute missing'
+      },
+      Skip_Links:{
+        Score:MetricesCalculation_Data.accessibilityReport.C.skipLinks,
+        Parameter:'Skip Link is missing or hidden'
+      },
+      Landmarks:{
+        Score:MetricesCalculation_Data.accessibilityReport.C.Landmark,
+        Parameter:'There are some missing landmark roles (banner,main,contentinfo,navigation,complementary)'
+      },
       Accessibility_Score_Total: MetricesCalculation_Data.accessibilityReport.C.totalCScore,
     },
     Security_or_Compliance: {

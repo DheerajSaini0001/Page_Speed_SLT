@@ -147,7 +147,7 @@ export default function On_Page_SEO({ data }) {
         
         <div className="p-1 mt-2">
         {(data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score==1 || data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score==3) &&(<h1 className="flex gap-2"><AlertTriangle size={20} className="text-red-700"/> {data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score==1?"No Slug Found you are at home page":data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Parameter}</h1>)}
-          {!data.On_Page_SEO.Structure_and_Uniqueness.Duplicate_Content.Score==0&&(<h1 className="flex gap-2"><AlertTriangle size={20} className="text-red-700"/> {!data.On_Page_SEO.Structure_and_Uniqueness.Duplicate_Content.Parameter}</h1>)}
+          {!data.On_Page_SEO.Structure_and_Uniqueness.Duplicate_Content.Score==0&&(<h1 className="flex gap-2"><AlertTriangle size={20} className="text-red-700"/> {data.On_Page_SEO.Structure_and_Uniqueness.Duplicate_Content.Parameter}</h1>)}
           {data.On_Page_SEO.Structure_and_Uniqueness.Pagination_Tags.Score==0&&(<h1 className="flex gap-2"><AlertTriangle size={20} className="text-red-700"/> {data.On_Page_SEO.Structure_and_Uniqueness.Pagination_Tags.Parameter}</h1>)}
           
           
