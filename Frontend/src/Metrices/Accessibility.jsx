@@ -1,45 +1,51 @@
 import React, { useContext } from "react";
-import { ThemeContext } from "../ThemeContext"; // ✅ ThemeContext import
+import { ThemeContext } from "../ThemeContext";
+import { Check, X } from "lucide-react"; // Imported Check and X icons
 
 export default function Accessibility({ data }) {
-  const { darkMode } = useContext(ThemeContext); // ✅ useContext
+  const { darkMode } = useContext(ThemeContext);
 
   if (!data || !data.Metrices_Data) {
     return <div />;
   }
 
-  // ✅ ScoreBadge theme-aware
-  const ScoreBadge = ({ score, out }) => {
-    const badgeBg = darkMode
-      ? "bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 text-black "
-      : "bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white ";
-
+  // Updated ScoreBadge to match the On_Page_SEO component's style and logic
+  const ScoreBadge = ({ score }) => {
+    const cssscore = score ? "bg-green-300" : "bg-red-300";
+    const hasValue = score ? <Check size={18} /> : <X size={18} />;
+    
+    // The badgeBg variable from the original code is not used, so it can be removed for clarity.
+    // The logic here is simplified to directly use the light/dark mode check.
     return (
       <span
-      className={darkMode? "px-2.5 py-1 rounded-full   text-black bg-white font-semibold text-sm shadow-md transform transition-transform hover:scale-110":" px-2.5 py-1 rounded-full text-white bg-black font-semibold text-sm shadow-md transform transition-transform hover:scale-110"}
+        className={`${
+          darkMode
+            ? "px-2.5 py-1 rounded-full text-black font-semibold text-sm shadow-md transform transition-transform hover:scale-110"
+            : "px-2.5 py-1 rounded-full text-black font-semibold text-sm shadow-md transform transition-transform hover:scale-110"
+        } ${cssscore}`}
       >
-        {score}/{out}
+        {hasValue}
       </span>
     );
   };
 
   // Theme-based classes
-  const containerBg = darkMode ? "bg-zinc-900 border-gray-700" : "bg-gray-100 border-gray-300";
+  const containerBg = darkMode
+    ? "bg-zinc-900 border-gray-700 text-white"
+    : "bg-gray-100 border-gray-300 text-black";
   const cardBg = darkMode
     ? "bg-gradient-to-br from-blue-900 via-gray-900 to-black"
     : "bg-gradient-to-br from-blue-200 via-gray-200 to-white";
-  const textColor = darkMode ? "text-white text-custom-18 " : "text-black text-custom-18 ";
+  const textColor = darkMode ? "text-white" : "text-black";
 
-  return ( 
+  return (
     <div
       id="accessibility"
       className={`min-h-fit pt-20 pb-16 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 m-4 flex flex-col items-center justify-start p-6 space-y-6 ${containerBg}`}
     >
-      <h1 className={`text-3xl text-heading-25 text-heading-25 font-extrabold mb-6 ${textColor}`}>
+      <h1 className="text-3xl font-extrabold mb-6">
         Accessibility{" "}
-        <span className={textColor}>
-          ({data.Metrices_Data?.Accessibility?.Accessibility_Score_Total}/12)
-        </span>
+        
       </h1>
 
       <div
@@ -47,24 +53,24 @@ export default function Accessibility({ data }) {
       >
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
           <div className="flex justify-between items-center">
-            <span className={`${textColor} `}>Color Contrast Score</span>
-            <ScoreBadge score={data.Metrices_Data?.Accessibility.Color_Contrast_Score ?? 0} out={3} />
+            <span className={`${textColor}`}>Color Contrast Score</span>
+            <ScoreBadge score={data.Metrices_Data?.Accessibility?.Color_Contrast_Score ?? 0} />
           </div>
           <div className="flex justify-between items-center">
-            <span className={`${textColor} `}>Focusable/Keyboard Nav Score</span>
-            <ScoreBadge score={data.Metrices_Data?.Accessibility.Focusable_Score ?? 0} out={3} />
+            <span className={`${textColor}`}>Focusable/Keyboard Nav Score</span>
+            <ScoreBadge score={data.Metrices_Data?.Accessibility?.Focusable_Score ?? 0} />
           </div>
           <div className="flex justify-between items-center">
-            <span className={`${textColor} `}>ARIA/Labelling Score</span>
-            <ScoreBadge score={data.Metrices_Data?.Accessibility.ARIA_Score ?? 0} out={3} />
+            <span className={`${textColor}`}>ARIA/Labelling Score</span>
+            <ScoreBadge score={data.Metrices_Data?.Accessibility?.ARIA_Score ?? 0} />
           </div>
           <div className="flex justify-between items-center">
-            <span className={`${textColor} `}>Alt/Text Equivalents Score</span>
-            <ScoreBadge score={data.Metrices_Data?.Accessibility.Alt_or_Text_Equivalents_Score ?? 0} out={2} />
+            <span className={`${textColor}`}>Alt/Text Equivalents Score</span>
+            <ScoreBadge score={data.Metrices_Data?.Accessibility?.Alt_or_Text_Equivalents_Score ?? 0} />
           </div>
           <div className="flex justify-between items-center">
-            <span className={`${textColor} `}>Skip Links/Landmarks Score</span>
-            <ScoreBadge score={data.Metrices_Data?.Accessibility.Skip_Links_or_Landmarks_Score ?? 0} out={1} />
+            <span className={`${textColor}`}>Skip Links/Landmarks Score</span>
+            <ScoreBadge score={data.Metrices_Data?.Accessibility?.Skip_Links_or_Landmarks_Score ?? 0} />
           </div>
         </div>
       </div>
