@@ -55,19 +55,19 @@ export default function On_Page_SEO({ data }) {
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div className="flex justify-between items-center">
-            <span>Title Score</span>
+            <span>Title</span>
             <ScoreBadge score={data.On_Page_SEO.Essentials.Unique_Title.Score} 
             out={data.On_Page_SEO.Essentials.Unique_Title.Title_Length}
              des={"characters"}/>
           </div>
           <div className="flex justify-between items-center">
-            <span>Meta Description Score</span>
+            <span>Meta Description</span>
             <ScoreBadge score={data.On_Page_SEO.Essentials.Meta_Description.Score} 
             out={data.On_Page_SEO.Essentials.Meta_Description.MetaDescription_Length} 
             des={"characters"} />
           </div>
           <div className="flex justify-between items-center">
-            <span>Canonical Score</span>
+            <span>Canonical</span>
             <ScoreBadge score={data.On_Page_SEO.Essentials.Canonical.Score} 
             des={data.On_Page_SEO.Essentials.Canonical.Score ? "Self-refercing":
               "No Self-refercing"
@@ -75,8 +75,8 @@ export default function On_Page_SEO({ data }) {
             />
           </div>
           <div className="flex justify-between items-center">
-            <span>H1 Score</span>
-            <ScoreBadge score={data.On_Page_SEO.Essentials.H1.Score} out={data.On_Page_SEO.Essentials.H1.Score?"Exectly One":"More than One"} />
+            <span>H1</span>
+            <ScoreBadge score={data.On_Page_SEO.Essentials.H1.Score} out={data.On_Page_SEO.Essentials.H1.Score?"Exactly One":"More than One"} />
           </div>
         </div>
         {(data.On_Page_SEO.Essentials.Unique_Title.Score==0 || data.On_Page_SEO.Essentials.Meta_Description.Score==0 || data.On_Page_SEO.Essentials.Canonical.Score==0 || data.On_Page_SEO.Essentials.H1.Score==0) &&( <hr className="text-black mt-3" />)}
@@ -99,15 +99,15 @@ export default function On_Page_SEO({ data }) {
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4  text-sm">
           <div className="flex justify-between items-center">
-            <span>Image ALT Score</span>
+            <span>Image ALT</span>
             <ScoreBadge score={data.On_Page_SEO.Media_and_Semantics.Image_ALT.Score} out={data.On_Page_SEO.Media_and_Semantics.Image_ALT.Score?"Meaningfull Alt":"Miningless Alt"}/>
           </div>
           <div className="flex justify-between items-center">
-            <span>Heading Hierarchy Score</span>
-            <ScoreBadge score={data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Score } out={data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Score?"h1->h2..":"h1->h2.."}/>
+            <span>Heading Hierarchy</span>
+            <ScoreBadge score={data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Score } out={data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Score?"h1->h2->h3":"h1->h2->h3"}/>
           </div>
           <div className="flex justify-between items-center">
-            <span>Descriptive Links Score</span>
+            <span>Descriptive Links</span>
             <ScoreBadge score={data.On_Page_SEO.Media_and_Semantics.Descriptive_Links.Score} out={data.On_Page_SEO.Media_and_Semantics.Descriptive_Links.Score?"Button Text MeaningFull":"Button Text Meaningless"} />
           </div>
         </div>
@@ -131,15 +131,15 @@ export default function On_Page_SEO({ data }) {
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div className="flex justify-between items-center">
-            <span>URL Slugs Score</span>
+            <span>URL Slugs</span>
             <ScoreBadge score={data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score==1?0:data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score==2?1:0 } out={data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score==2?data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.URL_Slugs_Length:""} des={data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score ==1?"No Slug":data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score ==2?"Slug is meaningfull & length < 75":"Slug is meaningless & length > 75"}/>
           </div>
           <div className="flex justify-between items-center">
-            <span>Duplicate Content Score</span>
+            <span>Duplicate Content</span>
             <ScoreBadge score={!data.On_Page_SEO.Structure_and_Uniqueness.Duplicate_Content.Score} out={!data.On_Page_SEO.Structure_and_Uniqueness.Duplicate_Content.Score ?"No Duplicate Content":"Duplicate Content"}/>
           </div>
           <div className="flex justify-between items-center">
-            <span>Pagination Tags Score</span>
+            <span>Pagination Tags</span>
             <ScoreBadge score={data.On_Page_SEO.Structure_and_Uniqueness.Pagination_Tags.Score } out={data.On_Page_SEO.Structure_and_Uniqueness.Pagination_Tags.Score?"Pagination Not found":"Pagination found"}/>
           </div>
         </div>
