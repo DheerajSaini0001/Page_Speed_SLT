@@ -100,11 +100,11 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data) {
       },
       Focusable:{
         Score:MetricesCalculation_Data.accessibilityReport.C.keyboardNavigation,
-        Parameter:'There are some missing attribute (focus-order,focusable-content,tabindex,interactive-element-affordance)'
+        Parameter:'There are some missing attribute ("focus-order","focusable-content","tabindex","interactive-element-affordance")'
       },
       ARIA:{
         Score:MetricesCalculation_Data.accessibilityReport.C.ariaLabeling,
-        Parameter:'There are some missing attribute (label,aria-allowed-attr,aria-roles,aria-hidden-focus)'
+        Parameter:'There are some missing attribute ("label","aria-allowed-attr","aria-roles","aria-hidden-focus")'
       },
       Alt_or_Text_Equivalents:{
         Score:MetricesCalculation_Data.accessibilityReport.C.altTextEquivalents,
@@ -116,7 +116,7 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data) {
       },
       Landmarks:{
         Score:MetricesCalculation_Data.accessibilityReport.C.Landmark,
-        Parameter:'There are some missing landmark roles (banner,main,contentinfo,navigation,complementary)'
+        Parameter:'There are some missing landmark roles ("banner","main","contentinfo","navigation","complementary")'
       },
       Accessibility_Score_Total: MetricesCalculation_Data.accessibilityReport.C.totalCScore,
     },
@@ -131,11 +131,11 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data) {
       },
       Security_Headers:{
         Score:MetricesCalculation_Data.securityReport.D.securityHeaders,
-        Parameter:'All security headers are not present (content-security-policy,x-content-type-options,referrer-policy,x-frame-options,cross-origin-opener-policy)'
+        Parameter:'All security headers are not present ("content-security-policy","x-content-type-options","referrer-policy","x-frame-options","cross-origin-opener-policy")'
       },
       Cookie_Banner_and_Consent_Mode:{
         Score:MetricesCalculation_Data.securityReport.D.cookieConsent,
-        Parameter:'No banner found (cookie,consent,privacy,policy,accept,gdpr,tracking)'
+        Parameter:'No banner found ("cookie","consent","privacy","policy","accept","gdpr","tracking")'
       },
       Error_Pages:{
         Score:MetricesCalculation_Data.securityReport.D.errorPages,
