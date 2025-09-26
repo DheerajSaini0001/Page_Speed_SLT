@@ -76,7 +76,7 @@ export default function On_Page_SEO({ data }) {
           </div>
           <div className="flex justify-between items-center">
             <span>H1 tag</span>
-            <ScoreBadge score={data.On_Page_SEO.Essentials.H1.Score} out={data.On_Page_SEO.Essentials.H1.Score?"Exactly One":"More than One"} />
+            <ScoreBadge score={data.On_Page_SEO.Essentials.H1.Score} out={data.On_Page_SEO.Essentials.H1.H1_Count?"Exactly One":"H1 not found"} />
           </div>
         </div>
         {(data.On_Page_SEO.Essentials.Unique_Title.Score==0 || data.On_Page_SEO.Essentials.Meta_Description.Score==0 || data.On_Page_SEO.Essentials.Canonical.Score==0 || data.On_Page_SEO.Essentials.H1.Score==0) &&( <hr className="text-black mt-3" />)}

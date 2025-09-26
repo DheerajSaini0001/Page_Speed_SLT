@@ -24,6 +24,8 @@ export default function DarkCard() {
   const { darkMode, toggleTheme } = useContext(ThemeContext); // ✅ context use
   const handleClick = async (e) => {
     e.preventDefault();
+    console.log(device);
+    
     if (!inputValue) return alert("URL is empty");
 
     setLoading(true);
@@ -62,8 +64,8 @@ export default function DarkCard() {
     : "scroll-smooth m-0 bg-gray-100 text-black flex flex-col min-h-screen";
 
   const inputClass = darkMode
-    ? "flex-1 pl-10 pr-4 rounded-4xl py-2 bg-gray-800 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none text-white"
-    : "flex-1 pl-10 pr-4 rounded-4xl py-2 bg-gray-200 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none text-black";
+    ? "flex-1 w-full  pl-10 pr-4 rounded-4xl py-2 bg-gray-800 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none text-white"
+    : "flex-1 w-full  pl-10 pr-4 rounded-4xl py-2 bg-gray-200 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none text-black";
 
   const navbarClass = darkMode
     ? "fixed top-0 left-0 w-full lg:h-16 sm:h-20 bg-gray-900 border-b sm: border-gray-700 flex items-center justify-between px-4 z-50"
@@ -104,56 +106,80 @@ export default function DarkCard() {
       <div className="h-10"></div> {/* spacer */}
 
       <div className=" flex flex-col items-center  justify-center">
-        {!result && (
-          <div className=" mx-6 sm:mx-0">
-            <div className={darkMode ? "w-full mt-40 max-w-2xl  bg-gray-900 rounded-2xl shadow-2xl p-6 space-y-4 border border-gray-700" : "w-full mt-40 max-w-2xl flex flex-col justify-center items-center mx-auto bg-white rounded-2xl shadow-2xl p-6 space-y-4 border border-gray-300"}>
-            <h2 className="text-2xl font-bold text-center">Check your Page Audits and Performance</h2>
-            <p className={darkMode ? "text-gray-400 text-sm text-center" : "text-gray-600 text-sm text-center"}>Enter URL in the input below and click the Analyze button.</p>
-
-            <div className="  mx-auto">
-              <form className="flex sm:flex-col items-center  gap-2" onSubmit={handleClick}>
-            
-             <div className="flex gap-4 flex-row">
-
-                <div className="relative w-full flex flex-col justify-center items-center">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20}/>
-                  <input
-                    type="text"
-                    value={inputValue}
-                    disabled={loading}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    placeholder="Enter URL here..."
-                    className={inputClass}
-                    />
-                </div>
-             <div>
-
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="flex  w-fit md:w-fit sm:w-fit  lg:w-fit gap-2 items-center justify-center bg-[#c2fbd7] text-green-700 rounded-full font-sans px-5 py-2 text-base border-0 select-none transition duration-250 shadow hover:shadow-lg active:scale-[1.05] active:-rotate-1"
-                  >
-                  {loading && <Loader2 className="animate-spin w-5 h-5" />}
-                  {loading ? "Analyzing.." : "Analyze"}
-                </button>
-                  </div>
-                    </div>
-   <div className="mt-5">
-   
-      <select
-        value={device}
-        onChange={(e) => setDevice(e.target.value)}
-        className="w-48 p-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-zinc-900 dark:text-white dark:border-gray-700"
+      {!result && (
+  <div className="mx-6 sm:mx-0">
+    <div
+      className={
+        darkMode
+          ? "w-full mt-20 max-w-2xl bg-gray-900 rounded-2xl shadow-2xl p-6 space-y-6 border border-gray-700 mx-auto"
+          : "w-full mt-20 max-w-2xl bg-white rounded-2xl shadow-2xl p-6 space-y-6 border border-gray-300 mx-auto"
+      }
+    >
+      <h2 className="text-2xl font-bold text-center">
+        Check your Page Audits and Performance
+      </h2>
+      <p
+        className={
+          darkMode
+            ? "text-gray-400 text-sm text-center"
+            : "text-gray-600 text-sm text-center"
+        }
       >
-        <option value="desktop">Desktop</option>
-        <option value="mobile">Mobile</option>
-      </select>
-   </div>
-              </form>
+        Enter URL in the input below, select a device, and click Analyze.
+      </p>
+
+      <div className="mx-auto w-full">
+        <form
+          className="flex flex-col sm:flex-col gap-4 items-center w-full"
+          onSubmit={handleClick}
+        >
+          {/* Input + Button wrapper */}
+          <div className="flex flex-col sm:flex-row gap-3 w-full">
+            {/* Input field */}
+            <div className="relative flex-1">
+              <Search
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                size={20}
+              />
+              <input
+                type="text"
+                value={inputValue}
+                disabled={loading}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder="Enter URL here..."
+                className={inputClass}
+              />
             </div>
+
+            {/* Analyze button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex gap-2 items-center justify-center bg-[#c2fbd7] text-green-700 rounded-full font-sans px-5 py-2 text-base border-0 select-none transition duration-250 shadow hover:shadow-lg active:scale-[1.05] active:-rotate-1 w-full sm:w-auto"
+            >
+              {loading && <Loader2 className="animate-spin w-5 h-5" />}
+              {loading ? "Analyzing.." : "Analyze"}
+            </button>
           </div>
+
+          {/* Dropdown for device selection */}
+          <div className="w-full sm:w-48">
+            <select
+            disabled={loading}
+              value={device}
+              onChange={(e) => setDevice(e.target.value)}
+              className="flex gap-2 p-2 px-8 items-center justify-center bg-[#c2fbd7] text-green-700 rounded-full font-sans  py-2 text-base border-0 select-none transition duration-250 shadow hover:shadow-lg active:scale-[1.05] active:-rotate-1 w-full sm:w-auto"
+            >
+              <option value="desktop">Desktop</option>
+              <option value="mobile">Mobile</option>
+            </select>
           </div>
-        )}
+        </form>
+      </div>
+    </div>
+  </div>
+)}
+
 
         {result && (
           <div className={`${containerClass} relative w-full  flex flex-1`}>

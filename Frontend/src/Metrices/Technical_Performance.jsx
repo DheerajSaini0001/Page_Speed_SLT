@@ -9,14 +9,14 @@ export default function Technical_Performance({ data }) {
   if (!data) return <div />;
 
   // ScoreBadge with descriptive text
-  const ScoreBadge = ({ score, out, des }) => {
+  const ScoreBadge = ({ score, out,unit, des }) => {
     const cssscore = score ? "bg-green-300" : "bg-red-300";
     const hasValue = score ? <Check size={18} /> : <X size={18} />;
     return (
       <span
-        className={`px-2.5 flex items-center gap-1.5 py-1 rounded-full text-black font-semibold text-sm shadow-md transform transition-transform ${cssscore}`}
+        className={`px-2.5 mobilebutton flex items-center gap-1.5 py-1 rounded-full text-black font-semibold text-sm shadow-md transform transition-transform ${cssscore}`}
       >
-        {hasValue} {out} {des}
+        {hasValue} {out} {unit} {des}
       </span>
     );
   };
@@ -63,21 +63,26 @@ export default function Technical_Performance({ data }) {
             <span className={textColor}>Largest Contentful Paint (LCP)</span>
             <ScoreBadge
               score={data.Technical_Performance.Core_Web_Vitals.LCP.Score}
-              out={data.Technical_Performance.Core_Web_Vitals.LCP.Score ? "Good" : "Poor"}
+              out={data.Technical_Performance.Core_Web_Vitals.LCP.Time}
+              unit={"Sec"}
+              des={data.Technical_Performance.Core_Web_Vitals.LCP.Score ? "Good" : "Poor"}
             />
           </div>
           <div className="flex justify-between items-center">
             <span className={textColor}>Cumulative Layout Shift (CLS)</span>
             <ScoreBadge
               score={data.Technical_Performance.Core_Web_Vitals.CLS.Score}
-              out={data.Technical_Performance.Core_Web_Vitals.CLS.Score ? "Good" : "Poor"}
+              out={data.Technical_Performance.Core_Web_Vitals.CLS.Time}
+              des={data.Technical_Performance.Core_Web_Vitals.CLS.Score ? "Good" : "Poor"}
             />
           </div>
           <div className="flex justify-between items-center">
             <span className={textColor}>Interaction to Next Paint (INP)</span>
             <ScoreBadge
               score={data.Technical_Performance.Core_Web_Vitals.INP.Score}
-              out={data.Technical_Performance.Core_Web_Vitals.INP.Score ? "Good" : "Poor"}
+              out={data.Technical_Performance.Core_Web_Vitals.INP.Time}
+              unit={"Sec"}
+              des={data.Technical_Performance.Core_Web_Vitals.INP.Score ? "Good" : "Poor"}
             />
           </div>
         </div>
@@ -105,7 +110,9 @@ export default function Technical_Performance({ data }) {
             <span className={textColor}>Time to First Byte (TTFB)</span>
             <ScoreBadge
               score={data.Technical_Performance.Delivery_and_Render.TTFB.Score}
-              out={data.Technical_Performance.Delivery_and_Render.TTFB.Score ? "Good" : "Poor"}
+              out={data.Technical_Performance.Core_Web_Vitals.INP.Time}
+              unit={"Sec"}
+              des={data.Technical_Performance.Delivery_and_Render.TTFB.Score ? "Good" : "Poor"}
             />
           </div>
           <div className="flex justify-between items-center">
@@ -133,16 +140,16 @@ export default function Technical_Performance({ data }) {
         {hasError2 && <hr className="text-black mt-3" />}
         <div className="p-1 mt-2">
           {!data.Technical_Performance.Delivery_and_Render.TTFB.Score && (
-            <h1 className="flex gap-2 warn"><AlertTriangle size={20} className="text-red-700" /> Sitemap missing</h1>
+            <h1 className="flex gap-2 warn"><AlertTriangle size={20} className="text-red-700" /> Time to First Byte greater than .2 sec</h1>
           )}
           {!data.Technical_Performance.Delivery_and_Render.Compression.Score && (
-            <h1 className="flex gap-2 warn"><AlertTriangle size={20} className="text-red-700" /> Robots.txt issue</h1>
+            <h1 className="flex gap-2 warn"><AlertTriangle size={20} className="text-red-700" />Text compression is Missing </h1>
           )}
           {!data.Technical_Performance.Delivery_and_Render.Caching.Score && (
-            <h1 className="flex gap-2 warn"><AlertTriangle size={20} className="text-red-700" /> Broken links found</h1>
+            <h1 className="flex gap-2 warn"><AlertTriangle size={20} className="text-red-700" /> Long term caching is not avalible</h1>
           )}
           {!data.Technical_Performance.Delivery_and_Render.HTTP.Score && (
-            <h1 className="flex gap-2 warn"><AlertTriangle size={20} className="text-red-700" /> Redirect issues</h1>
+            <h1 className="flex gap-2 warn"><AlertTriangle size={20} className="text-red-700" /> HTTP2 is not Enable </h1>
           )}
         </div>
       </div>
