@@ -19,9 +19,9 @@ export default function DarkCard() {
   const [inputValue, setInputValue] = useState("");
   const [result, setResult] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [device, setDevice] = useState("desktop");
 
   const { darkMode, toggleTheme } = useContext(ThemeContext); // ✅ context use
-
   const handleClick = async (e) => {
     e.preventDefault();
     if (!inputValue) return alert("URL is empty");
@@ -43,7 +43,7 @@ export default function DarkCard() {
       const response = await fetch("http://localhost:2000/data", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify([inputValue]),
+        body: JSON.stringify([inputValue,device]),
       });
       if (!response.ok) throw new Error(`Server error: ${response.status}`);
       const result = await response.json();
@@ -110,8 +110,11 @@ export default function DarkCard() {
             <h2 className="text-2xl font-bold text-center">Check your Page Audits and Performance</h2>
             <p className={darkMode ? "text-gray-400 text-sm text-center" : "text-gray-600 text-sm text-center"}>Enter URL in the input below and click the Analyze button.</p>
 
-            <div className=" flex flex-col justify-center items-center mx-auto">
-              <form className="flex flex-col items-center sm:flex-row gap-2" onSubmit={handleClick}>
+            <div className="  mx-auto">
+              <form className="flex sm:flex-col items-center  gap-2" onSubmit={handleClick}>
+            
+             <div className="flex gap-4 flex-row">
+
                 <div className="relative w-full flex flex-col justify-center items-center">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20}/>
                   <input
@@ -121,16 +124,31 @@ export default function DarkCard() {
                     onChange={(e) => setInputValue(e.target.value)}
                     placeholder="Enter URL here..."
                     className={inputClass}
-                  />
+                    />
                 </div>
+             <div>
+
                 <button
                   type="submit"
                   disabled={loading}
                   className="flex  w-fit md:w-fit sm:w-fit  lg:w-fit gap-2 items-center justify-center bg-[#c2fbd7] text-green-700 rounded-full font-sans px-5 py-2 text-base border-0 select-none transition duration-250 shadow hover:shadow-lg active:scale-[1.05] active:-rotate-1"
-                >
+                  >
                   {loading && <Loader2 className="animate-spin w-5 h-5" />}
                   {loading ? "Analyzing.." : "Analyze"}
                 </button>
+                  </div>
+                    </div>
+   <div className="mt-5">
+   
+      <select
+        value={device}
+        onChange={(e) => setDevice(e.target.value)}
+        className="w-48 p-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-zinc-900 dark:text-white dark:border-gray-700"
+      >
+        <option value="desktop">Desktop</option>
+        <option value="mobile">Mobile</option>
+      </select>
+   </div>
               </form>
             </div>
           </div>
