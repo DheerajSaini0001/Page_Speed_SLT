@@ -55,41 +55,51 @@ export default function UX_Content_Structure({ data }) {
       <div
         className={`w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-indigo-500 hover:scale-105 transition-transform duration-300 ${cardBg}`}
       >
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div className="flex justify-between items-center">
             <span className={textColor}>Mobile Friendliness</span>
+
             <ScoreBadge
               score={data.UX_and_Content_Structure.Mobile_Friendliness.Score}
               textGood="Mobile friendly"
               textBad="Not mobile friendly"
             />
           </div>
+
           <div className="flex justify-between items-center">
             <span className={textColor}>Navigation Depth</span>
+
             <ScoreBadge
               score={data.UX_and_Content_Structure.Navigation_Depth.Score}
               textGood="Navigation depth OK"
               textBad="Navigation depth too deep"
             />
           </div>
+
           <div className="flex justify-between items-center">
             <span className={textColor}>Layout Shift On Interactions</span>
+
             <ScoreBadge
               score={data.UX_and_Content_Structure.Layout_Shift_On_interactions.Score}
               textGood="Stable layout"
               textBad="Layout shifts detected"
             />
           </div>
+
           <div className="flex justify-between items-center">
             <span className={textColor}>Readability</span>
+
             <ScoreBadge
               score={data.UX_and_Content_Structure.Readability.Score}
               textGood="Readable content"
               textBad="Readability issues"
             />
           </div>
+
           <div className="flex justify-between items-center">
             <span className={textColor}>Intrusive Interstitials</span>
+
             <ScoreBadge
               score={data.UX_and_Content_Structure.Intrusive_Interstitials.Score}
               textGood="No intrusive interstitials"

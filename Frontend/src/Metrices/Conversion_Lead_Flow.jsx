@@ -5,7 +5,7 @@ import { Check, X } from "lucide-react"; // Imported Check and X icons
 export default function Conversion_Lead_Flow({ data }) {
   const { darkMode } = useContext(ThemeContext);
 
-  if (!data || !data.Metrices_Data) return <div />;
+  if (!data) return <div />;
 
   // Updated ScoreBadge to match the other components' style and logic
   const ScoreBadge = ({ score }) => {
@@ -45,57 +45,56 @@ export default function Conversion_Lead_Flow({ data }) {
       >
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
           <div className="flex justify-between items-center">
-            <span className={textColor}>Primary CTAs Score</span>
+            <span className={textColor}>Primary CTAs</span>
             <ScoreBadge
               score={
-                data.Metrices_Data?.Conversion_and_Lead_Flow.Primary_CTAs_Score ??
-                0
+                data.Conversion_and_Lead_Flow.Primary_CTAs.Score
               }
             />
           </div>
           <div className="flex justify-between items-center">
-            <span className={textColor}>Forms Score</span>
+            <span className={textColor}>Forms</span>
             <ScoreBadge
               score={
-                data.Metrices_Data?.Conversion_and_Lead_Flow.Forms_Score ?? 0
+                data.Conversion_and_Lead_Flow.Forms.Score
               }
             />
           </div>
           <div className="flex justify-between items-center">
-            <span className={textColor}>Thank-You/Success State Score</span>
+            <span className={textColor}>Thank-You/Success State</span>
             <ScoreBadge
               score={
-                data.Metrices_Data?.Conversion_and_Lead_Flow
-                  .Thank_You_or_Success_State_Score ?? 0
+                data.Conversion_and_Lead_Flow
+                  .Thank_You_or_Success_State.Score
               }
             />
           </div>
           <div className="flex justify-between items-center">
             <span className={textColor}>
-              Tracking of Form Submits/Events Score
+              Tracking of Form Submits/Events
             </span>
             <ScoreBadge
               score={
-                data.Metrices_Data?.Conversion_and_Lead_Flow
-                  .Tracking_Of_Form_Submits_or_Events_Score ?? 0
+                data.Conversion_and_Lead_Flow
+                  .Tracking_Of_Form_Submits_or_Events.Score
               }
             />
           </div>
           <div className="flex justify-between items-center">
-            <span className={textColor}>Contact Info Score</span>
+            <span className={textColor}>Contact Info</span>
             <ScoreBadge
               score={
-                data.Metrices_Data?.Conversion_and_Lead_Flow.Contact_Info_Score ??
+                data.Conversion_and_Lead_Flow.Contact_Info.Score ??
                 0
               }
             />
           </div>
           <div className="flex justify-between items-center">
-            <span className={textColor}>Load on CRM/Webhook Score</span>
+            <span className={textColor}>Load on CRM/Webhook</span>
             <ScoreBadge
               score={
-                data.Metrices_Data?.Conversion_and_Lead_Flow
-                  .Load_On_CRM_or_Webhook_Score ?? 0
+                data.Conversion_and_Lead_Flow
+                  .Load_On_CRM_or_Webhook.Score
               }
             />
           </div>
