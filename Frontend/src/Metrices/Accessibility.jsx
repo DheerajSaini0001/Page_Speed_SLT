@@ -111,37 +111,37 @@ export default function Accessibility({ data }) {
           {data.Accessibility.Color_Contrast.Score === 0 && (
             <h1 className="flex gap-2">
               <AlertTriangle size={20} className="text-red-700" />{" "}
-              {data.Accessibility.Color_Contrast.Score?"":""}
+              color-contrast attribute missing
             </h1>
           )}
           {data.Accessibility.Focusable.Score === 0 && (
             <h1 className="flex gap-2">
               <AlertTriangle size={20} className="text-red-700" />{" "}
-              {data.Accessibility.Focusable.Parameter}
+              There are some missing attribute ("focus-order","focusable-content","tabindex","interactive-element-affordance")
             </h1>
           )}
           {data.Accessibility.ARIA.Score === 0 && (
             <h1 className="flex gap-2">
               <AlertTriangle size={20} className="text-red-700" />{" "}
-              {data.Accessibility.ARIA.Parameter}
+              There are some missing attribute ("label","aria-allowed-attr","aria-roles","aria-hidden-focus")
             </h1>
           )}
           {data.Accessibility.Alt_or_Text_Equivalents.Score === 0 && (
             <h1 className="flex gap-2">
               <AlertTriangle size={20} className="text-red-700" />{" "}
-              {data.Accessibility.Alt_or_Text_Equivalents.Parameter}
+              image-alt attribute missing
             </h1>
           )}
           {data.Accessibility.Skip_Links.Score === 0 && (
             <h1 className="flex gap-2">
               <AlertTriangle size={20} className="text-red-700" />{" "}
-              {data.Accessibility.Skip_Links.Parameter}
+              Skip Link is present
             </h1>
           )}
           {data.Accessibility.Landmarks.Score === 0 && (
             <h1 className="flex gap-2">
               <AlertTriangle size={20} className="text-red-700" />{" "}
-              {data.Accessibility.Landmarks.Parameter}
+              There are some missing landmark roles ("banner","main","contentinfo","navigation","complementary")
             </h1>
           )}
         </div>

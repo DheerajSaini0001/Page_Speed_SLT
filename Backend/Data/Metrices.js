@@ -37,39 +37,39 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data) {
       Essentials: {
         Unique_Title: {
           Title: MetricesCalculation_Data.seoReport.B1.title,
-          Parameter:'Length of Title must be in between 30-60 characters',
+          Parameter:'Check for length of Title is in between 30-60 characters',
           Title_Length: MetricesCalculation_Data.seoReport.B1.titleLength,
           Score: MetricesCalculation_Data.seoReport.B1.titleScore,
         },
         Meta_Description: {
           MetaDescription: MetricesCalculation_Data.seoReport.B1.MetaDescription,
-          Parameter:'Length of MetaDescription must be less than 160 characters',
+          Parameter:'Check for length of MetaDescription is less than 160 characters',
           MetaDescription_Length: MetricesCalculation_Data.seoReport.B1.metaDescLength,
           Score: MetricesCalculation_Data.seoReport.B1.metaDescScore,
         },
         Canonical: {
           Canonical: MetricesCalculation_Data.seoReport.B1.canonical,
-          Parameter:'Page URL must be same as Canonical tag href URL',
+          Parameter:'Check for Page URL is same as Canonical tag "href" URL',
           Score: MetricesCalculation_Data.seoReport.B1.canonicalScore,
         },
         H1: {
           H1_Count: MetricesCalculation_Data.seoReport.B1.h1Count,
-          Parameter:'There must be only one H1 tag on the Page',
+          Parameter:'Check for there is only one H1 tag on the Page',
           Score: MetricesCalculation_Data.seoReport.B1.h1Score,
         },
         Total_Score_B1: MetricesCalculation_Data.seoReport.B1.total,
       },
       Media_and_Semantics: {
         Image_ALT:{
-          Parameter:'Only Image which consist alt attribute must be Meaningfull !("", "image", "logo", "icon","pic","picture","photo"," ","12345","-","graphics")',
+          Parameter:'Check for Image tag which consist alt attribute is Meaningfull and not contain this ("", "image", "logo", "icon","pic","picture","photo"," ","12345","-","graphics")',
           Score:MetricesCalculation_Data.seoReport.B2.imageAltScore
         },
         Heading_Hierarchy:{
-          Parameter:'Must follow heading hierarcy h1->h2->h3',
+          Parameter:'Check for heading hierarcy is followed "h1->h2->h3"',
           Score:MetricesCalculation_Data.seoReport.B2.hierarchyScore
         },
         Descriptive_Links:{
-          Parameter:'anchor tag text must be meaningfull !("click here", "read more","learn more","details","link","more","go","this")',
+          Parameter:'Check for anchor tag text does not contain this ("click here", "read more","learn more","details","link","more","go","this")',
           Score: MetricesCalculation_Data.seoReport.B2.linkScore
         },
         Total_Score_B2: MetricesCalculation_Data.seoReport.B2.total,
@@ -77,16 +77,16 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data) {
       Structure_and_Uniqueness: {
          URL_Slugs:{
           Slug:MetricesCalculation_Data.seoReport.B3.slug,
-          Parameter:'Slug must be meaningfull & length must be less than 75 characters ',
+          Parameter:'Check for Slug is meaningfull & length is less than 75 characters ',
           Score:MetricesCalculation_Data.seoReport.B3.urlSlugScore,
           URL_Slugs_Length:MetricesCalculation_Data.seoReport.B3.slugLength
         },
         Duplicate_Content:{
-          Parameter:' Duplicate contnent occured within the page less than 50 %',
+          Parameter:'Check for Duplicate contnent occured within the page less than 50 %',
           Score: MetricesCalculation_Data.seoReport.B3.duplicateContent
         },
         Pagination_Tags:{
-          Parameter:'Check for link rel to next and prev',
+          Parameter:'Check for presence of ("next" and "prev") in link rel',
           Score: MetricesCalculation_Data.seoReport.B3.paginationScore
         },
         Total_Score_B3: MetricesCalculation_Data.seoReport.B3.total,
@@ -96,59 +96,74 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data) {
     Accessibility: {
       Color_Contrast:{
         Score:MetricesCalculation_Data.accessibilityReport.C.colorContrast,
-        Parameter:'color-contrast attribute missing'
+        Parameter:'Check for color-contrast attribute is present or not',
       },
       Focusable:{
         Score:MetricesCalculation_Data.accessibilityReport.C.keyboardNavigation,
-        Parameter:'There are some missing attribute ("focus-order","focusable-content","tabindex","interactive-element-affordance")'
+        Parameter:'Check for some missing attribute like ("focus-order","focusable-content","tabindex","interactive-element-affordance")',
       },
       ARIA:{
         Score:MetricesCalculation_Data.accessibilityReport.C.ariaLabeling,
-        Parameter:'There are some missing attribute ("label","aria-allowed-attr","aria-roles","aria-hidden-focus")'
+        Parameter:'Check for some missing attribute ("label","aria-allowed-attr","aria-roles","aria-hidden-focus")',
       },
       Alt_or_Text_Equivalents:{
         Score:MetricesCalculation_Data.accessibilityReport.C.altTextEquivalents,
-        Parameter:'image-alt attribute missing'
+        Parameter:'Check for presence of image-alt attribute',
       },
       Skip_Links:{
         Score:MetricesCalculation_Data.accessibilityReport.C.skipLinks,
-        Parameter:'Skip Link is present'
+        Parameter:'Check for Skip Link is present or not',
       },
       Landmarks:{
         Score:MetricesCalculation_Data.accessibilityReport.C.Landmark,
-        Parameter:'There are some missing landmark roles ("banner","main","contentinfo","navigation","complementary")'
+        Parameter:'Check for some missing landmark roles ("banner","main","contentinfo","navigation","complementary")',
       },
       Accessibility_Score_Total: MetricesCalculation_Data.accessibilityReport.C.totalCScore,
     },
     Security_or_Compliance: {
       HTTPS:{
         Score:MetricesCalculation_Data.securityReport.D.httpsMixedContent,
-        Parameter:'HTTPS missing in provided URL'
+        Parameter:'Check for presence of HTTPS in provided URL',
       },
       HSTS:{
         Score:MetricesCalculation_Data.securityReport.D.hsts,
-        Parameter:'Strict transport security is not available'
+        Parameter:'Check for Strict transport security is available or not',
       },
       Security_Headers:{
         Score:MetricesCalculation_Data.securityReport.D.securityHeaders,
-        Parameter:'All security headers are not present ("content-security-policy","x-content-type-options","referrer-policy","x-frame-options","cross-origin-opener-policy")'
+        Parameter:'Check for all security headers are present or not ("content-security-policy","x-content-type-options","referrer-policy","x-frame-options","cross-origin-opener-policy")',
       },
       Cookie_Banner_and_Consent_Mode:{
         Score:MetricesCalculation_Data.securityReport.D.cookieConsent,
-        Parameter:'No banner found ("cookie","consent","privacy","policy","accept","gdpr","tracking")'
+        Parameter:'Check for banner found or not ("cookie","consent","privacy","policy","accept","gdpr","tracking")',
       },
       Error_Pages:{
         Score:MetricesCalculation_Data.securityReport.D.errorPages,
-        Parameter:'Site not have proper custom error page'
+        Parameter:'Check for Site have proper custom error page or not',
       },
       Security_or_Compliance_Score_Total: MetricesCalculation_Data.securityReport.D.totalDScore,
     },
     UX_and_Content_Structure: {
-      Mobile_Friendliness_Score: MetricesCalculation_Data.uxReport.E.mobileFriendliness,
-      Navigation_Depth_Score: MetricesCalculation_Data.uxReport.E.navigationDepth,
-      Layout_Shift_On_interactions_Score: MetricesCalculation_Data.uxReport.E.layoutShift,
-      Readability_Score: MetricesCalculation_Data.uxReport.E.readability,
-      Intrusive_Interstitials_Score: MetricesCalculation_Data.uxReport.E.intrusiveInterstitials,
+      Mobile_Friendliness:{
+        Score: MetricesCalculation_Data.uxReport.E.mobileFriendliness,
+        Parameter:'Check for Viewport length > 0 ,fontsize >= 16 & button width & height >= 32',
+      },
+      Navigation_Depth:{
+        Score: MetricesCalculation_Data.uxReport.E.navigationDepth,
+        Parameter:'Check from anchor tag Navigation link is present or not',
+      },
+      Layout_Shift_On_interactions:{
+        Score: MetricesCalculation_Data.uxReport.E.layoutShift,
+        Parameter:'Check for (Cumulative Layout Shift too high ≥ 0.1)',
+      },
+      Readability:{
+        Score: MetricesCalculation_Data.uxReport.E.readability,
+        Parameter:'Check for Content readability is poor or not (textsize 40–60 px)',
+      },
+      Intrusive_Interstitials:{
+        Score: MetricesCalculation_Data.uxReport.E.intrusiveInterstitials,
+        Parameter:'Is there a visible, fixed-position element that covers a significant portion of the viewport',
+      },
       UX_and_Content_Structure_Score_Total: MetricesCalculation_Data.uxReport.E.totalEScore,
     },
     Conversion_and_Lead_Flow: {

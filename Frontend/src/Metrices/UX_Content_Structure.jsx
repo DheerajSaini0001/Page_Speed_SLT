@@ -5,7 +5,7 @@ import { Check, X } from "lucide-react"; // Imported Check and X icons
 export default function UX_Content_Structure({ data }) {
   const { darkMode } = useContext(ThemeContext);
 
-  if (!data || !data.Metrices_Data) {
+  if (!data) {
     return <div></div>;
   }
 
@@ -49,8 +49,8 @@ export default function UX_Content_Structure({ data }) {
             <span>Mobile Friendliness Score</span>
             <ScoreBadge
               score={
-                data.Metrices_Data?.UX_and_Content_Structure
-                  .Mobile_Friendliness_Score ?? 0
+                data.UX_and_Content_Structure
+                  .Mobile_Friendliness.Score
               }
             />
           </div>
@@ -58,8 +58,8 @@ export default function UX_Content_Structure({ data }) {
             <span>Navigation Depth Score</span>
             <ScoreBadge
               score={
-                data.Metrices_Data?.UX_and_Content_Structure
-                  .Navigation_Depth_Score ?? 0
+                data.UX_and_Content_Structure
+                  .Navigation_Depth.Score
               }
             />
           </div>
@@ -67,8 +67,8 @@ export default function UX_Content_Structure({ data }) {
             <span>Layout Shift On interactions Score</span>
             <ScoreBadge
               score={
-                data.Metrices_Data?.UX_and_Content_Structure
-                  .Layout_Shift_On_interactions_Score ?? 0
+                data.UX_and_Content_Structure
+                  .Layout_Shift_On_interactions.Score
               }
             />
           </div>
@@ -76,8 +76,8 @@ export default function UX_Content_Structure({ data }) {
             <span>Readability Score</span>
             <ScoreBadge
               score={
-                data.Metrices_Data?.UX_and_Content_Structure
-                  .Readability_Score ?? 0
+                data.UX_and_Content_Structure
+                  .Readability.Score
               }
             />
           </div>
@@ -85,8 +85,8 @@ export default function UX_Content_Structure({ data }) {
             <span>Intrusive Interstitials Score</span>
             <ScoreBadge
               score={
-                data.Metrices_Data?.UX_and_Content_Structure
-                  .Intrusive_Interstitials_Score ?? 0
+                data.UX_and_Content_Structure
+                  .Intrusive_Interstitials.Score
               }
             />
           </div>

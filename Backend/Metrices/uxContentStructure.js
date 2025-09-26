@@ -19,11 +19,7 @@ export default async function evaluateMobileUX(url,$) {
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
   await page.setViewport({ width: 375, height: 667, isMobile: true });
-
-  const scores = [0, 0, 0, 0, 0]; 
-
-  try {
-    await page.goto(url, { waitUntil: "networkidle2" });
+    await page.goto(url, {waitUntil: "networkidle2",timeout: 240000});
 
     const viewport = $("meta[name=viewport]").length > 0;
 
@@ -37,11 +33,11 @@ export default async function evaluateMobileUX(url,$) {
     }).length / buttons.length >= 0.7;
 
     const passCount = [viewport, fontSizePass, tapTargetsPass].filter(Boolean).length;
-    scores[0] = passCount;
+    const mobileFriendliness = passCount == 3 ? 1 : 0;
 
 
     const navLinks = $("a").length;
-    scores[1] = navLinks >= 3 ? 2 : navLinks >= 1 ? 1 : 0;
+    const navigationDepth = navLinks == 3  ? 1 : 0;
 
 
     await page.evaluate(() => {
@@ -56,15 +52,15 @@ export default async function evaluateMobileUX(url,$) {
     });
     await new Promise(resolve => setTimeout(resolve, 3000));
     const cls = await page.evaluate(() => window.cumulativeLayoutShiftScore);
-    scores[2] = cls < 0.1 ? 2 : 1;
+    const layout_Shift_on_Interactions = cls < 0.1 ? 1 : 0;
 
-
+    let readability
     const text = $("body").text() || "";
     if (text.split(/\s+/).length < 200) {
-      scores[3] = 2;
+      readability = 1;
     } else {
       const readabilityScore = estimateReadability(text);
-      scores[3] = readabilityScore >= 40 && readabilityScore <= 60 ? 2 : 1;
+      readability = readabilityScore >= 40 && readabilityScore <= 60 ? 1 : 0;
     }
 
 
@@ -74,23 +70,21 @@ export default async function evaluateMobileUX(url,$) {
       const height = parseInt($(o).attr("height")) || 0;
       return pos && width > 0.5 * 375 && height > 0.5 * 667;
     });
-    scores[4] = interstitials ? 0 : 1;
+    const intrusive_Interstitials = interstitials ? 0 : 1;
 
-  } catch (err) {
-    console.error("Error evaluating UX:", err);
-  }
+    const totalEScore = ((mobileFriendliness + navigationDepth + layout_Shift_on_Interactions + readability + intrusive_Interstitials)/5)*100
 
   await browser.close();
 
 
   const report = {};
   report.E = {
-    mobileFriendliness: parseFloat(scores[0].toFixed(2)),
-    navigationDepth: parseFloat(scores[1].toFixed(2)),
-    layoutShift: parseFloat(scores[2].toFixed(2)),
-    readability: parseFloat(scores[3].toFixed(2)),
-    intrusiveInterstitials: parseFloat(scores[4].toFixed(2)),
-    totalEScore: parseFloat(scores.reduce((a, b) => a + b, 0).toFixed(2)),
+    mobileFriendliness: mobileFriendliness,
+    navigationDepth: navigationDepth,
+    layoutShift: layout_Shift_on_Interactions,
+    readability: readability,
+    intrusiveInterstitials: intrusive_Interstitials,
+    totalEScore: parseFloat(totalEScore.toFixed(0)),
   };
 
   return report;
