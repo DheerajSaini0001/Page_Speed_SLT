@@ -20,8 +20,8 @@ export default function On_Page_SEO({ data }) {
     return (
       <span className={`${
         darkMode
-          ? "px-2.5 flex py-1 rounded-full text-white font-semibold text-sm shadow-md transform transition-transform "
-          : "px-2.5 flex py-1 rounded-full text-black  font-semibold text-sm shadow-md transform transition-transform "
+          ? `px-2.5 flex py-1 mobilebutton rounded-full text-white font-semibold text-sm shadow-md transform transition-transform `
+          : `px-2.5 flex py-1 mobilebutton rounded-full text-black  font-semibold text-sm shadow-md transform transition-transform `
       } ${cssscore}`}>
         {hasValue} {out} {des}
       </span>
@@ -41,7 +41,7 @@ export default function On_Page_SEO({ data }) {
       id="OnPageSEO"
       className={`min-h-fit pt-20 pb-16 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 m-4 flex flex-col items-center justify-start p-6 space-y-6 ${containerBg}`}
     >
-      <h1 className="responsive flex items-center justify-center sm:gap-10 text-3xl font-extrabold mb-6">
+      <h1 className="responsive text-heading-25 flex items-center justify-center sm:gap-10 text-3xl font-extrabold mb-6">
         On-Page SEO{" "} 
          <CircularProgress value={data.On_Page_SEO.On_Page_SEO_Score_Total} size={70} stroke={5} />
         
@@ -82,10 +82,10 @@ export default function On_Page_SEO({ data }) {
         {(data.On_Page_SEO.Essentials.Unique_Title.Score==0 || data.On_Page_SEO.Essentials.Meta_Description.Score==0 || data.On_Page_SEO.Essentials.Canonical.Score==0 || data.On_Page_SEO.Essentials.H1.Score==0) &&( <hr className="text-black mt-3" />)}
        
         <div className="p-1 mt-2">
-        {data.On_Page_SEO.Essentials.Unique_Title.Score==0&&(<h1 className="flex gap-2"><AlertTriangle size={20} className="text-red-700"/>Length of Title must be in between 30-60 characters</h1>)}
-          {data.On_Page_SEO.Essentials.Meta_Description.Score==0&&(<h1 className="flex gap-2"><AlertTriangle size={20} className="text-red-700"/>Length of MetaDescription must be less than 160 characters</h1>)}
-          {data.On_Page_SEO.Essentials.Canonical.Score==0&&(<h1 className="flex gap-2"><AlertTriangle size={20} className="text-red-700"/>Page URL must be same as Canonical tag href URL</h1>)}
-          {data.On_Page_SEO.Essentials.H1.Score==0&&(<h1 className="flex gap-2"><AlertTriangle size={20} className="text-red-700"/>There must be only one H1 tag on the Page</h1>)}
+        {data.On_Page_SEO.Essentials.Unique_Title.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>Length of Title must be in between 30-60 characters</h1>)}
+          {data.On_Page_SEO.Essentials.Meta_Description.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>Length of MetaDescription must be less than 160 characters</h1>)}
+          {data.On_Page_SEO.Essentials.Canonical.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>Page URL must be same as Canonical tag href URL</h1>)}
+          {data.On_Page_SEO.Essentials.H1.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>There must be only one H1 tag on the Page</h1>)}
           
           
         </div>
@@ -114,9 +114,9 @@ export default function On_Page_SEO({ data }) {
         {(data.On_Page_SEO.Media_and_Semantics.Image_ALT.Score==0 || data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Score==0 || data.On_Page_SEO.Media_and_Semantics.Descriptive_Links.Score==0) &&(  <hr className="text-black mt-3" /> )}
        
         <div className="p-1 mt-2">
-        {data.On_Page_SEO.Media_and_Semantics.Image_ALT.Score==0&&(<h1 className="flex gap-2"><AlertTriangle size={20} className="text-red-700"/>Only Image which consist alt attribute must be Meaningfull !("", "image", "logo", "icon","pic","picture","photo"," ","12345","-","graphics")</h1>)}
-          {data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Score==0&&(<h1 className="flex gap-2"><AlertTriangle size={20} className="text-red-700"/>Must follow heading hierarcy "h1-h2-h3"</h1>)}
-          {data.On_Page_SEO.Media_and_Semantics.Descriptive_Links.Score==0&&(<h1 className="flex gap-2"><AlertTriangle size={20} className="text-red-700"/>anchor tag text must be meaningfull !("click here", "read more","learn more","details","link","more","go","this")</h1>)}
+        {data.On_Page_SEO.Media_and_Semantics.Image_ALT.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>Only Image which consist alt attribute must be Meaningfull !("", "image", "logo", "icon","pic","picture","photo"," ","12345","-","graphics")</h1>)}
+          {data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>Must follow heading hierarcy "h1-h2-h3"</h1>)}
+          {data.On_Page_SEO.Media_and_Semantics.Descriptive_Links.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>anchor tag text must be meaningfull !("click here", "read more","learn more","details","link","more","go","this")</h1>)}
           
           
           
@@ -146,9 +146,9 @@ export default function On_Page_SEO({ data }) {
         {(data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score==1 || data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score==3 || !data.On_Page_SEO.Structure_and_Uniqueness.Duplicate_Content.Score==0 || data.On_Page_SEO.Structure_and_Uniqueness.Pagination_Tags.Score==0) &&( <hr className="text-black mt-3" /> )}
         
         <div className="p-1 mt-2">
-        {(data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score==1 || data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score==3) &&(<h1 className="flex gap-2"><AlertTriangle size={20} className="text-red-700"/> {data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score==1?"No Slug Found you are at home page":"Slug must be meaningfull & length must be less than 75 characters "}</h1>)}
-          {!data.On_Page_SEO.Structure_and_Uniqueness.Duplicate_Content.Score==0&&(<h1 className="flex gap-2"><AlertTriangle size={20} className="text-red-700"/>Duplicate contnent occured within the page less than 50 %</h1>)}
-          {data.On_Page_SEO.Structure_and_Uniqueness.Pagination_Tags.Score==0&&(<h1 className="flex gap-2"><AlertTriangle size={20} className="text-red-700"/>Check for link rel to next and prev</h1>)}
+        {(data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score==1 || data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score==3) &&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/> {data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score==1?"No Slug Found you are at home page":"Slug must be meaningfull & length must be less than 75 characters "}</h1>)}
+          {!data.On_Page_SEO.Structure_and_Uniqueness.Duplicate_Content.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>Duplicate contnent occured within the page less than 50 %</h1>)}
+          {data.On_Page_SEO.Structure_and_Uniqueness.Pagination_Tags.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>Check for link rel to next and prev</h1>)}
           
           
           

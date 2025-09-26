@@ -10,7 +10,7 @@ export default function UX_Content_Structure({ data }) {
 
   // ScoreBadge with descriptive text
   const ScoreBadge = ({ score, textGood, textBad }) => {
-    const cssscore = score ? "bg-green-300" : "bg-red-300";
+    const cssscore = score ? "mobilebutton bg-green-300" : "mobilebutton bg-red-300";
     const hasValue = score ? <Check size={18} /> : <X size={18} />;
     return (
       <span
@@ -42,7 +42,7 @@ export default function UX_Content_Structure({ data }) {
       id="UXContentStructure"
       className={`min-h-fit pt-20 pb-16 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 m-4 flex flex-col items-center justify-start p-6 space-y-6 ${containerBg}`}
     >
-      <h1 className={`responsive flex sm:gap-10 justify-center items-center text-3xl font-extrabold mb-6 text-center ${textColor}`}>
+      <h1 className={`responsive text-heading-25 flex sm:gap-10 justify-center items-center text-3xl font-extrabold mb-6 text-center ${textColor}`}>
         UX Content Structure
        
         <CircularProgress
@@ -112,27 +112,27 @@ export default function UX_Content_Structure({ data }) {
         {hasError && <hr className="text-black mt-3" />}
         <div className="p-1 mt-2">
           {data.UX_and_Content_Structure.Mobile_Friendliness.Score === 0 && (
-            <h1 className={`flex gap-2 items-center ${textColor}`}>
+            <h1 className={`warn flex gap-2 items-center ${textColor}`}>
               <AlertTriangle className="text-red-600" size={20} /> Viewport meta tag missing, Body font size less than 16px, Some buttons/links are too small tap targets less than 32px
             </h1>
           )}
           {data.UX_and_Content_Structure.Navigation_Depth.Score === 0 && (
-            <h1 className={`flex gap-2 items-center ${textColor}`}>
+            <h1 className={`warn flex gap-2 items-center ${textColor}`}>
               <AlertTriangle className="text-red-600" size={20} /> Navigation depth too deep or inconsistent
             </h1>
           )}
           {data.UX_and_Content_Structure.Layout_Shift_On_interactions.Score === 0 && (
-            <h1 className={`flex gap-2 items-center ${textColor}`}>
+            <h1 className={`warn flex gap-2 items-center ${textColor}`}>
               <AlertTriangle className="text-red-600" size={20} /> Layout shifts detected during user interactions
             </h1>
           )}
           {data.UX_and_Content_Structure.Readability.Score === 0 && (
-            <h1 className={`flex gap-2 items-center ${textColor}`}>
+            <h1 className={`warn flex gap-2 items-center ${textColor}`}>
               <AlertTriangle className="text-red-600" size={20} /> Readability issues detected: Content too short or difficult to read.
             </h1>
           )}
           {data.UX_and_Content_Structure.Intrusive_Interstitials.Score === 0 && (
-            <h1 className={`flex gap-2 items-center ${textColor}`}>
+            <h1 className={`warn flex gap-2 items-center ${textColor}`}>
               <AlertTriangle className="text-red-600" size={20} />Intrusive interstitials present
             </h1>
           )}
