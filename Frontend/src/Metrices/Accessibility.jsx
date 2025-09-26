@@ -47,7 +47,7 @@ export default function Accessibility({ data }) {
       id="accessibility"
       className={`min-h-fit pt-20 pb-16 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 m-4 flex flex-col items-center justify-start p-6 space-y-6 ${containerBg}`}
     >
-      <h1 className="flex items-center justify-center sm:gap-10 text-3xl font-extrabold mb-6">
+      <h1 className="responsive flex items-center justify-center sm:gap-10 text-3xl font-extrabold mb-6">
         Accessibility{" "}
         <CircularProgress
           value={data.Accessibility.Accessibility_Score_Total}
@@ -107,44 +107,39 @@ export default function Accessibility({ data }) {
         {/* Conditionally rendered error section */}
         {hasError && <hr className="text-black mt-3" />}
 
-        <div className="p-1 mt-2">
-          {data.Accessibility.Color_Contrast.Score === 0 && (
-            <h1 className="flex gap-2">
-              <AlertTriangle size={20} className="text-red-700" />{" "}
-              color-contrast attribute missing
-            </h1>
-          )}
-          {data.Accessibility.Focusable.Score === 0 && (
-            <h1 className="flex gap-2">
-              <AlertTriangle size={20} className="text-red-700" />{" "}
-              There are some missing attribute ("focus-order","focusable-content","tabindex","interactive-element-affordance")
-            </h1>
-          )}
-          {data.Accessibility.ARIA.Score === 0 && (
-            <h1 className="flex gap-2">
-              <AlertTriangle size={20} className="text-red-700" />{" "}
-              There are some missing attribute ("label","aria-allowed-attr","aria-roles","aria-hidden-focus")
-            </h1>
-          )}
-          {data.Accessibility.Alt_or_Text_Equivalents.Score === 0 && (
-            <h1 className="flex gap-2">
-              <AlertTriangle size={20} className="text-red-700" />{" "}
-              image-alt attribute missing
-            </h1>
-          )}
-          {data.Accessibility.Skip_Links.Score === 0 && (
-            <h1 className="flex gap-2">
-              <AlertTriangle size={20} className="text-red-700" />{" "}
-              Skip Link is present
-            </h1>
-          )}
-          {data.Accessibility.Landmarks.Score === 0 && (
-            <h1 className="flex gap-2">
-              <AlertTriangle size={20} className="text-red-700" />{" "}
-              There are some missing landmark roles ("banner","main","contentinfo","navigation","complementary")
-            </h1>
-          )}
-        </div>
+        <div className="flex flex-col p-1 mt-2 gap-2">
+  {data.Accessibility.Color_Contrast.Score === 0 && (
+    <h1 className={`flex gap-2  ${textColor}`}>
+      <AlertTriangle size={20} className="text-red-700" /> Color-contrast attribute missing
+    </h1>
+  )}
+  {data.Accessibility.Focusable.Score === 0 && (
+    <h1 className={`flex gap-2  ${textColor}`}>
+      <AlertTriangle size={20} className="text-red-700" /> There are missing attributes: "focus-order", "focusable-content", "tabindex", "interactive-element-affordance"
+    </h1>
+  )}
+  {data.Accessibility.ARIA.Score === 0 && (
+    <h1 className={`flex gap-2  ${textColor}`}>
+      <AlertTriangle size={20} className="text-red-700" /> There are missing ARIA attributes: "label", "aria-allowed-attr", "aria-roles", "aria-hidden-focus"
+    </h1>
+  )}
+  {data.Accessibility.Alt_or_Text_Equivalents.Score === 0 && (
+    <h1 className={`flex gap-2  ${textColor}`}>
+      <AlertTriangle size={20} className="text-red-700" /> Image-alt attribute missing
+    </h1>
+  )}
+  {data.Accessibility.Skip_Links.Score === 0 && (
+    <h1 className={`flex gap-2  ${textColor}`}>
+      <AlertTriangle size={20} className="text-red-700" /> Skip link missing
+    </h1>
+  )}
+  {data.Accessibility.Landmarks.Score === 0 && (
+    <h1 className={`flex gap-2  ${textColor}`}>
+      <AlertTriangle size={20} className="text-red-700" /> Missing landmark roles: "banner", "main", "contentinfo", "navigation", "complementary"
+    </h1>
+  )}
+</div>
+
       </div>
     </div>
   );

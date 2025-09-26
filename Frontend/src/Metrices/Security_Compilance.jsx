@@ -36,7 +36,7 @@ export default function Security_Compilance({ data }) {
       id="SecurityCompliance"
       className={`min-h-fit pt-20 pb-16 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 m-4 flex flex-col items-center justify-start p-6 space-y-6 ${containerBg}`}
     >
-      <h1 className={`flex sm:gap-10 justify-center items-center text-3xl font-extrabold mb-6 text-center ${textColor}`}>
+      <h1 className={`responsive flex sm:gap-10 justify-center items-center text-3xl font-extrabold mb-6 text-center ${textColor}`}>
         Security/Compliance 
          <CircularProgress
                   value={data.Security_or_Compliance.Security_or_Compliance_Score_Total}
@@ -50,7 +50,7 @@ export default function Security_Compilance({ data }) {
       <div className={`w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-indigo-500 hover:scale-105 transition-transform duration-300 ${cardBg}`}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
 
-          <div className="flex justify-between items-center">
+          <div className=" flex justify-between items-center">
             <span className={textColor}>Hypertext Transfer Protocol Secure (HTTPS)</span>
             <ScoreBadge 
               score={data.Security_or_Compliance.HTTPS.Score} 
@@ -99,19 +99,19 @@ export default function Security_Compilance({ data }) {
         {hasError && <hr className="text-black mt-3" />}
         <div className="p-1 mt-2">
           {data.Security_or_Compliance.HTTPS.Score === 0 && (
-            <h1 className="flex gap-2 text-black"><AlertTriangle className='text-red-600' size={20} /> HTTPS not enabled</h1>
+            <h1 className={`flex gap-2 items-center ${textColor}`}><AlertTriangle className='text-red-600' size={20} /> HTTPS not enabled</h1>
           )}
           {data.Security_or_Compliance.HSTS.Score === 0 && (
-            <h1 className="flex gap-2 text-black"><AlertTriangle className='text-red-600' size={20} /> HSTS missing</h1>
+            <h1 className={`flex gap-2 items-center ${textColor}`}><AlertTriangle className='text-red-600' size={20} /> HSTS missing</h1>
           )}
           {data.Security_or_Compliance.Security_Headers.Score === 0 && (
-            <h1 className="flex gap-2 text-black"><AlertTriangle className='text-red-600' size={20} /> Security headers missing</h1>
+            <h1 className={`flex gap-2 items-center ${textColor}`}><AlertTriangle className='text-red-600' size={20} /> Security headers missing</h1>
           )}
           {data.Security_or_Compliance.Cookie_Banner_and_Consent_Mode.Score === 0 && (
-            <h1 className="flex gap-2 text-black"><AlertTriangle className='text-red-600' size={20} /> Cookie banner / consent missing</h1>
+            <h1 className={`flex gap-2 items-center ${textColor}`}><AlertTriangle className='text-red-600' size={20} /> Cookie banner / consent missing</h1>
           )}
           {data.Security_or_Compliance.Error_Pages.Score === 0 && (
-            <h1 className="flex gap-2 text-black"><AlertTriangle className='text-red-600' size={20} /> Custom error pages not found</h1>
+            <h1 className={`flex gap-2 items-center ${textColor}`}><AlertTriangle className='text-red-600' size={20} /> Custom error pages not found</h1>
           )}
         </div>
       </div>
