@@ -41,7 +41,7 @@ export default function On_Page_SEO({ data }) {
       id="OnPageSEO"
       className={`min-h-fit pt-20 pb-16 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 m-4 flex flex-col items-center justify-start p-6 space-y-6 ${containerBg}`}
     >
-      <h1 className="flex items-center justify-center sm:gap-10 text-3xl font-extrabold mb-6">
+      <h1 className="responsive flex items-center justify-center sm:gap-10 text-3xl font-extrabold mb-6">
         On-Page SEO{" "} 
          <CircularProgress value={data.On_Page_SEO.On_Page_SEO_Score_Total} size={70} stroke={5} />
         
