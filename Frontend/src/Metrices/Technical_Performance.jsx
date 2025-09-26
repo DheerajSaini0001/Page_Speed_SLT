@@ -5,7 +5,7 @@ import { Check, X } from "lucide-react"; // Imported Check and X icons
 export default function Technical_Performance({ data }) {
   const { darkMode } = useContext(ThemeContext);
 
-  if (!data || !data.Metrices_Data) {
+  if (!data) {
     return <div></div>;
   }
 
@@ -54,8 +54,8 @@ export default function Technical_Performance({ data }) {
             <span>Largest Contentful Paint (LCP) Score</span>
             <ScoreBadge
               score={
-                data.Metrices_Data?.Technical_Performance?.Core_Web_Vitals
-                  ?.LCP_Score ?? 0
+                data.Technical_Performance.Core_Web_Vitals
+                  .LCP.Score
               }
             />
           </div>
@@ -63,8 +63,8 @@ export default function Technical_Performance({ data }) {
             <span>Cumulative Layout Shift (CLS) Score</span>
             <ScoreBadge
               score={
-                data.Metrices_Data?.Technical_Performance?.Core_Web_Vitals
-                  ?.CLS_Score ?? 0
+                data.Technical_Performance.Core_Web_Vitals
+                  .CLS.Score
               }
             />
           </div>
@@ -72,8 +72,8 @@ export default function Technical_Performance({ data }) {
             <span>Interaction to Next Paint (INP) Score</span>
             <ScoreBadge
               score={
-                data.Metrices_Data?.Technical_Performance?.Core_Web_Vitals
-                  ?.INP_Score ?? 0
+                data.Technical_Performance.Core_Web_Vitals
+                  .INP.Score
               }
             />
           </div>
@@ -93,8 +93,8 @@ export default function Technical_Performance({ data }) {
             <span>Time to First Byte (TTFB) Score</span>
             <ScoreBadge
               score={
-                data.Metrices_Data?.Technical_Performance?.Delivery_and_Render
-                  ?.TTFB_Score ?? 0
+                data.Technical_Performance.Delivery_and_Render
+                 .TTFB.Score
               }
             />
           </div>
@@ -102,8 +102,8 @@ export default function Technical_Performance({ data }) {
             <span>Compression Score</span>
             <ScoreBadge
               score={
-                data.Metrices_Data?.Technical_Performance?.Delivery_and_Render
-                  ?.Compression_Score ?? 0
+                data.Technical_Performance.Delivery_and_Render
+                 .Compression.Score
               }
             />
           </div>
@@ -111,8 +111,8 @@ export default function Technical_Performance({ data }) {
             <span>Caching Score</span>
             <ScoreBadge
               score={
-                data.Metrices_Data?.Technical_Performance?.Delivery_and_Render
-                  ?.Caching_Score ?? 0
+                data.Technical_Performance.Delivery_and_Render
+                 .Caching.Score
               }
             />
           </div>
@@ -120,8 +120,8 @@ export default function Technical_Performance({ data }) {
             <span>HTTP/2 or HTTP/3 Score</span>
             <ScoreBadge
               score={
-                data.Metrices_Data?.Technical_Performance?.Delivery_and_Render
-                  ?.HTTP_Score ?? 0
+                data.Technical_Performance.Delivery_and_Render
+                 .HTTP.Score
               }
             />
           </div>
@@ -141,8 +141,8 @@ export default function Technical_Performance({ data }) {
             <span>Sitemap Score</span>
             <ScoreBadge
               score={
-                data.Metrices_Data?.Technical_Performance
-                  ?.Crawlability_and_Hygiene?.Sitemap_Score ?? 0
+                data.Technical_Performance
+                  .Crawlability_and_Hygiene.Sitemap.Score
               }
             />
           </div>
@@ -150,8 +150,8 @@ export default function Technical_Performance({ data }) {
             <span>Robots Score</span>
             <ScoreBadge
               score={
-                data.Metrices_Data?.Technical_Performance
-                  ?.Crawlability_and_Hygiene?.Robots_Score ?? 0
+                data.Technical_Performance
+                  .Crawlability_and_Hygiene.Robots.Score
               }
             />
           </div>
@@ -159,8 +159,8 @@ export default function Technical_Performance({ data }) {
             <span>Broken Links Score</span>
             <ScoreBadge
               score={
-                data.Metrices_Data?.Technical_Performance
-                  ?.Crawlability_and_Hygiene?.Broken_Links_Score ?? 0
+                data.Technical_Performance
+                  .Crawlability_and_Hygiene.Broken_Links.Score
               }
             />
           </div>
@@ -168,8 +168,8 @@ export default function Technical_Performance({ data }) {
             <span>Redirect Chains Score</span>
             <ScoreBadge
               score={
-                data.Metrices_Data?.Technical_Performance
-                  ?.Crawlability_and_Hygiene?.Redirect_Chains_Score ?? 0
+                data.Technical_Performance
+                  .Crawlability_and_Hygiene.Redirect_Chains.Score
               }
             />
           </div>

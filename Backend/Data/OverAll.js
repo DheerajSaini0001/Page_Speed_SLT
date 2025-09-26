@@ -19,7 +19,7 @@ export default function OverAll(MetricesCalculation_Data) {
   { name: "AIO Readiness", score: totalG }
 ];
 
-  const totalScore = (totalA + totalB + totalC + totalD + totalE + totalF + totalG);
+  const totalScore = (totalA + totalB + totalC + totalD + totalE + totalF + totalG)/7;
 
   let grade = "F";
   if (totalScore >= 90) grade = "A";
@@ -62,7 +62,7 @@ if (totalG < 6) {
 }
 
   return {
-    totalScore,
+    totalScore:parseFloat(totalScore.toFixed(1)),
     grade,
     sectionScores: scores,
     topFixes,

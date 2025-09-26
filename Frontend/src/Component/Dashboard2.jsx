@@ -145,7 +145,7 @@ export default function Dashboard2({ data }) {
 
 
       {/* Recommendations */}
-      <div className={`rounded-xl p-4 shadow-lg border ${cardBorder} ${cardBg}`}>
+      {/* <div className={`rounded-xl p-4 shadow-lg border ${cardBorder} ${cardBg}`}>
         <h3 className="sm:text-2xl font-semibold text-green-500 mb-4">
           👉 Recommendations to improve Website Performance -
         </h3>
@@ -154,7 +154,7 @@ export default function Dashboard2({ data }) {
             {index + 1} - {val}
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 }

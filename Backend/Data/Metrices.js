@@ -12,23 +12,56 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data) {
     recommendations: Overall_Data.recommendations,
     Technical_Performance: {
       Core_Web_Vitals: {
-        LCP_Score: MetricesCalculation_Data.technicalReport.lcpScore,
-        CLS_Score: MetricesCalculation_Data.technicalReport.clsScore,
-        INP_Score: MetricesCalculation_Data.technicalReport.inpScore,
+        LCP:{
+          Score: MetricesCalculation_Data.technicalReport.lcpScore,
+          Parameter:'Set 1 if the largest contentful paint (LCP) is 2500 ms or less, otherwise set 0 if it’s greater or missing'
+        },
+        CLS:{
+          Score: MetricesCalculation_Data.technicalReport.clsScore,
+          Parameter:'Set 1 if the cumulative layout shift (CLS) is 0.1 or less, otherwise set 0 if it’s greater or missing'
+        },
+        INP:{
+          Score: MetricesCalculation_Data.technicalReport.inpScore,
+          Parameter:'Set 1 if the page is interactive (INP) within 3800 ms or less, otherwise set 0 if it’s greater or missing'
+        },
         Total_Score_A1: MetricesCalculation_Data.technicalReport.total_A1,
       },
       Delivery_and_Render: {
-        TTFB_Score: MetricesCalculation_Data.technicalReport.ttfbScore,
-        Compression_Score: MetricesCalculation_Data.technicalReport.compressionScore,
-        Caching_Score: MetricesCalculation_Data.technicalReport.cachingscore,
-        HTTP_Score: MetricesCalculation_Data.technicalReport.httpscore,
+        TTFB:{
+          Score: MetricesCalculation_Data.technicalReport.ttfbScore,
+          Parameter:'Set 1 if the Time to First Byte (TTFB) is 200 ms or less, otherwise set 0 if it’s greater or missing'
+        },
+        Compression:{
+          Score: MetricesCalculation_Data.technicalReport.compressionScore,
+          Parameter:'Set 1 if text compression is enabled, otherwise set 0 if it’s disabled or missing'
+        },
+        Caching:{
+          Score: MetricesCalculation_Data.technicalReport.cachingscore,
+          Parameter:'Set 1 if long-term caching is enabled, otherwise set 0 if it’s disabled or missing'
+        },
+        HTTP:{
+          Score: MetricesCalculation_Data.technicalReport.httpscore,
+          Parameter:'Set 1 if HTTP/2 is enabled, otherwise set 0 if it’s disabled or missing'
+        },
         Total_Score_A2: MetricesCalculation_Data.technicalReport.total_A2,
       },
       Crawlability_and_Hygiene: {
-        Sitemap_Score: MetricesCalculation_Data.technicalReport.sitemapScore,
-        Robots_Score: MetricesCalculation_Data.technicalReport.robotsScore,
-        Broken_Links_Score: MetricesCalculation_Data.technicalReport.brokenLinksScore,
-        Redirect_Chains_Score: MetricesCalculation_Data.technicalReport.redirectChainsScore,
+        Sitemap:{
+          Score: MetricesCalculation_Data.technicalReport.sitemapScore,
+          Parameter:'Checks if a sitemap URL exists in "robots.txt" and is reachable'
+        },
+        Robots:{
+          Score: MetricesCalculation_Data.technicalReport.robotsScore,
+          Parameter:'Checks if the "robots.txt" does not block the entire site.'
+        },
+        Broken_Links:{
+          Score: MetricesCalculation_Data.technicalReport.brokenLinksScore,
+          Parameter:'Checks if a webpage has broken external links.'
+        },
+        Redirect_Chains:{
+          Score: MetricesCalculation_Data.technicalReport.redirectChainsScore,
+          Parameter:'Checks if a URL redirects.'
+        },
         Total_Score_A3: MetricesCalculation_Data.technicalReport.totalScore_A3,
       },
       Technical_Performance_Score_Total: MetricesCalculation_Data.technicalReport.totalScore,

@@ -57,7 +57,7 @@ export default function Conversion_Lead_Flow({ data }) {
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div className="flex justify-between items-center">
-            <span className={textColor}>Primary CTAs</span>
+            <span className={textColor}>Primary (Call-to-Actions) CTAs</span>
             <ScoreBadge
               score={data.Conversion_and_Lead_Flow.Primary_CTAs.Score}
               textGood="CTAs implemented"
