@@ -10,7 +10,7 @@ export default function Conversion_Lead_Flow({ data }) {
 
   // ScoreBadge with descriptive text
   const ScoreBadge = ({ score, textGood, textBad }) => {
-    const cssscore = score ? "bg-green-300" : "bg-red-300";
+    const cssscore = score ? "mobilebutton bg-green-300" : "mobilebutton bg-red-300";
     const hasValue = score ? <Check size={18} /> : <X size={18} />;
     return (
       <span
@@ -43,7 +43,7 @@ export default function Conversion_Lead_Flow({ data }) {
       id="ConversionLeadFlow"
       className={`min-h-fit pt-20 pb-16 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 m-4 flex flex-col items-center justify-start p-6 space-y-6 ${containerBg}`}
     >
-      <h1 className={`responsive flex sm:gap-10 justify-center items-center text-3xl font-extrabold mb-6 text-center ${textColor}`}>
+      <h1 className={`responsive text-heading-25 flex sm:gap-10 justify-center items-center text-3xl font-extrabold mb-6 text-center ${textColor}`}>
         Conversion Lead Flow
         <CircularProgress
           value={data.Conversion_and_Lead_Flow.Conversion_and_Lead_Flow_Score_Total}
@@ -110,32 +110,32 @@ export default function Conversion_Lead_Flow({ data }) {
         {hasError && <hr className="text-black mt-3" />}
         <div className="flex flex-col p-1 mt-2 gap-2">
           {data.Conversion_and_Lead_Flow.Primary_CTAs.Score === 0 && (
-            <h1 className={`flex gap-2 items-center ${textColor}`}>
+            <h1 className={`warn flex gap-2 items-center ${textColor}`}>
               <AlertTriangle className="text-red-600" size={20} /> No prominent CTA found above the fold
             </h1>
           )}
           {data.Conversion_and_Lead_Flow.Forms.Score === 0 && (
-            <h1 className={`flex gap-2 items-center ${textColor}`}>
+            <h1 className={`warn flex gap-2 items-center ${textColor}`}>
               <AlertTriangle className="text-red-600" size={20} /> Some forms on this page do not contain any input, textarea, or select elements.
             </h1>
           )}
           {data.Conversion_and_Lead_Flow.Thank_You_or_Success_State.Score === 0 && (
-            <h1 className={`flex gap-2 items-center ${textColor}`}>
+            <h1 className={`warn flex gap-2 items-center ${textColor}`}>
               <AlertTriangle className="text-red-600" size={20} /> No 'Thank You' or success page link found
             </h1>
           )}
           {data.Conversion_and_Lead_Flow.Tracking_Of_Form_Submits_or_Events.Score === 0 && (
-            <h1 className={`flex gap-2 items-center ${textColor}`}>
+            <h1 className={`warn flex gap-2 items-center ${textColor}`}>
               <AlertTriangle className="text-red-600" size={20} /> No tracking/analytics scripts found
             </h1>
           )}
           {data.Conversion_and_Lead_Flow.Contact_Info.Score === 0 && (
-            <h1 className={`flex gap-2 items-center ${textColor}`}>
+            <h1 className={`warn flex gap-2 items-center ${textColor}`}>
               <AlertTriangle className="text-red-600" size={20} />Some Contact info are missing
             </h1>
           )}
           {data.Conversion_and_Lead_Flow.Load_On_CRM_or_Webhook.Score === 0 && (
-            <h1 className={`flex gap-2 items-center ${textColor}`}>
+            <h1 className={`warn flex gap-2 items-center ${textColor}`}>
               <AlertTriangle className="text-red-600" size={20} />  No CRM/contact forms found
             </h1>
           )}

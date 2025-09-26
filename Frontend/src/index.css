@@ -5,7 +5,13 @@ html{
 
 @media (max-width: 600px) {
     .text-custom-18 {
-      font-size: 16px;
+      font-size: 14px;
+    }
+    .warn{
+    font-size: 12px;
+    }
+    .mobilebutton{
+    font-size: 10px;
     }
     .responsive {
       display: flex;
