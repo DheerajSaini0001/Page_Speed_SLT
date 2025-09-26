@@ -12,8 +12,9 @@ export default async function main(message) {
   if (!/^https?:\/\//i.test(url)) {
     url = "https://" + url;
   }
+  let device = message[1]
 
-    console.log(`URL Received: ${url}`);
+    console.log(`URL Received: ${url} and Device: ${device}`);
 
     let start, end;
 
