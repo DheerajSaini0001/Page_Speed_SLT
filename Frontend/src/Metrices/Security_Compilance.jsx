@@ -99,19 +99,19 @@ export default function Security_Compilance({ data }) {
         {hasError && <hr className="text-black mt-3" />}
         <div className="p-1 mt-2">
           {data.Security_or_Compliance.HTTPS.Score === 0 && (
-            <h1 className="flex gap-2 text-black"><AlertTriangle className='text-red-600' size={20} /> HTTPS not enabled</h1>
+            <h1 className={`flex gap-2 items-center ${textColor}`}><AlertTriangle className='text-red-600' size={20} /> HTTPS not enabled</h1>
           )}
           {data.Security_or_Compliance.HSTS.Score === 0 && (
-            <h1 className="flex gap-2 text-black"><AlertTriangle className='text-red-600' size={20} /> HSTS missing</h1>
+            <h1 className={`flex gap-2 items-center ${textColor}`}><AlertTriangle className='text-red-600' size={20} /> HSTS missing</h1>
           )}
           {data.Security_or_Compliance.Security_Headers.Score === 0 && (
-            <h1 className="flex gap-2 text-black"><AlertTriangle className='text-red-600' size={20} /> Security headers missing</h1>
+            <h1 className={`flex gap-2 items-center ${textColor}`}><AlertTriangle className='text-red-600' size={20} /> Security headers missing</h1>
           )}
           {data.Security_or_Compliance.Cookie_Banner_and_Consent_Mode.Score === 0 && (
-            <h1 className="flex gap-2 text-black"><AlertTriangle className='text-red-600' size={20} /> Cookie banner / consent missing</h1>
+            <h1 className={`flex gap-2 items-center ${textColor}`}><AlertTriangle className='text-red-600' size={20} /> Cookie banner / consent missing</h1>
           )}
           {data.Security_or_Compliance.Error_Pages.Score === 0 && (
-            <h1 className="flex gap-2 text-black"><AlertTriangle className='text-red-600' size={20} /> Custom error pages not found</h1>
+            <h1 className={`flex gap-2 items-center ${textColor}`}><AlertTriangle className='text-red-600' size={20} /> Custom error pages not found</h1>
           )}
         </div>
       </div>

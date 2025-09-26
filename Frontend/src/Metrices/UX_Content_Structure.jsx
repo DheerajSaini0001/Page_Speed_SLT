@@ -112,27 +112,27 @@ export default function UX_Content_Structure({ data }) {
         {hasError && <hr className="text-black mt-3" />}
         <div className="p-1 mt-2">
           {data.UX_and_Content_Structure.Mobile_Friendliness.Score === 0 && (
-            <h1 className="flex gap-2 text-black">
+            <h1 className={`flex gap-2 items-center ${textColor}`}>
               <AlertTriangle className="text-red-600" size={20} /> Viewport meta tag missing, Body font size less than 16px, Some buttons/links are too small tap targets less than 32px
             </h1>
           )}
           {data.UX_and_Content_Structure.Navigation_Depth.Score === 0 && (
-            <h1 className="flex gap-2 text-black">
+            <h1 className={`flex gap-2 items-center ${textColor}`}>
               <AlertTriangle className="text-red-600" size={20} /> Navigation depth too deep or inconsistent
             </h1>
           )}
           {data.UX_and_Content_Structure.Layout_Shift_On_interactions.Score === 0 && (
-            <h1 className="flex gap-2 text-black">
+            <h1 className={`flex gap-2 items-center ${textColor}`}>
               <AlertTriangle className="text-red-600" size={20} /> Layout shifts detected during user interactions
             </h1>
           )}
           {data.UX_and_Content_Structure.Readability.Score === 0 && (
-            <h1 className="flex gap-2 text-black">
+            <h1 className={`flex gap-2 items-center ${textColor}`}>
               <AlertTriangle className="text-red-600" size={20} /> Readability issues detected: Content too short or difficult to read.
             </h1>
           )}
           {data.UX_and_Content_Structure.Intrusive_Interstitials.Score === 0 && (
-            <h1 className="flex gap-2 text-black">
+            <h1 className={`flex gap-2 items-center ${textColor}`}>
               <AlertTriangle className="text-red-600" size={20} />Intrusive interstitials present
             </h1>
           )}
