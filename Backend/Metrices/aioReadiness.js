@@ -1,7 +1,5 @@
 import puppeteer from "puppeteer";
 
-const normalizeScore = (passRate, weight) => (passRate / 100) * weight;
-
 export default async function aioReadiness(url, robotsText) {
   const report = {};
 
@@ -15,7 +13,7 @@ export default async function aioReadiness(url, robotsText) {
   );
   await page.setExtraHTTPHeaders({ "Accept-Language": "en-US,en;q=0.9" });
 
-  await page.goto(url, { waitUntil: "networkidle2" });
+  await page.goto(url, {waitUntil: "networkidle2",timeout: 240000});
 
 
   const bodyText = await page.evaluate(() => document.body.innerText || "");
@@ -43,7 +41,7 @@ export default async function aioReadiness(url, robotsText) {
         return (presentFields / fields.length) * 100;
       })
     );
-    orgFieldScore = normalizeScore(bestPercent, 2);
+    orgFieldScore = bestPercent > 75 ? 1 : 0;
   }
 
   // G1.2
@@ -76,7 +74,7 @@ export default async function aioReadiness(url, robotsText) {
   if (isConsistent(phones, "phone")) consistencyCount++;
   if (isConsistent(emails, "email")) consistencyCount++;
   if (isConsistent(addresses, "address")) consistencyCount++;
-  const napScore = consistencyCount / 3;
+  const napScore = consistencyCount == 3 ? 1 : 0;
 
   // G1.3
   const basePolicies = ["About", "Contact", "Privacy", "Terms"];
@@ -84,81 +82,67 @@ export default async function aioReadiness(url, robotsText) {
   const isEcommerce = /cart|checkout|product/i.test(bodyText);
   const policies = isEcommerce ? [...basePolicies, ...ecommercePolicies] : [...basePolicies];
   const policyPresent = policies.filter(p => bodyText.toLowerCase().includes(p.toLowerCase())).length;
-  const policyScore = (policyPresent / policies.length);
+  const policyScore = (policyPresent / policies.length) > 75 ? 1 : 0;
 
   // G2.1
   const faqSchemas = jsonLdScripts.filter(s => s["@type"] === "FAQPage" || s["@type"] === "HowTo");
-  const faqScore = normalizeScore(faqSchemas.length ? 100 : 0, 1.5);
+  const faqScore = faqSchemas.length ? 1 : 0
 
   // G2.2
   const headingsWithId = await page.evaluate(() => document.querySelectorAll("h1[id],h2[id],h3[id]").length);
   const headingsTotal = await page.evaluate(() => document.querySelectorAll("h1,h2,h3").length) || 1;
-  const tocScore = normalizeScore((headingsWithId / headingsTotal) * 100, 1);
+  const tocScore = (headingsWithId / headingsTotal) ? 1 : 0;
 
   // G2.3
   const imgWithFigcaption = await page.evaluate(() => document.querySelectorAll("figure figcaption").length);
-  const mediaScore = normalizeScore(imgWithFigcaption ? 100 : 0, 0.5);
+  const mediaScore = imgWithFigcaption ? 1 : 0;
 
   // G3.1
   const productSchemas = jsonLdScripts.filter(s =>
     ["Product", "Vehicle", "Offer", "AggregateRating"].includes(s["@type"])
   );
-  const productPercent = productSchemas.length > 0 ? 100 : 0;
-  const productScore = normalizeScore(productPercent, 1.5);
+  const productScore = productSchemas.length > 0 ? 1 : 0;
   let productValid = productSchemas.length > 0;
 
   // G3.2
   const hasFeed = await page.evaluate(() =>
     document.querySelectorAll('link[type="application/rss+xml"], link[type="application/atom+xml"], link[type="application/json"]').length > 0
   );
-  const feedScore = hasFeed ? 0.5 : 0;
+  const feedScore = hasFeed ? 1 : 0;
 
   // G4
   let robotsScore = 1;
   let robotsOk = true;
-  try {
     if (/Disallow:\s*\/\s*$/i.test(robotsText)) {
       robotsScore = 0;
       robotsOk = false;
     }
-  } catch {}
 
 
-  const totalGScore = parseFloat(
-    (
-      orgFieldScore +
-      napScore +
-      policyScore +
-      faqScore +
-      tocScore +
-      mediaScore +
-      productScore +
-      feedScore +
-      robotsScore
-    ).toFixed(2)
-  );
 
-  const aioCompatible = totalGScore >= 7.5 && orgValid && productValid && robotsOk ? "Yes" : "No";
+  const totalGScore = ((orgFieldScore +napScore +policyScore +faqScore +tocScore +mediaScore +productScore +feedScore +robotsScore)/9)*100;
+
+  const aioCompatible = totalGScore >= 75 && orgValid && productValid && robotsOk ? "Yes" : "No";
 
   report.G = {
     jsonLdScripts:jsonLdScripts,
-    orgFields: parseFloat(orgFieldScore.toFixed(2)),
-    napConsistency: parseFloat(napScore.toFixed(2)),
-    policies: parseFloat(policyScore.toFixed(2)),
-    totalG1: parseFloat((orgFieldScore + napScore + policyScore).toFixed(2)),
+    orgFields: orgFieldScore,
+    napConsistency: napScore,
+    policies: policyScore,
+    totalG1: (orgFieldScore + napScore + policyScore),
 
-    faqJsonLd: parseFloat(faqScore.toFixed(2)),
-    sectionAnchors: parseFloat(tocScore.toFixed(2)),
-    mediaCaptions: parseFloat(mediaScore.toFixed(2)),
-    totalG2: parseFloat((faqScore + tocScore + mediaScore).toFixed(2)),
+    faqJsonLd: faqScore,
+    sectionAnchors: tocScore,
+    mediaCaptions: mediaScore,
+    totalG2: (faqScore + tocScore + mediaScore),
 
-    productSchemas: parseFloat(productScore.toFixed(2)),
-    feedAvailability: parseFloat(feedScore.toFixed(2)),
-    totalG3: parseFloat((productScore + feedScore).toFixed(2)),
+    productSchemas: productScore,
+    feedAvailability: feedScore,
+    totalG3: (productScore + feedScore),
 
-    crawlFriendliness: parseFloat(robotsScore.toFixed(2)),
+    crawlFriendliness: robotsScore,
 
-    totalGScore,
+    totalGScore:parseFloat(totalGScore.toFixed(0)),
     aioCompatibleBadge: aioCompatible,
   };
 

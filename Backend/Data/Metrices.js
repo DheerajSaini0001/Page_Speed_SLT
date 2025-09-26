@@ -195,24 +195,51 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data) {
     },
     AIO_Readiness: {
       Entity_and_Organization_Clarity: {
-        Organization_JSON_LD_Score: MetricesCalculation_Data.aioReport.G.orgFields,
-        Consistent_NAP_Score: MetricesCalculation_Data.aioReport.G.napConsistency,
-        Humans_or_Policies_Score: MetricesCalculation_Data.aioReport.G.policies,
+        Organization_JSON_LD_Score:{
+          Score: MetricesCalculation_Data.aioReport.G.orgFields,
+          Parameter:'Checks if an Organization JSON-LD exists with ≥75% of key fields ("name", "logo", "url", "contactPoint", "address", "sameAs")'
+        },
+        Consistent_NAP:{
+          Score: MetricesCalculation_Data.aioReport.G.napConsistency,
+          Parameter:'Check ("phones", "emails", "addresses") present in ("header", "footer", "body")'
+        },
+        Humans_or_Policies:{
+          Score: MetricesCalculation_Data.aioReport.G.policies,
+          Parameter:'Checks for key policy pages ("About", "Contact", "Privacy", "Terms", "Returns and Shipping" if e-commerce)'
+        },
         Total_Score_G1: MetricesCalculation_Data.aioReport.G.totalG1,
       },
       Content_Answerability_and_Structure: {
-        FAQ_or_How_To_JSON_LD_Score: MetricesCalculation_Data.aioReport.G.faqJsonLd,
-        Section_Anchors_or_TOC_Score: MetricesCalculation_Data.aioReport.G.sectionAnchors,
-        Descriptive_Media_Captions_or_Figcaptions_Score: MetricesCalculation_Data.aioReport.G.mediaCaptions,
+        FAQ_or_How_To_JSON_LD:{
+          Score: MetricesCalculation_Data.aioReport.G.faqJsonLd,
+          Parameter:'Checks for FAQPage or HowTo JSON-LD schemas'
+        },
+        Section_Anchors_or_TOC:{
+          Score: MetricesCalculation_Data.aioReport.G.sectionAnchors,
+          Parameter:'Checks if any "H1–H2-H3" headings have IDs'
+        },
+        Descriptive_Media_Captions_or_Figcaptions:{
+          Score: MetricesCalculation_Data.aioReport.G.mediaCaptions,
+          Parameter:'Counts images with <figcaption>'
+        },
         Total_Score_G2: MetricesCalculation_Data.aioReport.G.totalG2,
       },
       Product_or_Inventory_Schema_and_Feeds: {
-        Correct_Schema_Types_Score: MetricesCalculation_Data.aioReport.G.productSchemas,
-        Feed_Availability_Score: MetricesCalculation_Data.aioReport.G.feedAvailability,
+        Correct_Schema_Types:{
+          Score: MetricesCalculation_Data.aioReport.G.productSchemas,
+          Parameter:'Checks for ("Product", "Vehicle", "Offer", "AggregateRating") JSON-LD schemas existence'
+        },
+        Feed_Availability:{
+          Score: MetricesCalculation_Data.aioReport.G.feedAvailability,
+          Parameter:'Checks for RSS, Atom, or JSON feeds'
+        },
         Total_Score_G3: MetricesCalculation_Data.aioReport.G.totalG3,
       },
       Crawl_Friendliness_for_Knowledge_Agents: {
-        Robots_Allowlist_Score: MetricesCalculation_Data.aioReport.G.crawlFriendliness,
+        Robots_Allowlist:{
+          Score: MetricesCalculation_Data.aioReport.G.crawlFriendliness,
+          Parameter:'Checks if "robots.txt" blocks all crawling (Disallow: /)'
+        },
         Total_Score_G4: MetricesCalculation_Data.aioReport.G.crawlFriendliness,
       },
       AIO_Readiness_Score_Total: MetricesCalculation_Data.aioReport.G.totalGScore,
