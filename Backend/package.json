@@ -22,6 +22,7 @@
     "jsdom": "^27.0.0",
     "nodemon": "^3.1.10",
     "p-queue": "^8.1.1",
+    "perf_hooks": "^0.0.1",
     "puppeteer": "^24.20.0",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2"

@@ -1,27 +1,31 @@
 
-export default function Metrices(url, MetricesCalculation_Data, Overall_Data) {
+export default function Metrices(url, MetricesCalculation_Data, Overall_Data,timeTaken) {
 
   const metrices = {
     Schema:MetricesCalculation_Data.aioReport.G.jsonLdScripts,
+    Time_Taken:timeTaken,
     Site: url,
     Score: Overall_Data.totalScore,
     Grade: Overall_Data.grade,
     AIO_Compatibility_Badge: MetricesCalculation_Data.aioReport.G.aioCompatibleBadge,
     Section_Score: Overall_Data.sectionScores,
     Top_Fixes: Overall_Data.topFixes,
-    recommendations: Overall_Data.recommendations,
+    // recommendations: Overall_Data.recommendations,
     Technical_Performance: {
       Core_Web_Vitals: {
         LCP:{
           Score: MetricesCalculation_Data.technicalReport.lcpScore,
+          Time: MetricesCalculation_Data.technicalReport.lcpRaw,
           Parameter:'Set 1 if the largest contentful paint (LCP) is 2500 ms or less, otherwise set 0 if it’s greater or missing'
         },
         CLS:{
           Score: MetricesCalculation_Data.technicalReport.clsScore,
+          Time: MetricesCalculation_Data.technicalReport.clsRaw,
           Parameter:'Set 1 if the cumulative layout shift (CLS) is 0.1 or less, otherwise set 0 if it’s greater or missing'
         },
         INP:{
           Score: MetricesCalculation_Data.technicalReport.inpScore,
+          Time: MetricesCalculation_Data.technicalReport.inpRaw,
           Parameter:'Set 1 if the page is interactive (INP) within 3800 ms or less, otherwise set 0 if it’s greater or missing'
         },
         Total_Score_A1: MetricesCalculation_Data.technicalReport.total_A1,
@@ -29,6 +33,7 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data) {
       Delivery_and_Render: {
         TTFB:{
           Score: MetricesCalculation_Data.technicalReport.ttfbScore,
+          Time: MetricesCalculation_Data.technicalReport.ttfbRaw,
           Parameter:'Set 1 if the Time to First Byte (TTFB) is 200 ms or less, otherwise set 0 if it’s greater or missing'
         },
         Compression:{
