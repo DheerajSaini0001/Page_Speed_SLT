@@ -122,10 +122,14 @@ const httpsScore = httpsRaw !== undefined ? (httpsRaw === 1 ? 1 : 0) : 1; // HTT
 
 
   return {
+    lcpRaw:lcpRaw/100,
     lcpScore:lcpScore,
+    clsRaw:clsRaw,
     clsScore:clsScore,
+    inpRaw:inpRaw/100,
     inpScore:inpScore,
     total_A1:total_A1,
+    ttfbRaw:ttfbRaw/100,
     ttfbScore:ttfbScore,
     compressionScore:compressionScore,
     cachingscore:cachingScore,
