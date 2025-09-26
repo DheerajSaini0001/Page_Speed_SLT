@@ -6,7 +6,14 @@ import {
   Pie,
   Cell,
   Legend,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
 } from "recharts";
+
+
 import CircularProgress from "./CircularProgress";
 import { ThemeContext } from "../ThemeContext"; // ✅ ThemeContext import
 
@@ -14,6 +21,15 @@ export default function Dashboard2({ data }) {
   const { darkMode } = useContext(ThemeContext); // ✅ useContext
 
   if (!data) return <div />;
+  const barData = [
+    { name: "Technical Performance", value: data.Technical_Performance.Technical_Performance_Score_Total},
+    { name: "On-Page SEO", value: data.On_Page_SEO.On_Page_SEO_Score_Total },
+    { name: "Accessibility", value: data.Accessibility.Accessibility_Score_Total },
+    { name: "Security/Compliance", value: data.Security_or_Compliance.Security_or_Compliance_Score_Total },
+    { name: "UX & Content", value: data.UX_and_Content_Structure.UX_and_Content_Structure_Score_Total },
+    { name: "Conversion & Lead Flow", value: data.Conversion_and_Lead_Flow.Conversion_and_Lead_Flow_Score_Total },
+    { name: "AIO Readiness", value: data.AIO_Readiness.AIO_Readiness_Score_Total },
+  ];
 
   const sectionLabels = {
     A: "Technical Performance",
@@ -104,7 +120,24 @@ export default function Dashboard2({ data }) {
   ))}
 </div>
 
-      {/* Pie Chart */}
+
+
+      {/* Bar Chart */}
+<div className={`rounded-xl p-4 shadow-lg border ${cardBorder} ${cardBg}`}>
+  <h3 className="text-base sm:text-lg font-semibold mb-4">Bar Graph</h3>
+  <div className="w-full h-64 sm:h-72 lg:h-96">
+  <ResponsiveContainer width="100%" height="100%">
+        <BarChart data={barData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="value" fill="#8884d8" radius={[10, 10, 0, 0]} />
+        </BarChart>
+      </ResponsiveContainer>
+  </div>
+</div>
 <div className={`rounded-xl p-4 shadow-lg border ${cardBorder} ${cardBg}`}>
   <h3 className="text-base sm:text-lg font-semibold mb-4">Top Fixes Needed</h3>
   <div className="w-full h-64 sm:h-72 lg:h-96">
