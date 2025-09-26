@@ -46,7 +46,7 @@ export default function UX_Content_Structure({ data }) {
       >
         <div className={`grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm`}>
           <div className={`flex justify-between items-center ${textColor}`}>
-            <span>Mobile Friendliness Score</span>
+            <span>Mobile Friendliness</span>
             <ScoreBadge
               score={
                 data.UX_and_Content_Structure
@@ -55,7 +55,7 @@ export default function UX_Content_Structure({ data }) {
             />
           </div>
           <div className={`flex justify-between items-center ${textColor}`}>
-            <span>Navigation Depth Score</span>
+            <span>Navigation Depth</span>
             <ScoreBadge
               score={
                 data.UX_and_Content_Structure
@@ -64,7 +64,7 @@ export default function UX_Content_Structure({ data }) {
             />
           </div>
           <div className={`flex justify-between items-center ${textColor}`}>
-            <span>Layout Shift On interactions Score</span>
+            <span>Layout Shift On interactions</span>
             <ScoreBadge
               score={
                 data.UX_and_Content_Structure
@@ -73,7 +73,7 @@ export default function UX_Content_Structure({ data }) {
             />
           </div>
           <div className={`flex justify-between items-center ${textColor}`}>
-            <span>Readability Score</span>
+            <span>Readability</span>
             <ScoreBadge
               score={
                 data.UX_and_Content_Structure
@@ -82,7 +82,7 @@ export default function UX_Content_Structure({ data }) {
             />
           </div>
           <div className={`flex justify-between items-center ${textColor}`}>
-            <span>Intrusive Interstitials Score</span>
+            <span>Intrusive Interstitials</span>
             <ScoreBadge
               score={
                 data.UX_and_Content_Structure

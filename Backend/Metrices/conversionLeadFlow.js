@@ -1,4 +1,3 @@
-const normalizeScore = (passRate, weight) => (passRate / 100) * weight;
 
 export default async function conversionLeadFlow($) {
   const report = {};
@@ -8,8 +7,7 @@ export default async function conversionLeadFlow($) {
     const text = $(el).text().toLowerCase();
     return /sign up|contact|buy|start|try|learn more|get|search|lucky/i.test(text);
   }).length;
-  const ctaPassRate = ctaAboveFold > 0 ? 100 : 0;
-  const ctaScore = normalizeScore(ctaPassRate, 2);
+  const ctaPassRate = ctaAboveFold > 0 ? 1 : 0;
 
 
   const forms = $("form").toArray();
@@ -18,7 +16,7 @@ export default async function conversionLeadFlow($) {
     return $f.find("input, textarea, select").length > 0;
   });
   const formsPassRate = (validForms.length / (forms.length || 1)) * 100;
-  const formsScore = normalizeScore(formsPassRate, 2);
+  const formsScore = formsPassRate == 100 ? 1 : 0;
 
   const thankYouLinks = $('a[href*="thank"], a[href*="success"], a[href*="done"]').length;
   const thankYouScore = thankYouLinks > 0 ? 1 : 0;
@@ -28,7 +26,7 @@ export default async function conversionLeadFlow($) {
     const code = $(s).html() || "";
     return /gtag|fbq|dataLayer.push|google-analytics|googletagmanager|ga\(/i.test(code);
   });
-  const trackingScore = trackingScripts ? 2 : 0;
+  const trackingScore = trackingScripts ? 1 : 0;
 
 
   const hasPhone = $('a[href^="tel:"]').length > 0;
@@ -37,30 +35,23 @@ export default async function conversionLeadFlow($) {
   const hasMap = $('iframe[src*="google.com/maps"]').length > 0;
   const hasHours = /(mon|tue|wed|thu|fri|sat|sun)[^\n]{0,15}\d{1,2}\s*[:]\s*\d{2}/i.test($("body").text());
 
-  const contactScore = (hasPhone || hasEmail || hasAddress || hasMap || hasHours) ? 2 : 0;
+  const contactScore = (hasPhone || hasEmail || hasAddress || hasMap || hasHours) ? 1 : 0;
 
 
   const crmEndpoints = $("form[action]").length; 
   const crmScore = crmEndpoints > 0 ? 1 : 0;
 
+  const total = ((ctaPassRate +formsScore +thankYouScore +trackingScore +contactScore +crmScore)/6)*100
+
 
   report.F = {
-    primaryCTA: parseFloat(ctaScore.toFixed(2)),
-    forms: parseFloat(formsScore.toFixed(2)),
-    thankYouState: parseFloat(thankYouScore.toFixed(2)),
-    tracking: parseFloat(trackingScore.toFixed(2)),
-    contactInfo: parseFloat(contactScore.toFixed(2)),
-    crmWebhook: parseFloat(crmScore.toFixed(2)),
-    totalFScore: parseFloat(
-      (
-        ctaScore +
-        formsScore +
-        thankYouScore +
-        trackingScore +
-        contactScore +
-        crmScore
-      ).toFixed(2)
-    ),
+    primaryCTA: ctaPassRate,
+    forms: formsScore,
+    thankYouState: thankYouScore,
+    tracking: trackingScore,
+    contactInfo: contactScore,
+    crmWebhook: crmScore,
+    totalFScore: parseFloat(total.toFixed(0)),
   };
 
   return report;

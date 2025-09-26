@@ -167,12 +167,30 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data) {
       UX_and_Content_Structure_Score_Total: MetricesCalculation_Data.uxReport.E.totalEScore,
     },
     Conversion_and_Lead_Flow: {
-      Primary_CTAs_Score: MetricesCalculation_Data.conversionReport.F.primaryCTA,
-      Forms_Score: MetricesCalculation_Data.conversionReport.F.forms,
-      Thank_You_or_Success_State_Score: MetricesCalculation_Data.conversionReport.F.thankYouState,
-      Tracking_Of_Form_Submits_or_Events_Score: MetricesCalculation_Data.conversionReport.F.tracking,
-      Contact_Info_Score: MetricesCalculation_Data.conversionReport.F.contactInfo,
-      Load_On_CRM_or_Webhook_Score: MetricesCalculation_Data.conversionReport.F.crmWebhook,
+      Primary_CTAs:{
+        Score: MetricesCalculation_Data.conversionReport.F.primaryCTA,
+        Parameter:'Check anchor & button tag contain these text ("sign up","contact","buy","start","try","learn more","get","search","lucky")'
+      },
+      Forms:{
+        Score: MetricesCalculation_Data.conversionReport.F.forms,
+        Parameter:'Check form tag contain these fields ("input", "textarea", "select")'
+      },
+      Thank_You_or_Success_State:{
+        Score: MetricesCalculation_Data.conversionReport.F.thankYouState,
+        Parameter:'Check for any anchor tag whose href contains (“thank”, “success”, or “done”)'
+      },
+      Tracking_Of_Form_Submits_or_Events:{
+        Score: MetricesCalculation_Data.conversionReport.F.tracking,
+        Parameter:'Check for any script tag containing recognizable analytics or tracking code keywords ("gtag", "fbq", "dataLayer.push", "google-analytics", "googletagmanager", "ga(")'
+      },
+      Contact_Info:{
+        Score: MetricesCalculation_Data.conversionReport.F.contactInfo,
+        Parameter:'Check for if any one from these ("phone", "email", "address", "map", "hours") is present or not'
+      },
+      Load_On_CRM_or_Webhook:{
+        Score: MetricesCalculation_Data.conversionReport.F.crmWebhook,
+        Parameter:'Check for presence of a form tag with an action attribute'
+      },
       Conversion_and_Lead_Flow_Score_Total: MetricesCalculation_Data.conversionReport.F.totalFScore,
     },
     AIO_Readiness: {
