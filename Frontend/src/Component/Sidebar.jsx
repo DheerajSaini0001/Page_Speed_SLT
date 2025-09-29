@@ -29,7 +29,7 @@ export default function Sidebar({ children, data }) {
     { name: "Raw Data", link: "#Rawdata", icon: <Database size={20} /> },
   ];
 
-  function downloadObject(obj, fileName =  `${data.Overall_Data.url.split("/")[2].split('.')[0]}.txt`) {
+  function downloadObject(obj, fileName =  `${data.Site.split("/")[2].split('.')[0]}.txt`) {
   // Object ko string me convert karo
   const jsonStr = JSON.stringify(obj, null, 2);
 

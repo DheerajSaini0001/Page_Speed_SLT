@@ -57,7 +57,7 @@ const RawData = ({ data }) => {
     });
   };
 
-  function downloadObject(obj, fileName =  `${data.Overall_Data.url.split("/")[2].split('.')[0]}.txt`) {
+  function downloadObject(obj, fileName =  `${data.Site.split("/")[2].split('.')[0]}.txt`) {
   // Object ko string me convert karo
   const jsonStr = JSON.stringify(obj, null, 2);
 
