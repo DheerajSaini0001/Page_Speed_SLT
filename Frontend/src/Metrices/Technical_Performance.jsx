@@ -110,7 +110,7 @@ export default function Technical_Performance({ data }) {
             <span className={textColor}>Time to First Byte (TTFB)</span>
             <ScoreBadge
               score={data.Technical_Performance.Delivery_and_Render.TTFB.Score}
-              out={data.Technical_Performance.Core_Web_Vitals.INP.Time}
+              out={data.Technical_Performance.Delivery_and_Render.TTFB.Time}
               unit={"Sec"}
               des={data.Technical_Performance.Delivery_and_Render.TTFB.Score ? "Good" : "Poor"}
             />
