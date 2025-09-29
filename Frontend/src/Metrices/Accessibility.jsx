@@ -95,13 +95,13 @@ export default function Accessibility({ data }) {
               out={data.Accessibility.Skip_Links.Score?"Skip link not found":"Skip Link available"}
             />
           </div>
-          <div className="flex justify-between items-center">
+          {/* <div className="flex justify-between items-center">
             <span className={`${textColor}`}>Landmarks</span>
             <ScoreBadge
               score={data.Accessibility.Landmarks.Score}
               out={data.Accessibility.Landmarks.Score?"All landmark available":"Some Landmark Missing"}
             />
-          </div>
+          </div> */}
         </div>
 
         {/* Conditionally rendered error section */}
@@ -133,11 +133,11 @@ export default function Accessibility({ data }) {
       <AlertTriangle size={20} className="text-red-700" /> Skip link missing
     </h1>
   )}
-  {data.Accessibility.Landmarks.Score === 0 && (
+  {/* {data.Accessibility.Landmarks.Score === 0 && (
     <h1 className={`warn flex gap-2  ${textColor}`}>
       <AlertTriangle size={20} className="text-red-700" /> Missing landmark roles: "banner", "main", "contentinfo", "navigation", "complementary"
     </h1>
-  )}
+  )} */}
 </div>
 
       </div>

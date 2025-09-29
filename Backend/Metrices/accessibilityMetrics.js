@@ -85,7 +85,7 @@ function calculatePassRate(results, ruleIds) {
 
   await browser.close();
 
-  const score = ((CC+KN+AL+TX+SL+LM)/6)*100;
+  const score = ((CC+KN+AL+TX+SL)/5)*100;
 
   report.C = {
     colorContrast: CC,

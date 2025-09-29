@@ -105,7 +105,8 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data,tim
         },
         Heading_Hierarchy:{
           Parameter:'Check for heading hierarcy is followed "h1->h2->h3"',
-          Score:MetricesCalculation_Data.seoReport.B2.hierarchyScore
+          Score:MetricesCalculation_Data.seoReport.B2.hierarchyScore,
+          Follow :MetricesCalculation_Data.seoReport.B2.follow
         },
         Descriptive_Links:{
           Parameter:'Check for anchor tag text does not contain this ("click here", "read more","learn more","details","link","more","go","this")',

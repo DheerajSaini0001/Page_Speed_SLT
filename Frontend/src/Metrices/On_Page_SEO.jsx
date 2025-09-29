@@ -83,7 +83,7 @@ export default function On_Page_SEO({ data }) {
        
         <div className="p-1 mt-2">
         {data.On_Page_SEO.Essentials.Unique_Title.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>Length of Title must be in between 30-60 characters</h1>)}
-          {data.On_Page_SEO.Essentials.Meta_Description.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>Length of MetaDescription must be less than 160 characters</h1>)}
+          {data.On_Page_SEO.Essentials.Meta_Description.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>Length of MetaDescription must be less than 165 characters</h1>)}
           {data.On_Page_SEO.Essentials.Canonical.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>Page URL must be same as Canonical tag href URL</h1>)}
           {data.On_Page_SEO.Essentials.H1.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/> {data.On_Page_SEO.Essentials.H1.H1_Count===0?"There must be exactly one H1 " :" There are more than one H1"}</h1>)}
           
@@ -104,7 +104,7 @@ export default function On_Page_SEO({ data }) {
           </div>
           <div className="flex justify-between items-center">
             <span>Heading Hierarchy</span>
-            <ScoreBadge score={data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Score==1 } out={data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Score===0?"Not Found (h1->h2->h3)":data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Score===1?"Follow h1->h2->h3":"No follow h1->h2->h3 "}/>
+            <ScoreBadge score={data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Follow===1 } out={data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Follow==0?"Not Found (h1->h2->h3)":data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Follow===1?"Follow h1->h2->h3":"No follow h1->h2->h3 "}/>
           </div>
           <div className="flex justify-between items-center">
             <span>Descriptive Links</span>
@@ -115,7 +115,7 @@ export default function On_Page_SEO({ data }) {
        
         <div className="p-1 mt-2">
         {data.On_Page_SEO.Media_and_Semantics.Image_ALT.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>Only Image which consist alt attribute must be Meaningfull !("", "image", "logo", "icon","pic","picture","photo"," ","12345","-","graphics")</h1>)}
-          {data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>{data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Score===0?"There must be a heading Hierarchy (h1->h2->h3)":data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Score===2?"The page not following heading Hierarchy":""}</h1>)}
+          {data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>{data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Follow===0?"There is no heading Hierarchy (h1->h2->h3)":data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Follow===1?"Page following heading Hierarchy":"Not following the heading Hierarchy"}</h1>)}
           {data.On_Page_SEO.Media_and_Semantics.Descriptive_Links.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>anchor tag text must be meaningfull !("click here", "read more","learn more","details","link","more","go","this")</h1>)}
           
           
