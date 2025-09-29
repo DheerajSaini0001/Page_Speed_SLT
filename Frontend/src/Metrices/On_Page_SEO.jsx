@@ -76,7 +76,7 @@ export default function On_Page_SEO({ data }) {
           </div>
           <div className="flex justify-between items-center">
             <span>H1 tag</span>
-            <ScoreBadge score={data.On_Page_SEO.Essentials.H1.Score} out={data.On_Page_SEO.Essentials.H1.H1_Count?"Exactly One":"H1 not found"} />
+            <ScoreBadge score={data.On_Page_SEO.Essentials.H1.Score} out={data.On_Page_SEO.Essentials.H1.H1_Count===0?"No H1 Found" :data.On_Page_SEO.Essentials.H1.H1_Count===1 ? "Exectly One H1":"More than one H1"} />
           </div>
         </div>
         {(data.On_Page_SEO.Essentials.Unique_Title.Score==0 || data.On_Page_SEO.Essentials.Meta_Description.Score==0 || data.On_Page_SEO.Essentials.Canonical.Score==0 || data.On_Page_SEO.Essentials.H1.Score==0) &&( <hr className="text-black mt-3" />)}
@@ -85,7 +85,7 @@ export default function On_Page_SEO({ data }) {
         {data.On_Page_SEO.Essentials.Unique_Title.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>Length of Title must be in between 30-60 characters</h1>)}
           {data.On_Page_SEO.Essentials.Meta_Description.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>Length of MetaDescription must be less than 160 characters</h1>)}
           {data.On_Page_SEO.Essentials.Canonical.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>Page URL must be same as Canonical tag href URL</h1>)}
-          {data.On_Page_SEO.Essentials.H1.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>There must be only one H1 tag on the Page</h1>)}
+          {data.On_Page_SEO.Essentials.H1.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/> {data.On_Page_SEO.Essentials.H1.H1_Count===0?"There must be exectly one H1 " :" There are more than one H1"}</h1>)}
           
           
         </div>
