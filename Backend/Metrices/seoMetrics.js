@@ -90,7 +90,7 @@ const canonical = $('link[rel="canonical"]').attr("href") || "";
 const canonicalScore = isValidCanonical(canonical, url) ? 1 : 0; 
 
 const h1Count = $("h1").length;
-const h1Score = h1Count === 1 ? 1 : 0 ;
+const h1Score = h1Count === 0 ? 0 : h1Count=== 1 ? 1 : 2 ;
 
 // const contentText = $("p").map((i, el) => $(el).text().trim()).get().join(" ").toLowerCase();
 // const h1Text = $("h1").first().text().trim();
