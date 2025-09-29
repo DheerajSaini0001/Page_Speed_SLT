@@ -97,6 +97,7 @@ export default function Dashboard2({ data }) {
         <div>
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">Grade - {data.Grade}</h1>
           <p className="text-lg sm:text-xl mt-1 font-semibold">AIO Compatibility - {data.AIO_Compatibility_Badge}</p>
+          <p className="text-lg sm:text-xl mt-1 font-semibold">Device -{data.Device}</p>
         </div>
       </div>
 
