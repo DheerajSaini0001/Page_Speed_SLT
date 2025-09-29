@@ -85,7 +85,7 @@ export default function On_Page_SEO({ data }) {
         {data.On_Page_SEO.Essentials.Unique_Title.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>Length of Title must be in between 30-60 characters</h1>)}
           {data.On_Page_SEO.Essentials.Meta_Description.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>Length of MetaDescription must be less than 160 characters</h1>)}
           {data.On_Page_SEO.Essentials.Canonical.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>Page URL must be same as Canonical tag href URL</h1>)}
-          {data.On_Page_SEO.Essentials.H1.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/> {data.On_Page_SEO.Essentials.H1.H1_Count===0?"There must be exectly one H1 " :" There are more than one H1"}</h1>)}
+          {data.On_Page_SEO.Essentials.H1.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/> {data.On_Page_SEO.Essentials.H1.H1_Count===0?"There must be exactly one H1 " :" There are more than one H1"}</h1>)}
           
           
         </div>
