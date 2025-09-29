@@ -79,13 +79,13 @@ const RawData = ({ data }) => {
   const cardBg = darkMode ? "bg-gradient-to-br from-blue-900 via-gray-900 to-black" : "bg-gradient-to-br from-blue-200 via-gray-200 to-white";
 
   return (
-    <div id="Rawdata" className={`min-h-fit pt-20 pb-16 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 m-4 flex flex-col items-center justify-start p-6 space-y-6 ${containerBg}`}>
+    <div id="Rawdata" className={`min-h-fit pt-20 pb-16 rounded-2xl shadow-lg   m-4 flex flex-col items-center justify-start p-6 space-y-6 ${containerBg}`}>
       <h1 className={`text-3xl font-extrabold mb-6 ${darkMode ? "text-white" : "text-black"}`}>
         Raw Data 
       </h1>
 
 <div
-  className={`w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-indigo-500 hover:scale-105 transition-transform duration-300 ${cardBg}`}
+  className={`w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-indigo-500   ${cardBg}`}
 >
   {data && (
     <pre
