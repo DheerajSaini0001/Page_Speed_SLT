@@ -93,9 +93,9 @@ totalScore_A3 += redirectScore ;
   // console.log(audits);
   
 
-const lcpRaw = data?.lighthouseResult?.audits?.["largest-contentful-paint"]?.numericValue; // in ms
-const clsRaw = data?.lighthouseResult?.audits?.["cumulative-layout-shift"]?.numericValue; // unitless
-const inpRaw = data?.lighthouseResult?.audits?.["interactive"]?.numericValue; // in ms
+const lcpRaw = data?.lighthouseResult?.audits?.["largest-contentful-paint"]?.numericValue || 0; 
+const clsRaw = data?.lighthouseResult?.audits?.["cumulative-layout-shift"]?.numericValue || 0; 
+const inpRaw = data?.lighthouseResult?.audits?.["interactive"]?.numericValue || 0; 
 
 const lcpScore = lcpRaw !== undefined ? (lcpRaw <= 2500 ? 1 : 0) : 1;
 const clsScore = clsRaw !== undefined ? (clsRaw <= 0.1 ? 1 : 0) : 1;
@@ -103,15 +103,15 @@ const inpScore = inpRaw !== undefined ? (inpRaw <= 3800 ? 1 : 0) : 1;
 
   const total_A1 = (lcpScore + clsScore + inpScore)
 
-const ttfbRaw = data?.lighthouseResult?.audits?.["server-response-time"]?.numericValue; // in ms
-const compressionRaw = data?.lighthouseResult?.audits?.["uses-text-compression"]?.numericValue; // usually 1 if enabled
-const cachingRaw = data?.lighthouseResult?.audits?.["uses-long-cache-ttl"]?.numericValue; // usually 1 if enabled
-const httpsRaw = data?.lighthouseResult?.audits?.["uses-http2"]?.numericValue; // usually 1 if enabled
+const ttfbRaw = data?.lighthouseResult?.audits?.["server-response-time"]?.numericValue || 0; 
+const compressionRaw = data?.lighthouseResult?.audits?.["uses-text-compression"]?.numericValue || 0; 
+const cachingRaw = data?.lighthouseResult?.audits?.["uses-long-cache-ttl"]?.numericValue || 0;
+const httpsRaw = data?.lighthouseResult?.audits?.["uses-http2"]?.numericValue || 0; 
 
-const ttfbScore = ttfbRaw !== undefined ? (ttfbRaw <= 200 ? 1 : 0) : 1; // TTFB good if <= 200ms
-const compressionScore = compressionRaw !== undefined ? (compressionRaw === 1 ? 1 : 0) : 1; // Compression enabled
-const cachingScore = cachingRaw !== undefined ? (cachingRaw === 1 ? 1 : 0) : 1; // Caching enabled
-const httpsScore = httpsRaw !== undefined ? (httpsRaw === 1 ? 1 : 0) : 1; // HTTP/2 enabled
+const ttfbScore = ttfbRaw !== undefined ? (ttfbRaw <= 200 ? 1 : 0) : 1;
+const compressionScore = compressionRaw !== undefined ? (compressionRaw === 1 ? 1 : 0) : 1; 
+const cachingScore = cachingRaw !== undefined ? (cachingRaw === 1 ? 1 : 0) : 1; 
+const httpsScore = httpsRaw !== undefined ? (httpsRaw === 1 ? 1 : 0) : 1; 
 
   const total_A2 = ttfbScore + compressionScore + cachingScore + httpsScore
 

@@ -29,38 +29,23 @@ export default function Sidebar({ children, data }) {
     { name: "Raw Data", link: "#Rawdata", icon: <Database size={20} /> },
   ];
 
-  const downloadAsTxt = (data, filename = `${data.Overall_Data.url.split("/")[2].split('.')[0]}.txt`) => {
-    const formatObject = (obj, indent = 0) => {
-      let str = "";
-      const space = " ".repeat(indent);
-      Object.entries(obj).forEach(([key, value]) => {
-        if (value && typeof value === "object" && !Array.isArray(value)) {
-          str += `${space}${key}:\n${formatObject(value, indent + 2)}`;
-        } else if (Array.isArray(value)) {
-          str += `${space}${key}:\n`;
-          value.forEach((item, idx) => {
-            if (typeof item === "object") {
-              str += `${space}  - Item ${idx + 1}:\n${formatObject(item, indent + 4)}`;
-            } else {
-              str += `${space}  - ${item}\n`;
-            }
-          });
-        } else {
-          str += `${space}${key}: ${value}\n`;
-        }
-      });
-      return str;
-    };
+  function downloadObject(obj, fileName =  `${data.Overall_Data.url.split("/")[2].split('.')[0]}.txt`) {
+  // Object ko string me convert karo
+  const jsonStr = JSON.stringify(obj, null, 2);
 
-    const textContent = formatObject(data);
-    const blob = new Blob([textContent], { type: "text/plain" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
+  // Blob create karo
+  const blob = new Blob([jsonStr], { type: "application/json" });
+
+  // Download link create karo
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = fileName;
+  a.click();
+
+  // Clean up
+  URL.revokeObjectURL(url);
+}
 
   // ✅ Theme-based classes
   const sidebarBg = darkMode ? "bg-gray-900 text-white" : "bg-gray-200 text-black";
@@ -96,7 +81,7 @@ export default function Sidebar({ children, data }) {
 
           {/* Download Button */}
           <button
-            onClick={() => downloadAsTxt(data)}
+            onClick={() => downloadObject(data)}
             className={`flex items-center space-x-3 p-4 w-full rounded-md transition ${hoverClass}`}
           >
             <FileText className="w-5 h-5" />

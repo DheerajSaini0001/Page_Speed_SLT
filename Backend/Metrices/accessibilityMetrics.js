@@ -89,8 +89,8 @@ else{
   const page = await browser.newPage();
 
   await page.setViewport({
-  width: 375,     
-  height: 812,    
+  width: 375,   
+  height: 812,  
   isMobile: true,
   hasTouch: true,
 });
@@ -172,7 +172,7 @@ await page.setUserAgent(
     altTextEquivalents: TX,
     skipLinks:SL,
     Landmark:LM,
-    totalCScore:parseFloat(score.toFixed(1)) ,
+    totalCScore:parseFloat(score.toFixed(0)) ,
   };
 
   return report;

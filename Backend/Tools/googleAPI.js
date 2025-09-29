@@ -3,9 +3,9 @@ dotenv.config()
 
 
 const API_KEY=process.env.API_KEY;
-export default async function googleAPI(url) {
+export default async function googleAPI(url,device) {
     try{
-    const googleAPI =`https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${ encodeURIComponent(url)}&strategy=desktop&key=${API_KEY}`;
+    const googleAPI =`https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${url}&strategy=${device}&key=${API_KEY}`;
     // console.log(googleAPI);
     const response = await fetch(googleAPI);
     const data = await response.json(); 

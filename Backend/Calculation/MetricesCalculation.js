@@ -7,15 +7,15 @@ import conversionLeadFlow from "../Metrices/conversionLeadFlow.js";
 import aioReadiness from "../Metrices/aioReadiness.js";
 
 
-export default async function MetricesCalculation(url,data,$,robotsText) {
+export default async function MetricesCalculation(url,data,$,robotsText,device) {
 
  const technicalReport = await technicalMetrics(url, data, $, robotsText);
 const seoReport = await seoMetrics(url, $);
-const accessibilityReport = await accessibilityMetrics(url);
-const securityReport = await securityCompliance(url);
-const uxReport = await uxContentStructure(url, $);
+const accessibilityReport = await accessibilityMetrics(url,device);
+const securityReport = await securityCompliance(url,device);
+const uxReport = await uxContentStructure(url, $,device);
 const conversionReport = await conversionLeadFlow($);
-const aioReport = await aioReadiness(url, robotsText);
+const aioReport = await aioReadiness(url, robotsText,device);
 
   // console.log("Technical Report:", technicalReport)
   // console.log("SEO Report (B1+B2+B3):", seoReport);

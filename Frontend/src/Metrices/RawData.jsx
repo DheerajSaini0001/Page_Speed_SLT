@@ -13,42 +13,6 @@ const RawData = ({ data }) => {
     }));
   };
 
-  // Download Function
-  const downloadAsTxt = (data, filename = `${data.Overall_Data.url.split("/")[2].split('.')[0]}.txt`) => {
-    const formatObject = (obj, indent = 0) => {
-      let str = "";
-      const space = " ".repeat(indent);
-
-      Object.entries(obj).forEach(([key, value]) => {
-        if (value && typeof value === "object" && !Array.isArray(value)) {
-          str += `${space}${key}:\n${formatObject(value, indent + 2)}`;
-        } else if (Array.isArray(value)) {
-          str += `${space}${key}:\n`;
-          value.forEach((item, idx) => {
-            if (typeof item === "object") {
-              str += `${space}  - Item ${idx + 1}:\n${formatObject(item, indent + 4)}`;
-            } else {
-              str += `${space}  - ${item}\n`;
-            }
-          });
-        } else {
-          str += `${space}${key}: ${value}\n`;
-        }
-      });
-
-      return str;
-    };
-
-    const textContent = formatObject(data);
-
-    const blob = new Blob([textContent], { type: "text/plain" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
 
   const renderData = (obj, parentKey = "") => {
     return Object.entries(obj).map(([key, value]) => {
@@ -92,6 +56,24 @@ const RawData = ({ data }) => {
       }
     });
   };
+
+  function downloadObject(obj, fileName =  `${data.Overall_Data.url.split("/")[2].split('.')[0]}.txt`) {
+  // Object ko string me convert karo
+  const jsonStr = JSON.stringify(obj, null, 2);
+
+  // Blob create karo
+  const blob = new Blob([jsonStr], { type: "application/json" });
+
+  // Download link create karo
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = fileName;
+  a.click();
+
+  // Clean up
+  URL.revokeObjectURL(url);
+}
 
   const containerBg = darkMode ? "bg-zinc-900 border-gray-700" : "bg-gray-100 border-gray-300";
   const cardBg = darkMode ? "bg-gradient-to-br from-blue-900 via-gray-900 to-black" : "bg-gradient-to-br from-blue-200 via-gray-200 to-white";
@@ -142,7 +124,7 @@ const RawData = ({ data }) => {
 </div> */}
 
       <button
-        onClick={() => downloadAsTxt(data)}
+        onClick={() => downloadObject(data)}
         className={`flex items-center gap-2 px-4 py-2 rounded-lg shadow transition ${darkMode ? "bg-green-600 hover:bg-green-700 text-white hover:text-black" : "bg-green-400 hover:bg-green-500 text-black hover:text-white"}`}
       >
         <FileText className="w-5 h-5" />

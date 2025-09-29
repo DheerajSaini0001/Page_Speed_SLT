@@ -19,11 +19,11 @@ export default async function main(message) {
     let start, end;
 
     start = performance.now();
-    const googleApi_Data = await googleAPI(url);
-    const axios_cheerio_Data = await puppeteer_cheerio(url);
-    const robotsRes_Data = await robotsRes(url);
+    const googleApi_Data = await googleAPI(url,device);
+    const axios_cheerio_Data = await puppeteer_cheerio(url,device);
+    const robotsRes_Data = await robotsRes(url,device);
 
-    const MetricesCalculation_Data = await MetricesCalculation(url,googleApi_Data,axios_cheerio_Data,robotsRes_Data)
+    const MetricesCalculation_Data = await MetricesCalculation(url,googleApi_Data,axios_cheerio_Data,robotsRes_Data,device)
     const Overall_Data = await OverAll(MetricesCalculation_Data)
     end = performance.now();
     const timeTaken = ((end-start)/1000).toFixed(0);
