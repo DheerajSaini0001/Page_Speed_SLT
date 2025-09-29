@@ -19,7 +19,7 @@ export default function DarkCard() {
   const [inputValue, setInputValue] = useState("");
   const [result, setResult] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [device, setDevice] = useState("desktop");
+  const [device, setDevice] = useState("Desktop");
 
   const { darkMode, toggleTheme } = useContext(ThemeContext); // ✅ context use
   const handleClick = async (e) => {
