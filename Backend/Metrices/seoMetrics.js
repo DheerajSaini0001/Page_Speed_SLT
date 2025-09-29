@@ -123,18 +123,20 @@ const meaningfulAlts = images.filter((img) => {
 const imageAltScore = meaningfulAlts ? 1 : 0;
 
 const headings = $("h1,h2,h3").map((i, el) => el.tagName.toLowerCase()).get();
-let hierarchyScore = 0;
+let hierarchyScore = headings?0:1; // no h1->h2->h3 found
 
 if (headings.length > 0) {
   let broken = false;
   for (let i = 0; i < headings.length - 1; i++) {
     if (headings[i] === "h3" && headings[i + 1] === "h1") {
+      hierarchyScore=1;
       broken = true;
+
       break;
     }
   }
   if (!broken) {
-    hierarchyScore = 1;
+    hierarchyScore = 2;
   }
 }
 

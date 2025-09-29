@@ -104,7 +104,7 @@ export default function On_Page_SEO({ data }) {
           </div>
           <div className="flex justify-between items-center">
             <span>Heading Hierarchy</span>
-            <ScoreBadge score={data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Score } out={data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Score?"h1->h2->h3":"h1->h2->h3"}/>
+            <ScoreBadge score={data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Score==1 } out={data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Score===0?"Not Found (h1->h2->h3)":data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Score===1?"Follow h1->h2->h3":"No follow h1->h2->h3 "}/>
           </div>
           <div className="flex justify-between items-center">
             <span>Descriptive Links</span>
@@ -115,7 +115,7 @@ export default function On_Page_SEO({ data }) {
        
         <div className="p-1 mt-2">
         {data.On_Page_SEO.Media_and_Semantics.Image_ALT.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>Only Image which consist alt attribute must be Meaningfull !("", "image", "logo", "icon","pic","picture","photo"," ","12345","-","graphics")</h1>)}
-          {data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>Must follow heading hierarcy "h1-h2-h3"</h1>)}
+          {data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>{data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Score===0?"There must be a heading Hierarchy (h1->h2->h3)":data.On_Page_SEO.Media_and_Semantics.Heading_Hierarchy.Score===2?"The page not following heading Hierarchy":""}</h1>)}
           {data.On_Page_SEO.Media_and_Semantics.Descriptive_Links.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>anchor tag text must be meaningfull !("click here", "read more","learn more","details","link","more","go","this")</h1>)}
           
           
