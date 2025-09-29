@@ -12,10 +12,10 @@ export default async function MetricesCalculation(url,data,$,robotsText,device) 
  const technicalReport = await technicalMetrics(url, data, $, robotsText);
 const seoReport = await seoMetrics(url, $);
 const accessibilityReport = await accessibilityMetrics(url,device);
-const securityReport = await securityCompliance(url,device);
-const uxReport = await uxContentStructure(url, $,device);
+const securityReport = await securityCompliance(url);
+const uxReport = await uxContentStructure(url, $);
 const conversionReport = await conversionLeadFlow($);
-const aioReport = await aioReadiness(url, robotsText,device);
+const aioReport = await aioReadiness(url, robotsText);
 
   // console.log("Technical Report:", technicalReport)
   // console.log("SEO Report (B1+B2+B3):", seoReport);

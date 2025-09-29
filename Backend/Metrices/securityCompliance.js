@@ -118,44 +118,41 @@ async function checkCustomErrorPage(page, url) {
 }
 
 
-export default async function securityCompliance(url,device) {
+export default async function securityCompliance(url) {
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+  });
+  const page = await browser.newPage();
 
-  if(device == 'desktop'){
+  await page.setExtraHTTPHeaders({ "Accept-Language": "en-GB,en;q=0.9" });
+  await page.setGeolocation({ latitude: 48.8566, longitude: 2.3522 });
+  await page.setViewport({ width: 1200, height: 800 });
 
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
-    const page = await browser.newPage();
-    
-    await page.setExtraHTTPHeaders({ "Accept-Language": "en-GB,en;q=0.9" });
-    await page.setGeolocation({ latitude: 48.8566, longitude: 2.3522 });
-    await page.setViewport({ width: 1200, height: 800 });
-    
-    const allHeaders = await getAllHeaders(page);
-    
-    await page.goto(url, { waitUntil: "networkidle2",timeout: 240000});
-    
-    const [
-      httpsScore,
-      hstsScore,
-      headersScore,
-      cookieBannerScore,
-      errorPageScore,
-    ] = await Promise.all([
-      checkHTTPS(page),
-      checkHSTS(allHeaders),
-      checkSecurityHeaders(allHeaders),
-      checkCookieBanner(page),
-      checkCustomErrorPage(page, url),
-    ]);
-    
-    await browser.close();
-    
-    const totalDScore = ((httpsScore + hstsScore  + headersScore + cookieBannerScore+ errorPageScore)/5)*100;
-    
-    return {
-      D: {
+  const allHeaders = await getAllHeaders(page);
+
+  await page.goto(url, { waitUntil: "networkidle2",timeout: 240000});
+
+  const [
+    httpsScore,
+    hstsScore,
+    headersScore,
+    cookieBannerScore,
+    errorPageScore,
+  ] = await Promise.all([
+    checkHTTPS(page),
+    checkHSTS(allHeaders),
+    checkSecurityHeaders(allHeaders),
+    checkCookieBanner(page),
+    checkCustomErrorPage(page, url),
+  ]);
+
+  await browser.close();
+
+  const totalDScore = ((httpsScore + hstsScore  + headersScore + cookieBannerScore+ errorPageScore)/5)*100;
+
+  return {
+    D: {
       httpsMixedContent: httpsScore,
       hsts: hstsScore,
       securityHeaders: headersScore,
@@ -164,57 +161,4 @@ export default async function securityCompliance(url,device) {
       totalDScore:parseFloat(totalDScore.toFixed(0)),
     },
   };
-}
-
-else{
-      const browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
-    const page = await browser.newPage();
-
-      await page.setViewport({
-  width: 375,   
-  height: 812,  
-  isMobile: true,
-  hasTouch: true,
-});
-    
-    await page.setExtraHTTPHeaders({ "Accept-Language": "en-GB,en;q=0.9" });
-    await page.setGeolocation({ latitude: 48.8566, longitude: 2.3522 });
-    await page.setViewport({ width: 1200, height: 800 });
-    
-    const allHeaders = await getAllHeaders(page);
-    
-    await page.goto(url, { waitUntil: "networkidle2",timeout: 240000});
-    
-    const [
-      httpsScore,
-      hstsScore,
-      headersScore,
-      cookieBannerScore,
-      errorPageScore,
-    ] = await Promise.all([
-      checkHTTPS(page),
-      checkHSTS(allHeaders),
-      checkSecurityHeaders(allHeaders),
-      checkCookieBanner(page),
-      checkCustomErrorPage(page, url),
-    ]);
-    
-    await browser.close();
-    
-    const totalDScore = ((httpsScore + hstsScore  + headersScore + cookieBannerScore+ errorPageScore)/5)*100;
-    
-    return {
-      D: {
-      httpsMixedContent: httpsScore,
-      hsts: hstsScore,
-      securityHeaders: headersScore,
-      cookieConsent: cookieBannerScore,
-      errorPages: errorPageScore,
-      totalDScore:parseFloat(totalDScore.toFixed(0)),
-    },
-  };
-}
 }
