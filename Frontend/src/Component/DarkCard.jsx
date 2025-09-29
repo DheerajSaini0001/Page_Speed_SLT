@@ -133,46 +133,49 @@ export default function DarkCard() {
           className="flex flex-col sm:flex-col gap-4 items-center w-full"
           onSubmit={handleClick}
         >
-          {/* Input + Button wrapper */}
+          {/* Input */}
           <div className="flex flex-col sm:flex-row gap-3 w-full">
-            {/* Input field */}
-            <div className="relative flex-1">
-              <Search
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                size={20}
-              />
-              <input
-                type="text"
-                value={inputValue}
-                disabled={loading}
-                onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Enter URL here..."
-                className={inputClass}
-              />
-            </div>
+  {/* Input field */}
+  <div className="relative w-full">
+    <Search
+      className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+      size={20}
+    />
+    <input
+      type="text"
+      value={inputValue}
+      disabled={loading}
+      onChange={(e) => setInputValue(e.target.value)}
+      placeholder="Enter URL here..."
+      className={inputClass}
+    />
+  </div>
 
-            {/* Analyze button */}
-            <button
+  {/* Dropdown for device selection */}
+  <select
+    disabled={loading}
+    value={device}
+    onChange={(e) => setDevice(e.target.value)}
+    className={`w-full sm:w-40 px-4 py-2 rounded-xl shadow-2xl ${
+      darkMode ? "bg-white text-black" : "bg-gray-300 text-black"
+    }`}
+  >
+    <option value="desktop">Desktop</option>
+    <option value="mobile">Mobile</option>
+  </select>
+</div>
+
+         
+          <div className=" sm:w-48">
+             {/* Analyze button */}
+             <button
               type="submit"
               disabled={loading}
-              className="flex gap-2 items-center justify-center bg-[#c2fbd7] text-green-700 rounded-full font-sans px-5 py-2 text-base border-0 select-none transition duration-250 shadow hover:shadow-lg active:scale-[1.05] active:-rotate-1 w-full sm:w-auto"
+              className="flex gap-2 items-center justify-center bg-[#c2fbd7] text-green-700 rounded-full font-sans w-full px-16 py-2 text-base border-0 select-none transition duration-250  shadow hover:shadow-lg active:scale-[1.05] active:-rotate-1  sm:w-auto"
             >
               {loading && <Loader2 className="animate-spin w-5 h-5" />}
               {loading ? "Analyzing.." : "Analyze"}
             </button>
-          </div>
-
-          {/* Dropdown for device selection */}
-          <div className="w-full sm:w-48">
-            <select
-            disabled={loading}
-              value={device}
-              onChange={(e) => setDevice(e.target.value)}
-              className="flex gap-2 p-2 px-8 items-center justify-center bg-[#c2fbd7] text-green-700 rounded-full font-sans  py-2 text-base border-0 select-none transition duration-250 shadow hover:shadow-lg active:scale-[1.05] active:-rotate-1 w-full sm:w-auto"
-            >
-              <option value="desktop">Desktop</option>
-              <option value="mobile">Mobile</option>
-            </select>
           </div>
         </form>
       </div>
