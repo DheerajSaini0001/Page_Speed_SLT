@@ -134,7 +134,7 @@ await page.setUserAgent(
     if (total === 0) return 1;
     const violations = results.violations.filter(v => ruleIds.includes(v.id)).length;
     const result = (total - violations) / total
-    return result >=70 ? 0 : 1;
+    return result >=0.7 ? 1 : 0;
   }
 
   async function Landmarks(page) {
