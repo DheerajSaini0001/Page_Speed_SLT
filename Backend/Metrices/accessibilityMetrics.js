@@ -1,7 +1,7 @@
 import AxePuppeteer from "@axe-core/puppeteer";
 import puppeteer from "puppeteer";
 
-export default async function accessibilityMetrics(url,device = 'desktop') {
+export default async function accessibilityMetrics(url,device = 'Desktop') {
   const report = {};
 
   const browser = await puppeteer.launch({ headless: true });
