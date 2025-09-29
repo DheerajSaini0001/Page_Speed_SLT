@@ -188,7 +188,7 @@ export default function DarkCard() {
           <div className={`${containerClass} relative w-full  flex flex-1`}>
             {/* Sidebar */}
             <div
-              className={`${sidebarClass} ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0 transition-transform duration-300 ease-in-out min-h-screen overflow-y-auto pb-4`}
+              className={`${sidebarClass} ${sidebarOpen ? "translate-x-0 overflow-y-auto" : "-translate-x-full"} lg:translate-x-0 transition-transform duration-300 ease-in-out min-h-screen overflow-y-auto pb-4`}
             >
               <Sidebar data={result} />
             </div>
