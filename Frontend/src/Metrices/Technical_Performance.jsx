@@ -91,13 +91,13 @@ export default function Technical_Performance({ data }) {
         {hasError1 && <hr className="text-black mt-3" />}
         <div className="p-1 mt-2">
           {data.Technical_Performance.Core_Web_Vitals.LCP.Score === 0 && (
-            <h1 className="flex gap-2 warn"><AlertTriangle size={20} className="text-red-700" /> LCP is poor</h1>
+            <h1 className="flex gap-2 warn"><AlertTriangle size={20} className="text-red-700" /> LCP is greater than 2.5 sec</h1>
           )}
           {data.Technical_Performance.Core_Web_Vitals.CLS.Score === 0 && (
-            <h1 className="flex gap-2 warn"><AlertTriangle size={20} className="text-red-700" /> CLS is poor</h1>
+            <h1 className="flex gap-2 warn"><AlertTriangle size={20} className="text-red-700" /> CLS is greater than .1 sec</h1>
           )}
           {data.Technical_Performance.Core_Web_Vitals.INP.Score === 0 && (
-            <h1 className="flex gap-2 warn"><AlertTriangle size={20} className="text-red-700" /> INP is poor</h1>
+            <h1 className="flex gap-2 warn"><AlertTriangle size={20} className="text-red-700" /> INP is greater than 2 sec</h1>
           )}
         </div>
       </div>
@@ -149,7 +149,7 @@ export default function Technical_Performance({ data }) {
             <h1 className="flex gap-2 warn"><AlertTriangle size={20} className="text-red-700" /> Long term caching is not avalible</h1>
           )}
           {!data.Technical_Performance.Delivery_and_Render.HTTP.Score && (
-            <h1 className="flex gap-2 warn"><AlertTriangle size={20} className="text-red-700" /> HTTP2 is not Enable </h1>
+            <h1 className="flex gap-2 warn"><AlertTriangle size={20} className="text-red-700" /> HTTP2/HTTP3 is not Enable </h1>
           )}
         </div>
       </div>
@@ -191,7 +191,7 @@ export default function Technical_Performance({ data }) {
  {hasError3 && <hr className="text-black mt-3" />}
         <div className="p-1 mt-2">
           {!data.Technical_Performance.Crawlability_and_Hygiene.Sitemap.Score && (
-            <h1 className="flex gap-2 warn"><AlertTriangle size={20} className="text-red-700" /> Sitemap missing</h1>
+            <h1 className="flex gap-2 warn"><AlertTriangle size={20} className="text-red-700" /> Sitemap file missing</h1>
           )}
           {!data.Technical_Performance.Crawlability_and_Hygiene.Robots.Score && (
             <h1 className="flex gap-2 warn"><AlertTriangle size={20} className="text-red-700" /> Robots.txt issue</h1>

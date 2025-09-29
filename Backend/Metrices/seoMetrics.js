@@ -90,7 +90,7 @@ const canonical = $('link[rel="canonical"]').attr("href") || "";
 const canonicalScore = isValidCanonical(canonical, url) ? 1 : 0; 
 
 const h1Count = $("h1").length;
-const h1Score = h1Count === 1 ? 1 : 0 ;
+const h1Score = h1Count === 0 ? 0 : h1Count=== 1 ? 1 : 2 ;
 
 // const contentText = $("p").map((i, el) => $(el).text().trim()).get().join(" ").toLowerCase();
 // const h1Text = $("h1").first().text().trim();
@@ -123,18 +123,20 @@ const meaningfulAlts = images.filter((img) => {
 const imageAltScore = meaningfulAlts ? 1 : 0;
 
 const headings = $("h1,h2,h3").map((i, el) => el.tagName.toLowerCase()).get();
-let hierarchyScore = 0;
+let hierarchyScore = headings?0:1; // no h1->h2->h3 found
 
 if (headings.length > 0) {
   let broken = false;
   for (let i = 0; i < headings.length - 1; i++) {
     if (headings[i] === "h3" && headings[i + 1] === "h1") {
+      hierarchyScore=1;
       broken = true;
+
       break;
     }
   }
   if (!broken) {
-    hierarchyScore = 1;
+    hierarchyScore = 2;
   }
 }
 

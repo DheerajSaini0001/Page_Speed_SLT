@@ -99,3 +99,4 @@ function calculatePassRate(results, ruleIds) {
 
   return report;
 }
+
