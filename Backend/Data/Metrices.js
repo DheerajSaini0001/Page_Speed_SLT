@@ -1,8 +1,9 @@
 
-export default function Metrices(url, MetricesCalculation_Data, Overall_Data,timeTaken) {
+export default function Metrices(url, MetricesCalculation_Data, Overall_Data,timeTaken,device) {
 
   const metrices = {
     Schema:MetricesCalculation_Data.aioReport.G.jsonLdScripts,
+    Device:device,
     Time_Taken:timeTaken,
     Site: url,
     Score: Overall_Data.totalScore,

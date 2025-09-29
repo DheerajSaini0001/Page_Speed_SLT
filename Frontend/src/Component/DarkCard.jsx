@@ -160,8 +160,8 @@ export default function DarkCard() {
       darkMode ? "bg-white text-black" : "bg-gray-300 text-black"
     }`}
   >
-    <option value="desktop">Desktop</option>
-    <option value="mobile">Mobile</option>
+    <option value="Desktop">Desktop</option>
+    <option value="Mobile">Mobile</option>
   </select>
 </div>
 
