@@ -140,7 +140,7 @@ export default function Technical_Performance({ data }) {
         {hasError2 && <hr className="text-black mt-3" />}
         <div className="p-1 mt-2">
           {!data.Technical_Performance.Delivery_and_Render.TTFB.Score && (
-            <h1 className="flex gap-2 warn"><AlertTriangle size={20} className="text-red-700" /> Time to First Byte greater than .2 sec</h1>
+            <h1 className="flex gap-2 warn"><AlertTriangle size={20} className="text-red-700" /> Time to First Byte greater than .8 sec</h1>
           )}
           {!data.Technical_Performance.Delivery_and_Render.Compression.Score && (
             <h1 className="flex gap-2 warn"><AlertTriangle size={20} className="text-red-700" />Text compression is Missing </h1>
