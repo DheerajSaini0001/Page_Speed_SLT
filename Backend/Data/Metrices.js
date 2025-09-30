@@ -114,10 +114,16 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data,tim
         Total_Score_B2: MetricesCalculation_Data.seoReport.B2.total,
       },
       Structure_and_Uniqueness: {
-         URL_Slugs:{
+        //  URL_Slugs:{
+        //   Slug:MetricesCalculation_Data.seoReport.B3.slug,
+        //   Parameter:'Check for Slug is meaningfull & length is less than 75 characters ',
+        //   Score:MetricesCalculation_Data.seoReport.B3.urlSlugScore,
+        //   URL_Slugs_Length:MetricesCalculation_Data.seoReport.B3.slugLength
+        // },
+         URL_Structure:{
           Slug:MetricesCalculation_Data.seoReport.B3.slug,
           Parameter:'Check for Slug is meaningfull & length is less than 75 characters ',
-          Score:MetricesCalculation_Data.seoReport.B3.urlSlugScore,
+          Score:MetricesCalculation_Data.seoReport.B3.urlScore,
           URL_Slugs_Length:MetricesCalculation_Data.seoReport.B3.slugLength
         },
         Duplicate_Content:{

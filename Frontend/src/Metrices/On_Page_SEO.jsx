@@ -131,8 +131,8 @@ export default function On_Page_SEO({ data }) {
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div className="flex justify-between items-center">
-            <span>URL Slugs</span>
-            <ScoreBadge score={data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score==1?0:data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score==2?1:0 } out={data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score==2?data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.URL_Slugs_Length:""} des={data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score ==1?"No Slug":data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score ==2?"Slug is meaningfull & length < 75":"Slug is meaningless & length > 75"}/>
+            <span>URL Structure</span>
+            <ScoreBadge score={data.On_Page_SEO.Structure_and_Uniqueness.URL_Structure.Score } out={data.On_Page_SEO.Structure_and_Uniqueness.URL_Structure.Score==1? "Correct":"Wrong"}/>
           </div>
           <div className="flex justify-between items-center">
             <span>Duplicate Content</span>
@@ -143,10 +143,10 @@ export default function On_Page_SEO({ data }) {
             <ScoreBadge score={data.On_Page_SEO.Structure_and_Uniqueness.Pagination_Tags.Score } out={data.On_Page_SEO.Structure_and_Uniqueness.Pagination_Tags.Score?"Pagination Not found":"Pagination found"}/>
           </div>
         </div>
-        {(data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score==1 || data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score==3 || !data.On_Page_SEO.Structure_and_Uniqueness.Duplicate_Content.Score==0 || data.On_Page_SEO.Structure_and_Uniqueness.Pagination_Tags.Score==0) &&( <hr className="text-black mt-3" /> )}
+        {(data.On_Page_SEO.Structure_and_Uniqueness.URL_Structure.Score==0 || !data.On_Page_SEO.Structure_and_Uniqueness.Duplicate_Content.Score==0 || data.On_Page_SEO.Structure_and_Uniqueness.Pagination_Tags.Score==0) &&( <hr className="text-black mt-3" /> )}
         
         <div className="p-1 mt-2">
-        {(data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score==1 || data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score==3) &&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/> {data.On_Page_SEO.Structure_and_Uniqueness.URL_Slugs.Score==1?"No Slug Found you are at home page":"Slug must be meaningfull & length must be less than 75 characters "}</h1>)}
+        {data.On_Page_SEO.Structure_and_Uniqueness.URL_Structure.Score==0 &&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>URL Structure is meaningless</h1>)}
           {!data.On_Page_SEO.Structure_and_Uniqueness.Duplicate_Content.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>Duplicate contnent occured within the page less than 50 %</h1>)}
           {data.On_Page_SEO.Structure_and_Uniqueness.Pagination_Tags.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>Check for link rel to next and prev</h1>)}
           

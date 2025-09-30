@@ -123,7 +123,7 @@ const meaningfulAlts = images.filter((img) => {
 const imageAltScore = meaningfulAlts ? 1 : 0;
 
 const headings = $("h1,h2,h3").map((i, el) => el.tagName.toLowerCase()).get();
-let hierarchyScore = headings?0:1; // no h1->h2->h3 found
+let hierarchyScore = !headings?0:1; // no h1->h2->h3 found
 
 if (headings.length > 0) {
   let broken = false;
@@ -154,22 +154,31 @@ const B2 = {
 };
 
 
-let urlSlugScore; 
+// let urlSlugScore; 
+// const slug = new URL(url).pathname.slice(1);
+// const slugLength = slug.length 
+// if(!slug){
+//   urlSlugScore = 1
+// }
+// else if(slug && (!/^([a-z0-9]+(-[a-z0-9]+)*)$/.test(slug) && slugLength > 75)) {
+//     urlSlugScore = 2; 
+// }
+// else{
+//     urlSlugScore = 3;
+// } 
+
+let urlScore;
 const slug = new URL(url).pathname.slice(1);
 const slugLength = slug.length 
 if(!slug){
-  urlSlugScore = 1
+  urlScore = 1
 }
 else if(slug && (!/^([a-z0-9]+(-[a-z0-9]+)*)$/.test(slug) && slugLength > 75)) {
-    urlSlugScore = 2; 
+    urlScore = 0; 
 }
 else{
-    urlSlugScore = 3;
+    urlScore = 1;
 } 
-
-let urlScore;
-if(urlSlugScore==1 && urlSlugScore == 3){urlScore = 0}
-else{urlScore=1}
 
 const pageText = extractText($);
 // const duplicatePercent = computeDuplicatePercent(pageText, otherPages);
@@ -180,8 +189,9 @@ const paginationScore = $("link[rel='next'], link[rel='prev']").length ? 1 : 0;
 
   const B3 = {
     slug:slug,
-    urlSlugScore: urlSlugScore,
+    // urlSlugScore: urlSlugScore,
     slugLength:slugLength,
+    urlScore:urlScore,
     duplicateContent: dupScore,
     paginationScore: paginationScore,
     total: (urlScore + dupScore + paginationScore),
