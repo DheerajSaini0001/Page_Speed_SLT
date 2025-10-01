@@ -1,7 +1,7 @@
 import puppeteer from "puppeteer";
-import * as cheerio from "cheerio";
 
-export default async function puppeteer_cheerio(url) {
+export default async function puppeteers(url) {
+    
   let browser;
   try {
     browser = await puppeteer.launch({
@@ -20,12 +20,8 @@ export default async function puppeteer_cheerio(url) {
     await page.goto(url, { waitUntil: "networkidle2",timeout: 240000 });
     await page.waitForSelector("body", { timeout: 240000 });
 
-    const htmlData = await page.content();
+    return {page,browser}; 
 
-    const $ = cheerio.load(htmlData);
-
-    await browser.close();
-    return $; 
   } catch (error) {
     if (browser) await browser.close();
     console.error("Error fetching Puppeteer data:", error);

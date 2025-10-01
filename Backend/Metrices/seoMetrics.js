@@ -84,7 +84,7 @@ const titleScore = titleLength >= 30 && titleLength <= 60 ? 1 : 0 ;
 
 const metaDesc = $('meta[name="description"]').attr("content") || "";
 const metaDescLength = metaDesc.length
-const metaDescScore = metaDescLength <= 160 ? 1 : 0 
+const metaDescScore = metaDescLength <= 165 ? 1 : 0 
 
 const canonical = $('link[rel="canonical"]').attr("href") || "";
 const canonicalScore = isValidCanonical(canonical, url) ? 1 : 0; 
@@ -122,23 +122,38 @@ const meaningfulAlts = images.filter((img) => {
 });
 const imageAltScore = meaningfulAlts ? 1 : 0;
 
-const headings = $("h1,h2,h3").map((i, el) => el.tagName.toLowerCase()).get();
-let hierarchyScore = !headings?0:1; // no h1->h2->h3 found
+const headings = $("h1,h2,h3")
+  .map((i, el) => el.tagName.toLowerCase())
+  .get();
 
-if (headings.length > 0) {
-  let broken = false;
-  for (let i = 0; i < headings.length - 1; i++) {
-    if (headings[i] === "h3" && headings[i + 1] === "h1") {
-      hierarchyScore=1;
-      broken = true;
+let hierarchyScore = 0;      
+let hierarchyFollow = 0;    
 
+if (headings.length === 0) {
+  hierarchyFollow = 0;
+} else {
+  let valid = true;
+  let lastLevel = 0;
+
+  for (let tag of headings) {
+    let currentLevel = parseInt(tag.charAt(1)); 
+
+    if (currentLevel - lastLevel > 1) {
+      valid = false;
       break;
     }
+    lastLevel = currentLevel;
   }
-  if (!broken) {
-    hierarchyScore = 2;
+
+  if (valid) {
+    hierarchyScore = 1;
+    hierarchyFollow = 1;
+  } else {
+    hierarchyScore = 0;
+    hierarchyFollow = 2; 
   }
 }
+
 
 const links = $("a").toArray();
 const goodLinks = links.filter(
@@ -148,6 +163,7 @@ const linkScore = goodLinks ? 1 : 0;
 
 const B2 = {
   imageAltScore: imageAltScore,
+  follow:hierarchyFollow,
   hierarchyScore: hierarchyScore,
   linkScore: linkScore,
   total: (imageAltScore + hierarchyScore + linkScore),

@@ -27,7 +27,7 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data,tim
         INP:{
           Score: MetricesCalculation_Data.technicalReport.inpScore,
           Time: MetricesCalculation_Data.technicalReport.inpRaw,
-          Parameter:'Set 1 if the page is interactive (INP) within 3800 ms or less, otherwise set 0 if it’s greater or missing'
+          Parameter:'Set 1 if the page is interactive (INP) within 200 ms or less, otherwise set 0 if it’s greater or missing'
         },
         Total_Score_A1: MetricesCalculation_Data.technicalReport.total_A1,
       },
@@ -105,7 +105,8 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data,tim
         },
         Heading_Hierarchy:{
           Parameter:'Check for heading hierarcy is followed "h1->h2->h3"',
-          Score:MetricesCalculation_Data.seoReport.B2.hierarchyScore
+          Score:MetricesCalculation_Data.seoReport.B2.hierarchyScore,
+          Follow :MetricesCalculation_Data.seoReport.B2.follow
         },
         Descriptive_Links:{
           Parameter:'Check for anchor tag text does not contain this ("click here", "read more","learn more","details","link","more","go","this")',

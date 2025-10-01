@@ -56,7 +56,7 @@ function calculatePassRate(results, ruleIds) {
   const totalNodes = relevant.reduce((acc, r) => acc + r.nodes.length, 0) || 1;
   const passRate = 1 - failedNodes / totalNodes;
 
-  return passRate >= 0.7 ? 1 : 0;
+  return passRate ? 1 : 0;
 }
 
   async function Landmarks(page) {
@@ -66,32 +66,35 @@ function calculatePassRate(results, ruleIds) {
     return landmarks.length > 0 ? 1 : 0;
   }
 
-  const CC = calculatePassRate(results, ["color-contrast"]);
-  const KN = calculatePassRate(results, [
-    "focus-order",
-    "focusable-content",
-    "tabindex",
-    "interactive-element-affordance"
-  ]);
-  const AL = calculatePassRate(results, [
-    "label",
-    "aria-allowed-attr",
-    "aria-roles",
-    "aria-hidden-focus"
-  ]);
-  const TX = calculatePassRate(results, ["image-alt"]);
+  const colorContrast = calculatePassRate(results, ["color-contrast"]);
+  const focusOrder = calculatePassRate(results, ["focus-order"]);
+  const focusableContent = calculatePassRate(results, ["focusable-content"]);
+  const tabindex = calculatePassRate(results, ["tabindex"]);
+  const interactiveElementAffordance = calculatePassRate(results, ["interactive-element-affordance"]);
+  const label = calculatePassRate(results, ["label"]);
+  const ariaAllowedAttr = calculatePassRate(results, ["aria-allowed-attr"]);
+  const ariaRoles = calculatePassRate(results, ["aria-roles"]);
+  const ariaHiddenFocus = calculatePassRate(results, ["aria-hidden-focus"]);
+  const imageAlt = calculatePassRate(results, ["image-alt"]);
   const SL = await page.$('a[href^="#"]:not([hidden])') ? 0 : 1
   const LM = await Landmarks(page);
 
   await browser.close();
 
-  const score = ((CC+KN+AL+TX+SL+LM)/6)*100;
+  const score = ((colorContrast+focusOrder+focusableContent+tabindex+interactiveElementAffordance+label+ariaAllowedAttr+ariaRoles+ariaHiddenFocus+imageAlt+SL+LM)/12)*100;
+console.log(score);
 
   report.C = {
-    colorContrast: CC,
-    keyboardNavigation: KN,
-    ariaLabeling: AL,
-    altTextEquivalents: TX,
+    colorContrast,
+    focusOrder,
+    focusableContent,
+    tabindex,
+    interactiveElementAffordance,
+    label,
+    ariaAllowedAttr,
+    ariaRoles,
+    ariaHiddenFocus,
+    imageAlt,
     skipLinks:SL,
     Landmark:LM,
     totalCScore:parseFloat(score.toFixed(0)) ,

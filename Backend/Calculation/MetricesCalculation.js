@@ -7,9 +7,9 @@ import conversionLeadFlow from "../Metrices/conversionLeadFlow.js";
 import aioReadiness from "../Metrices/aioReadiness.js";
 
 
-export default async function MetricesCalculation(url,data,$,robotsText,device) {
+export default async function MetricesCalculation(url,data,$,page,robotsText,device) {
 
- const technicalReport = await technicalMetrics(url, data, $, robotsText);
+ const technicalReport = await technicalMetrics(url, data,$,page,robotsText);
 const seoReport = await seoMetrics(url, $);
 const accessibilityReport = await accessibilityMetrics(url,device);
 const securityReport = await securityCompliance(url);
