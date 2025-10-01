@@ -1,43 +1,295 @@
+import axios from "axios";
 
 function extractText($) {
   return $("body").text().replace(/\s+/g, " ").trim();
 }
 
-// function getShingles(text, size = 5) {
-//   const words = text.toLowerCase().split(/\s+/);
-//   const shingles = [];
-//   for (let i = 0; i <= words.length - size; i++) {
-//     shingles.push(words.slice(i, i + size).join(" "));
-//   }
-//   return new Set(shingles);
-// }
+//SiteMap Check point 1
+const sitemap = async (robotsText) => {
+  let sitemapScore = 0; // default
 
-// function jaccardSimilarity(setA, setB) {
-//   const intersection = new Set([...setA].filter(x => setB.has(x)));
-//   const union = new Set([...setA, ...setB]);
-//   return intersection.size / union.size;
-// }
+  // safety check
+  if (!robotsText || typeof robotsText !== "string") {
+    return sitemapScore;
+  }
 
-// function computeDuplicatePercent(currentHtml, otherPagesHtml) {
-//   const currentShingles = getShingles(currentHtml);
-//   let maxSim = 0;
+  const sitemapMatch = robotsText.match(/Sitemap:\s*(.*)/i);
+  if (sitemapMatch) {
+    const sitemapUrl = sitemapMatch[1].trim();
+    try {
+      const sitemapRes = await axios.get(sitemapUrl);
+      sitemapScore = sitemapRes.status === 200 ? 1 : 0;
+    } catch (err) {
+      sitemapScore = 0;
+    }
+  }
 
-//   for (const html of otherPagesHtml) {
-//     const otherShingles = getShingles(html);
-//     const sim = jaccardSimilarity(currentShingles, otherShingles);
-//     if (sim > maxSim) maxSim = sim;
-//   }
+  return sitemapScore;
+};
 
-//   return maxSim * 100; 
-// }
+//Robots check point 1
+const robots =  (robotsText) => {
+  let robotsScore = 0;
 
-// function calcDupScore(dupPercent) {
-//   if (dupPercent === 0) return 3; 
-//   if (dupPercent > 0 && dupPercent <= 5) {
-//     return parseFloat(((1 - dupPercent / 5) * 3).toFixed(2));
-//   }
-//   return 0; 
-// }
+  try {
+    if (robotsText && typeof robotsText === "string") {
+      // Check if there is a global Disallow: /
+      const hasGlobalDisallow = /Disallow:\s*\/\s*$/mi.test(robotsText);
+      robotsScore = !hasGlobalDisallow ? 1 : 0;
+    } else {
+      robotsScore = 0;
+    }
+  } catch (err) {
+    robotsScore = 0;
+  }
+
+  return robotsScore;
+};
+
+/*
+// check for https point out of 2
+const checkHTTPS = async (url) => {
+  try {
+    const parsedUrl = new URL(url);
+
+    // Check if protocol is HTTPS
+    if (parsedUrl.protocol !== "https:") return 0;
+
+    // Test if HTTPS request succeeds
+    return new Promise((resolve) => {
+      https
+        .get(url, (res) => {
+          if (res.statusCode >= 200 && res.statusCode < 400) {
+            resolve(1); // HTTPS working
+          } else {
+            resolve(0); // HTTPS exists but not reachable
+          }
+        })
+        .on("error", () => resolve(0)); // Error in connection
+    });
+  } catch (err) {
+    return 0; // Invalid URL
+  }
+};
+let httpsScore=checkHTTPS(url);
+*/
+
+//Image havind alt
+const imageAltScore = ($) => {
+  const images = $("img").toArray();
+  if (images.length === 0) return 0;
+
+  const imagesWithAlt = images.filter((img) => {
+    const alt = $(img).attr("alt");
+    return alt !== undefined && alt.trim() !== "";
+  });
+
+  const percentage = (imagesWithAlt.length / images.length) * 100;
+  return percentage > 75 ? 1 : 0;
+};
+
+//Image have meaningfull Alt tag
+const meaningfulAltScore = ($) => {
+  const images = $("img").toArray();
+  if (images.length === 0) return 0;
+
+  const meaningfulAlts = images.filter((img) => {
+    const alt = $(img).attr("alt")?.trim().toLowerCase() || "";
+    const meaningless = ["", "image", "logo", "icon", "pic", "picture", "photo", " ", "12345", "-", "graphics"];
+    return !meaningless.includes(alt);
+  });
+
+  const percentage = (meaningfulAlts.length / images.length) * 100;
+  return percentage > 75 ? 1 : 0;
+};
+
+//checkig the image compression size point out of 1
+const checkImagesSize = async ($) => {
+  const images = $("img").toArray();
+
+  if (images.length === 0) return 0; // No images
+
+  let totalScore = 0;
+
+  for (const img of images) {
+    const src = $(img).attr("src");
+    if (!src) continue;
+
+    try {
+      // Fetch the image as arraybuffer to get size
+      const res = await axios.get(src, { responseType: "arraybuffer" });
+      const sizeInKB = res.data.byteLength / 1024;
+
+      // Score 1 if < 200KB else 0
+      totalScore += sizeInKB < 200 ? 1 : 0;
+    } catch (err) {
+      // If image fails to load, consider score 0
+      totalScore += 0;
+    }
+  }
+
+  // Average % of images under 200KB
+  const averageScore = (totalScore / images.length) * 100;
+
+  return averageScore.toFixed(2); // e.g., "75.00"
+};
+
+const checkVideoExistance = ($) => {
+  const videos = $("video, iframe[src*='youtube'], iframe[src*='vimeo']").toArray();
+  return videos.length == 0 ? 0 : 1; 
+};
+
+//Proper Embedding of video point out of 1
+const checkVideoEmbedding = ($) => {
+  const videos = $("video, iframe[src*='youtube'], iframe[src*='vimeo']").toArray();
+  return videos.length > 0 ? 1 : 0; // 1 = properly embedded, 0 = none
+};
+
+//Lazy loadinng of video point out of 1
+const checkLazyLoading = ($) => {
+  const videos = $("video, iframe").toArray();
+  if (videos.length === 0) return 1;
+
+  const lazyLoaded = videos.filter((el) => $(el).attr("loading") === "lazy").length;
+  return lazyLoaded / videos.length >= 0.5 ? 1 : 0; 
+  // score 1 if ≥50% of videos are lazy loaded
+};
+
+// structured matadat of videos point out of 1
+const checkStructuredMetadata = ($) => {
+  const scripts = $("script[type='application/ld+json']").toArray();
+  if (scripts.length === 0) return 1;
+  for (const script of scripts) {
+    try {
+      const data = JSON.parse($(script).html());
+      if (Array.isArray(data)) {
+        if (data.some((d) => d["@type"] === "VideoObject")) return 1;
+      } else if (data["@type"] === "VideoObject") return 1;
+    } catch (err) {
+      continue;
+    }
+  }
+  return 0;
+};
+
+//For all the score of video point out of 3
+const auditVideos = ($) => {
+  return {
+    embedding: checkVideoEmbedding($),
+    lazyLoading: checkLazyLoading($),
+    structuredMetadata: checkStructuredMetadata($)
+  };
+};
+
+  //Check heading herirchy order point out of 1
+  const checkHierarchy = (headings) => {
+    let lastLevel = 0;
+    for (const h of headings) {
+      const currentLevel = parseInt(h.tag[1]); // h1 -> 1, h2 -> 2
+      if (lastLevel && currentLevel > lastLevel + 1) {
+        return 0; // hierarchy broken
+      }
+      lastLevel = currentLevel;
+    }
+    return 1; // hierarchy okay
+  };
+
+  // Check for multiple h1 tags point out of 1
+
+  //  check if keyboard is included point out of 1
+  const checkKeywordsInHeadings = (headings, keywords = []) => {
+    if (keywords.length === 0) return 1; // no keywords specified
+    const matched = headings.some(h => 
+      keywords.some(kw => h.text.toLowerCase().includes(kw.toLowerCase()))
+    );
+    return matched ? 1 : 0;
+  };
+
+//Check for alt are discriptive
+const altTextSEOScore =  ($, keywords = []) => {
+  try {
+    const images = $("img").toArray();
+    const totalImages = images.length;
+    if (totalImages === 0) return 0;
+
+    const goodAlts = images.filter(img => {
+      const alt = $(img).attr("alt")?.trim().toLowerCase() || "";
+
+      // Skip meaningless or generic alt text
+      const meaningless = [
+        "", "image", "logo", "icon", "pic", "picture", "photo", " ",
+        "12345", "-", "graphics"
+      ];
+      if (meaningless.includes(alt)) return false;
+
+      // Check if alt contains any keyword (if provided)
+      if (keywords.length > 0) {
+        return keywords.some(kw => alt.includes(kw.toLowerCase()));
+      }
+
+      return true; // descriptive even without keyword
+    });
+
+    const percentage = (goodAlts.length / totalImages) * 100;
+    return percentage.toFixed(2);
+  } catch (err) {
+    console.error("Error fetching page:", err.message);
+    return 0;
+  }
+};
+
+// Dicripitive Link
+const checkInternalLinks = async ($, url, links) => {
+  try {
+    const domain = new URL(url).hostname;
+
+    // Filter internal links
+    const internalLinks = links.filter(link => {
+      const href = $(link).attr("href");
+      if (!href) return false; // Skip links without href
+      try {
+        const linkUrl = new URL(href, url); // Resolve relative URLs
+        return linkUrl.hostname === domain;
+      } catch {
+        return false;
+      }
+    });
+
+    if (internalLinks.length === 0) return { totalInternal: 0, descriptiveScore: 0 };
+
+    // Check descriptive anchor text
+    const genericAnchors = ["click here", "read more", "learn more", "details", "link", "more", "go", "this"];
+    const descriptiveLinks = internalLinks.filter(link => {
+      const text = $(link).text().trim().toLowerCase();
+      return text.length > 0 && !genericAnchors.includes(text);
+    });
+
+    // Score: 1 if >75% internal links have descriptive text
+    const descriptiveScore = (descriptiveLinks.length / internalLinks.length) * 100 > 75 ? 1 : 0;
+
+    return { totalInternal: internalLinks.length, descriptiveScore };
+  } catch (err) {
+    console.error("Error checking internal links:", err);
+    return { totalInternal: 0, descriptiveScore: 0 };
+  }
+};
+
+// check for Semantic HTML Tags
+const checkSemanticTags = async ($) => {
+  try {
+    const tags = ["article", "section", "header", "footer"];
+    const result = {};
+
+    tags.forEach(tag => {
+      result[tag] = $(tag).length > 0 ? 1 : 0; // 1 if tag exists, else 0
+    });
+
+    return result;
+  } catch (err) {
+    console.error("Error checking semantic tags:", err);
+    return { article: 0, section: 0, header: 0, footer: 0 };
+  }
+};
 
 function simpleDuplicateCheck(text) {
     const words = text.split(/\s+/);
@@ -54,7 +306,7 @@ function simpleDuplicateCheck(text) {
     });
 
     const duplicationPercent = (duplicates / words.length) * 100;
-    const score = duplicationPercent <= 5 ? 1 : 0;
+    const score = duplicationPercent <=75  ? 1 : 0;
     return score;
 }
 
@@ -76,28 +328,128 @@ function isValidCanonical(canonical, pageUrl) {
   return c && p && c === p;
 }
 
-export default async function seoMetrics(url, $) {
+//Check URL Structure
+function checkURLStructure(url) {
+  try {
+    const { pathname } = new URL(url);
 
+    // Rule 1: Short and readable (less than 5 segments)
+    const segments = pathname.split('/').filter(Boolean);
+    if (segments.length > 5) return 0;
+
+    // Rule 2: Only contains lowercase letters, numbers, and hyphens
+    const validChars = segments.every(seg => /^[a-z0-9-]+$/.test(seg));
+    if (!validChars) return 0;
+
+    // Rule 3: No underscores, spaces, or other separators
+    const noUnderscore = segments.every(seg => !seg.includes('_'));
+    if (!noUnderscore) return 0;
+
+    // Rule 4: Reasonably short segments (less than 30 chars each)
+    const shortSegments = segments.every(seg => seg.length <= 30);
+    if (!shortSegments) return 0;
+
+    return 1; // All rules passed
+  } catch (err) {
+    return 0; // Invalid URL
+  }
+}
+
+function getSlug(url) {
+  try {
+    const pathname = new URL(url).pathname; // get path
+    const parts = pathname.split('/').filter(Boolean); // remove empty parts
+    return parts.length ? parts[parts.length - 1] : null; // last part is slug
+  } catch (err) {
+    return null; // invalid URL
+  }
+}
+function slugCheck(url) {
+  try {
+    const pathname = new URL(url).pathname; // get path
+    const parts = pathname.split('/').filter(Boolean); // remove empty parts
+    return parts.length > 0 ? 1 : 0; // last part is slug
+  } catch (err) {
+    return null; // invalid URL
+  }
+}
+function slugValid(slug){
+  if (slug.length > 25) return 0;       // length check
+  const regex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/; // pattern check
+  return regex.test(slug) ? 1 : 0;
+
+}
+// Check Pagination
+function checkPagination($) {
+  try {
+    // Look for common pagination patterns
+    const pagination = $(
+      "a[rel='next'], a[rel='prev'], .pagination, .pager, .page-numbers"
+    );
+
+    // Also check anchor text manually (case-insensitive)
+    const textBased = $("a").filter((i, el) => {
+      const txt = $(el).text().toLowerCase();
+      return txt.includes("next") || txt.includes("previous");
+    });
+
+    return (pagination.length + textBased.length) > 0 ? 0 : 1;
+  } catch (err) {
+    console.error("Error:", err.message);
+    return 0;
+  }
+}
+
+
+export default async function seoMetrics(url, $,robotsText) {
+const titleExistanceScore = $("title") ? 1 : 0;
 const title = $("title").text().trim() || "";
 const titleLength = title.length;
 const titleScore = titleLength >= 30 && titleLength <= 60 ? 1 : 0 ; 
+console.log("Title:", title);
+console.log("Title Existance Score:", titleExistanceScore);
+console.log("Title Length:", titleLength);
+console.log("Title Score:", titleScore);
 
+const metaDescExistanceScore = $('meta[name="description"]') ? 1 : 0;
 const metaDesc = $('meta[name="description"]').attr("content") || "";
 const metaDescLength = metaDesc.length
 const metaDescScore = metaDescLength <= 165 ? 1 : 0 
+console.log("Meta Description Existance Score:", metaDescExistanceScore);
+console.log("Meta Description:", metaDesc);
+console.log("Meta Description Length:", metaDescLength);
+console.log("Meta Description Score:", metaDescScore);
 
+const URLStructureSrcore=checkURLStructure(url);
+console.log("URL Structure Score:", URLStructureSrcore);
+
+
+const canonicalExistanceScore = $('link[rel="canonical"]') ? 1 : 0 ;
 const canonical = $('link[rel="canonical"]').attr("href") || "";
 const canonicalScore = isValidCanonical(canonical, url) ? 1 : 0; 
+console.log("Canonical Existance Score:", canonicalExistanceScore);
+console.log("Canonical:", canonical);
+console.log("Canonical Self Refe Score:", canonicalScore);
+
+
+let sitemapscore=await sitemap(robotsText);
+console.log("Sitemap Score:", sitemapscore);
+
+let robotscore= robots(robotsText);
+console.log("Robots.txt Score:", robotscore);
+
 
 const h1Count = $("h1").length;
+const h2Count = $("h2").length;
+const h3Count = $("h3").length;
+const h4Count = $("h4").length;
+const h5Count = $("h5").length;
+const h6Count = $("h6").length;
 const h1Score = h1Count === 0 ? 0 : h1Count=== 1 ? 1 : 2 ;
+console.log("H1 Count:", h1Count);
+console.log("H1 Score:", h1Score);
 
-// const contentText = $("p").map((i, el) => $(el).text().trim()).get().join(" ").toLowerCase();
-// const h1Text = $("h1").first().text().trim();
-// const keywords = h1Text.toLowerCase().split(/\s+/);
-// const matchCount = keywords.filter((word) => contentText.includes(word)).length;
-// const descriptiveScore = (matchCount / keywords.length) ? 1 : 0;
-// const h1OverallScore = h1Score + descriptiveScore
+
 
 const B1 = {
   title: title,
@@ -122,23 +474,46 @@ const meaningfulAlts = images.filter((img) => {
 });
 const imageAltScore = meaningfulAlts ? 1 : 0;
 
+// const headings = $("h1,h2,h3").map((i, el) => el.tagName.toLowerCase()).get();
+// let hierarchyScore =0; // no h1->h2->h3 found
+// let hierarchyfollow=headings?1:0;
+// if (headings.length > 0) {
+//   let broken = false;
+//   for (let i = 0; i < headings.length - 1; i++) {
+//     if (headings[i] === "h3" && headings[i + 1] === "h1") {
+//       hierarchyfollow=2;
+//       hierarchyScore=0;  //follow h1->h2->h3
+//       broken = true;;
+
+//       break;
+//     }
+//   }
+//   if (!broken) {
+//     hierarchyfollow=1;
+//     hierarchyScore = 1;  // follow h1->h2->h3
+//   }
+// }
+
+
+
 const headings = $("h1,h2,h3")
   .map((i, el) => el.tagName.toLowerCase())
   .get();
 
-let hierarchyScore = 0;      
-let hierarchyFollow = 0;    
+let hierarchyScore = 0;      // 1 = correct, 0 = broken
+let hierarchyFollow = 0;     // 0 = no headings, 1 = correct, 2 = broken
 
 if (headings.length === 0) {
-  hierarchyFollow = 0;
+  hierarchyFollow = 0; // no headings
 } else {
   let valid = true;
-  let lastLevel = 0;
+  let lastLevel = 0; // 0 = no heading yet
 
   for (let tag of headings) {
-    let currentLevel = parseInt(tag.charAt(1)); 
+    let currentLevel = parseInt(tag.charAt(1)); // h1 -> 1, h2 -> 2, h3 -> 3
 
     if (currentLevel - lastLevel > 1) {
+      // skipped a level (e.g., h1 -> h3 directly)
       valid = false;
       break;
     }
@@ -147,12 +522,16 @@ if (headings.length === 0) {
 
   if (valid) {
     hierarchyScore = 1;
-    hierarchyFollow = 1;
+    hierarchyFollow = 1; // hierarchy correct
   } else {
     hierarchyScore = 0;
-    hierarchyFollow = 2; 
+    hierarchyFollow = 2; // hierarchy broken
   }
 }
+
+console.log("Headings:", headings);
+console.log("Hierarchy Score:", hierarchyScore);
+console.log("Hierarchy Status:", hierarchyFollow);
 
 
 const links = $("a").toArray();
@@ -170,44 +549,32 @@ const B2 = {
 };
 
 
-// let urlSlugScore; 
-// const slug = new URL(url).pathname.slice(1);
-// const slugLength = slug.length 
-// if(!slug){
-//   urlSlugScore = 1
-// }
-// else if(slug && (!/^([a-z0-9]+(-[a-z0-9]+)*)$/.test(slug) && slugLength > 75)) {
-//     urlSlugScore = 2; 
-// }
-// else{
-//     urlSlugScore = 3;
-// } 
-
-let urlScore;
+let urlSlugScore; 
 const slug = new URL(url).pathname.slice(1);
 const slugLength = slug.length 
 if(!slug){
-  urlScore = 1
+  urlSlugScore = 1
 }
 else if(slug && (!/^([a-z0-9]+(-[a-z0-9]+)*)$/.test(slug) && slugLength > 75)) {
-    urlScore = 0; 
+    urlSlugScore = 2; 
 }
 else{
-    urlScore = 1;
+    urlSlugScore = 3;
 } 
 
+let urlScore;
+if(urlSlugScore==1 && urlSlugScore == 3){urlScore = 0}
+else{urlScore=1}
+
 const pageText = extractText($);
-// const duplicatePercent = computeDuplicatePercent(pageText, otherPages);
-// const dupScore = calcDupScore(duplicatePercent);
 const dupScore = simpleDuplicateCheck(pageText);
 
 const paginationScore = $("link[rel='next'], link[rel='prev']").length ? 1 : 0; 
 
   const B3 = {
     slug:slug,
-    // urlSlugScore: urlSlugScore,
+    urlSlugScore: urlSlugScore,
     slugLength:slugLength,
-    urlScore:urlScore,
     duplicateContent: dupScore,
     paginationScore: paginationScore,
     total: (urlScore + dupScore + paginationScore),
