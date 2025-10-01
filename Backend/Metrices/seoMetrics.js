@@ -172,15 +172,6 @@ const checkStructuredMetadata = ($) => {
   return 0;
 };
 
-//For all the score of video point out of 3
-const auditVideos = ($) => {
-  return {
-    embedding: checkVideoEmbedding($),
-    lazyLoading: checkLazyLoading($),
-    structuredMetadata: checkStructuredMetadata($)
-  };
-};
-
   //Check heading herirchy order point out of 1
   const checkHierarchy = (headings) => {
     let lastLevel = 0;
