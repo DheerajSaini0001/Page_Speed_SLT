@@ -112,7 +112,8 @@ export default async function technicalMetrics(url,data,$,puppeteer_Data,robotsT
 let robotsScore = 0;
 try {
   const robotsUrl = new URL("/robots.txt", url).href;
-  const response = await page.goto(robotsUrl, { waitUntil: "networkidle2",timeout:240000 });
+  const robotsPage = await browser.newPage();
+  const response = await robotsPage.goto(robotsUrl, { waitUntil: "networkidle2",timeout:240000 });
   const responseStatus = response.status();
   sitemapScore = responseStatus === 200 ? 1 : 0;
 }
