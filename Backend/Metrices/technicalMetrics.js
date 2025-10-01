@@ -1,4 +1,5 @@
-import puppeteer from "../Tools/puppeteers.js";
+// import puppeteer from "../Tools/puppeteers.js";
+import puppeteer from "puppeteer";
 
 function coreWebVitalsScore(value, threshold) {
   return value <= threshold ? 1 : 0;
@@ -76,32 +77,15 @@ export default async function technicalMetrics(url,data,$,puppeteer_Data,robotsT
   }
 
   // Technical Performance (Crawlability & Hygiene)
-  const {page, browser} = puppeteer_Data;
+  const browser = await puppeteer.launch({headless: true,args: ["--no-sandbox", "--disable-setuid-sandbox"]});
+  const page = await browser.newPage();
+  await page.setUserAgent(
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
+      "(KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    );
+    await page.setExtraHTTPHeaders({ "Accept-Language": "en-US,en;q=0.9" });
 
-  let sitemapScore = 0;
-  const sitemapMatch = robotsText.match(/Sitemap:\s*(.*)/i);
-  if (sitemapMatch) {
-    const sitemapUrl = sitemapMatch[1].trim();
-    try {
-      const sitemapPage = await puppeteer(sitemapUrl)
-      sitemapScore = sitemapPage.page.status === 200 ? 1 : 0;
-    } catch {
-      sitemapScore = 0; 
-    }
-  }
-
-let robotsScore = 0;
-try {
-  if (robotsText && typeof robotsText === "string") {
-    const hasGlobalDisallow = /Disallow:\s*\/\s*$/mi.test(robotsText);
-    robotsScore = !hasGlobalDisallow ? 1 : 0;
-  } else {
-    
-    robotsScore = 0; 
-  }
-} catch {
-  robotsScore = 0; 
-}
+    await page.goto(url, { waitUntil: "networkidle2",timeout: 240000 });
 
   const structuredDataScore = await page.evaluate(() => {
     const scripts = Array.from(document.querySelectorAll('script[type="application/ld+json"]'))
@@ -112,43 +96,69 @@ try {
     return scripts.length > 0 ? 1 : 0;
   });
   
-  let brokenScore = 0;
-  try {
-    const links = await page.$$eval("a[href]", els => els.map(el => el.href).filter(h => h.startsWith("http")));
-    let brokenCount = 0;
-
-    for (const link of links) {
-      try {
-        const resp = await page.goto(link, { waitUntil: "domcontentloaded" });
-        if (!resp || resp.status() >= 400) brokenCount++;
-      } catch {
-        brokenCount++;
-      }
+  let sitemapScore = 0;
+  const sitemapMatch = robotsText.match(/Sitemap:\s*(.*)/i);
+  if (sitemapMatch) {
+    const sitemapUrl = sitemapMatch[1].trim();
+    try {
+      const sitemappage = await browser.newPage();
+      const response = await sitemappage.goto(sitemapUrl);
+      sitemapScore = response.status === 200 ? 1 : 0;
+    } catch {
+      sitemapScore = 0; 
     }
+  }
 
-    brokenScore = brokenCount === 0 ? 1 : 0;
-  } catch {
-    brokenScore = 0;
-  }
+let robotsScore = 0;
+try {
+  const robotsUrl = new URL("/robots.txt", url).href;
+  const response = await page.goto(robotsUrl, { waitUntil: "networkidle2",timeout:240000 });
+  const responseStatus = response.status();
+  sitemapScore = responseStatus === 200 ? 1 : 0;
+}
+catch {
+  robotsScore = 0; 
+}
+
   
-  let redirectScore = 0;
-  try {
-    const resp = await page.goto(url, { waitUntil: "domcontentloaded" });
-    redirectScore = resp.request().redirectChain().length === 0 ? 1 : 0;
-  } catch {
-    redirectScore = 0;
-  }
+  // let brokenScore = 0;
+  // try {
+  //   const links = await page.$$eval("a[href]", els => els.map(el => el.href).filter(h => h.startsWith("http")));
+  //   let brokenCount = 0;
+
+  //   for (const link of links) {
+  //     try {
+  //       const page = await browser.newPage();
+  //       const resp = await page.goto(link, { waitUntil: "domcontentloaded" });
+  //       if (!resp || resp.status() >= 400) brokenCount++;
+  //     } catch {
+  //       brokenCount++;
+  //     }
+  //   }
+
+  //   brokenScore = brokenCount === 0 ? 1 : 0;
+  // } catch {
+  //   brokenScore = 0;
+  // }
+  
+  // let redirectScore = 0;
+  // try {
+  //   const resp = await page.goto(url, { waitUntil: "domcontentloaded" });
+  //   redirectScore = resp.request().redirectChain().length === 0 ? 1 : 0;
+  // } catch {
+  //   redirectScore = 0;
+  // }
   
   browser.close()
   
-  const crawlabilityAndHygieneTotal = sitemapScore + robotsScore + structuredDataScore + brokenScore + redirectScore
+  const crawlabilityAndHygieneTotal = sitemapScore + robotsScore + structuredDataScore 
   
   const crawlabilityAndHygiene = {
     sitemapScore,
     robotsScore,
     structuredDataScore,
-    brokenScore,
-    redirectScore,
+    // brokenScore,
+    // redirectScore,
     crawlabilityAndHygieneTotal
   }
   
