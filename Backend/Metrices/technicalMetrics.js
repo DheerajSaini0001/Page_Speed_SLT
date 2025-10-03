@@ -1,37 +1,54 @@
-// import puppeteer from "../Tools/puppeteers.js";
-import puppeteer from "puppeteer";
+// import puppeteer from "puppeteer";
 
 function coreWebVitalsScore(value, threshold) {
   return value <= threshold ? 1 : 0;
 }
 
-export default async function technicalMetrics(url,data,$,puppeteer_Data,robotsText) {
+function actualCalculation(observed,good,poor,weight) {
+    let score = 0;
+    if (observed <= good) {
+      score = 100;
+    } else if (observed >= poor) {
+      score = 0;
+    } else {
+      score = ((poor - observed) / (poor - good)) * 100;
+    }
+  return parseFloat((score * weight).toFixed(0));
+}
+
+export default async function technicalMetrics(url,data,puppeteerData) {
 
   // Technical Performance (Core Web Vitals)
   const lcpValue = parseFloat((data?.lighthouseResult?.audits?.["largest-contentful-paint"]?.numericValue || 0).toFixed(0)); 
   const lcpScore = coreWebVitalsScore(lcpValue,2500);
+  const actuallcpScore = actualCalculation(lcpValue,2500,4000,0.25);
   
-  const fidValue = data.lighthouseResult.audits['max-potential-fid'].numericValue || 0; 
+  const fidValue = parseFloat((data.lighthouseResult.audits['max-potential-fid'].numericValue || 0).toFixed(0)); 
   const fidScore = coreWebVitalsScore(fidValue,100);
   
   const clsValue = parseFloat((data?.lighthouseResult?.audits?.["cumulative-layout-shift"]?.numericValue || 0).toFixed(1)); 
   const clsScore = coreWebVitalsScore(clsValue,0.1);
+  const actualclsScore = actualCalculation(clsValue,0.1,0.25,0.05);
   
   const fcpValue = parseFloat((data.lighthouseResult.audits['first-contentful-paint'].numericValue || 0).toFixed(0));
   const fcpScore = coreWebVitalsScore(fcpValue,1800);
+  const actualfcpScore = actualCalculation(fcpValue,1800,3000,0.10);
 
-  const ttfbValue = data?.lighthouseResult?.audits?.["server-response-time"]?.numericValue || 0; 
+  const ttfbValue = parseFloat((data?.lighthouseResult?.audits?.["server-response-time"]?.numericValue || 0).toFixed(0)); 
   const ttfbScore = coreWebVitalsScore(ttfbValue,200);
+  const actualttfbScore = actualCalculation(ttfbValue,200,600,0.10);
 
   const tbtValue = parseFloat((data?.lighthouseResult?.audits?.["total-blocking-time"]?.numericValue || 0).toFixed(0));
   const tbtScore = coreWebVitalsScore(tbtValue,300);
+  const actualtbtScore = actualCalculation(tbtValue,300,600,0.25);
   
   const siValue = parseFloat((data?.lighthouseResult?.audits?.["speed-index"]?.numericValue || 0).toFixed(0));
   const siScore = coreWebVitalsScore(siValue,3000);
+  const actualsiScore = actualCalculation(siValue,3000,5000,0.10);
 
   const inpValue = parseFloat((data?.lighthouseResult?.audits?.["interactive"]?.numericValue || 0).toFixed(0)); 
-  const inpScore = inpValue <= 3800 ? 1 : 0;
-
+  const inpScore = coreWebVitalsScore(inpValue,3800);
+  const actualinpScore = actualCalculation(inpValue,3800,7000,0.15);
 
   const coreWebVitalsTotal = lcpScore + fidScore + clsScore + ttfbScore + tbtScore + siScore + fcpScore + inpScore
   
@@ -39,10 +56,10 @@ export default async function technicalMetrics(url,data,$,puppeteer_Data,robotsT
     lcpValue,lcpScore,
     fidValue,fidScore,
     clsValue,clsScore,
+    fcpValue,fcpScore,
     ttfbValue,ttfbScore,
     tbtValue,tbtScore,
     siValue,siScore,
-    fcpValue,fcpScore,
     inpValue,inpScore,
     coreWebVitalsTotal
   }
@@ -77,15 +94,35 @@ export default async function technicalMetrics(url,data,$,puppeteer_Data,robotsT
   }
 
   // Technical Performance (Crawlability & Hygiene)
-  const browser = await puppeteer.launch({headless: true,args: ["--no-sandbox", "--disable-setuid-sandbox"]});
-  const page = await browser.newPage();
-  await page.setUserAgent(
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
-      "(KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
-    );
-    await page.setExtraHTTPHeaders({ "Accept-Language": "en-US,en;q=0.9" });
+  // const browser = await puppeteer.launch({headless: true,args: ["--no-sandbox", "--disable-setuid-sandbox"]});
+  // const page = await browser.newPage();
+  // if(device == 'Desktop'){
+  // await page.setUserAgent(
+  //     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
+  //     "(KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+  //   );
+  // await page.setExtraHTTPHeaders({ "Accept-Language": "en-US,en;q=0.9" });
+  // }
+  // else{
+  //     await page.setUserAgent(
+  //   "Mozilla/5.0 (Linux; Android 10; Mobile) " +
+  //   "AppleWebKit/537.36 (KHTML, like Gecko) " +
+  //   "Chrome/140.0.0.0 Mobile Safari/537.36"
+  // );
+  // await page.setViewport({
+  //   width: 414,
+  //   height: 896,
+  //   isMobile: true,
+  //   hasTouch: true,
+  //   deviceScaleFactor: 2
+  // });
+  // }
 
-    await page.goto(url, { waitUntil: "networkidle2",timeout: 240000 });
+  // const response = await page.goto(url, { waitUntil: "networkidle2",timeout: 240000 });
+  const {browser,page,response} = puppeteerData
+  const chain = response.request().redirectChain();
+  const hops = chain.length; 
+  const redirectScore = hops <= 1 ? 1 : 0;
 
   const structuredDataScore = await page.evaluate(() => {
     const scripts = Array.from(document.querySelectorAll('script[type="application/ld+json"]'))
@@ -95,85 +132,247 @@ export default async function technicalMetrics(url,data,$,puppeteer_Data,robotsT
       .filter(Boolean)
     return scripts.length > 0 ? 1 : 0;
   });
+
+  const links = await page.$$eval("a[href]", (anchors) =>
+    anchors
+      .map((a) => a.href)
+      .filter((l) => l && l.startsWith("http"))
+  );
+
+  let brokenCount = 0;
+  await Promise.all(
+    links.map(async (link) => {
+      try {
+        const status = await page.evaluate(async (l) => {
+          try {
+            const res = await fetch(l, { method: "HEAD" });
+            return res.status;
+          } catch {
+            return 0;
+          }
+        }, link);
+
+        if (status === 0 || status >= 400) brokenCount++;
+      } catch {
+        brokenCount++;
+      }
+    })
+  );
+
+  const totalLinks = links.length || 1;
+  const brokenPercent = parseFloat(((brokenCount / totalLinks) * 100).toFixed(0));
+  const brokenScore = brokenPercent === 0 ? 1 : 0;
   
   let sitemapScore = 0;
-  const sitemapMatch = robotsText.match(/Sitemap:\s*(.*)/i);
-  if (sitemapMatch) {
-    const sitemapUrl = sitemapMatch[1].trim();
-    try {
-      const sitemappage = await browser.newPage();
-      const response = await sitemappage.goto(sitemapUrl);
-      sitemapScore = response.status === 200 ? 1 : 0;
-    } catch {
-      sitemapScore = 0; 
-    }
+  try {
+  const sitemapUrl = new URL("/sitemap.xml", url).href;
+  const sitemapPage = await browser.newPage();
+  const response = await sitemapPage.goto(sitemapUrl);
+  sitemapScore = response.status() === 200 ? 1 : 0;
+  }
+  catch {
+  sitemapScore = 0; 
   }
 
-let robotsScore = 0;
-try {
+  let robotsScore = 0;
+  try {
   const robotsUrl = new URL("/robots.txt", url).href;
-  const response = await page.goto(robotsUrl, { waitUntil: "networkidle2",timeout:240000 });
-  const responseStatus = response.status();
-  sitemapScore = responseStatus === 200 ? 1 : 0;
-}
-catch {
+  const robotsPage = await browser.newPage();;
+  const response = await robotsPage.goto(robotsUrl);
+  robotsScore = response.status() === 200 ? 1 : 0;
+  }
+  catch {
   robotsScore = 0; 
-}
-
+  }
   
-  // let brokenScore = 0;
-  // try {
-  //   const links = await page.$$eval("a[href]", els => els.map(el => el.href).filter(h => h.startsWith("http")));
-  //   let brokenCount = 0;
-
-  //   for (const link of links) {
-  //     try {
-  //       const page = await browser.newPage();
-  //       const resp = await page.goto(link, { waitUntil: "domcontentloaded" });
-  //       if (!resp || resp.status() >= 400) brokenCount++;
-  //     } catch {
-  //       brokenCount++;
-  //     }
-  //   }
-
-  //   brokenScore = brokenCount === 0 ? 1 : 0;
-  // } catch {
-  //   brokenScore = 0;
-  // }
-  
-  // let redirectScore = 0;
-  // try {
-  //   const resp = await page.goto(url, { waitUntil: "domcontentloaded" });
-  //   redirectScore = resp.request().redirectChain().length === 0 ? 1 : 0;
-  // } catch {
-  //   redirectScore = 0;
-  // }
-  
-  browser.close()
-  
-  const crawlabilityAndHygieneTotal = sitemapScore + robotsScore + structuredDataScore 
+  const crawlabilityAndHygieneTotal = sitemapScore + robotsScore + structuredDataScore + brokenScore + redirectScore
   
   const crawlabilityAndHygiene = {
     sitemapScore,
     robotsScore,
     structuredDataScore,
-    // brokenScore,
-    // redirectScore,
+    brokenPercent,brokenScore,
+    hops,redirectScore,
     crawlabilityAndHygieneTotal
   }
   
-  
   const Total = parseFloat((((coreWebVitalsTotal + deliveryAndRenderTotal + crawlabilityAndHygieneTotal)/18)*100).toFixed(0))
-  
-  console.log(coreWebVitals);
-  console.log(deliveryAndRender);
-  console.log(crawlabilityAndHygiene);
-  console.log(Total);
+
+  // Improvements
+  const improvements = [];
+
+// Technical Performance (Core Web Vitals)
+if (fidScore === 0) improvements.push({
+  metric: "First Input Delay (FID)",
+  current: fidValue + "ms",
+  recommended: "< 100ms",
+  severity: "High 🟠",
+  suggestion: "Reduce JavaScript execution time and break up long tasks to improve interactivity."
+});
+
+// Technical Performance (Delivery & Render)
+if (compressionScore === 0) improvements.push({
+  metric: "Text Compression",
+  current: "Disabled",
+  recommended: "Enabled (gzip/brotli)",
+  severity: "Medium 🟡",
+  suggestion: "Enable text compression to reduce payload size and speed up page load."
+});
+
+if (cachingScore === 0) improvements.push({
+  metric: "Caching",
+  current: cachingValue + "s",
+  recommended: "≥ 7 days",
+  severity: "Medium 🟡",
+  suggestion: "Set long cache TTL for static resources to improve repeat visit speed."
+});
+
+if (resourceOptimizationScore === 0) improvements.push({
+  metric: "Resource Optimization",
+  current: "Not fully optimized",
+  recommended: "Images optimized, CSS/JS minified, offscreen images deferred",
+  severity: "High 🟠",
+  suggestion: "Compress images, minify CSS/JS, and lazy-load offscreen images to improve load times."
+});
+
+if (renderBlockingScore === 0) improvements.push({
+  metric: "Render-Blocking Resources",
+  current: "Present",
+  recommended: "None",
+  severity: "High 🟠",
+  suggestion: "Defer or async non-critical CSS/JS to improve first render speed."
+});
+
+if (httpsScore === 0) improvements.push({
+  metric: "HTTP/2 Protocol",
+  current: "Not enabled",
+  recommended: "Enabled",
+  severity: "Medium 🟡",
+  suggestion: "Enable HTTP/2 to allow multiplexing and faster delivery of resources."
+});
+
+// Technical Performance (Crawlability & Hygiene)
+if (sitemapScore === 0) improvements.push({
+  metric: "Sitemap",
+  current: "Missing",
+  recommended: "Available",
+  severity: "Medium 🟡",
+  suggestion: "Add sitemap.xml and submit it to search engines for better indexing."
+});
+
+if (robotsScore === 0) improvements.push({
+  metric: "Robots.txt",
+  current: "Missing",
+  recommended: "Available",
+  severity: "Medium 🟡",
+  suggestion: "Ensure robots.txt exists and allows proper crawling."
+});
+
+if (structuredDataScore === 0) improvements.push({
+  metric: "Structured Data",
+  current: "Not present",
+  recommended: "JSON-LD structured data present",
+  severity: "Low 🟢",
+  suggestion: "Add structured data to improve search results display."
+});
+
+if (brokenScore === 0) improvements.push({
+  metric: "Broken Links",
+  current: `${brokenPercent}% broken`,
+  recommended: "0%",
+  severity: "High 🟠",
+  suggestion: "Fix all broken links to improve user experience and SEO."
+});
+
+if (redirectScore === 0) improvements.push({
+  metric: "Redirect Chains",
+  current: `${hops} hops`,
+  recommended: "≤ 1 hop",
+  severity: "Medium 🟡",
+  suggestion: "Reduce redirect chains to speed up page load and improve crawlability."
+});
+
+// Warning
+const warning = [];
+
+if (lcpScore === 0) warning.push({
+  metric: "Largest Contentful Paint (LCP)",
+  current: lcpValue + "ms",
+  recommended: "< 2500ms",
+  severity: "Critical 🔴",
+  suggestion: "Optimize hero images, defer non-critical CSS, and improve server response for faster page loading."
+});
+
+if (tbtScore === 0) warning.push({
+  metric: "Total Blocking Time (TBT)",
+  current: tbtValue + "ms",
+  recommended: "< 300ms",
+  severity: "High 🟠",
+  suggestion: "Split heavy JS tasks, defer non-essential scripts to unblock main thread."
+});
+
+if (clsScore === 0) warning.push({
+  metric: "Cumulative Layout Shift (CLS)",
+  current: clsValue,
+  recommended: "< 0.1",
+  severity: "High 🟠",
+  suggestion: "Set size attributes for images, videos, and ads to prevent layout shifts."
+});
+
+if (fcpScore === 0) warning.push({
+  metric: "First Contentful Paint (FCP)",
+  current: fcpValue + "ms",
+  recommended: "< 1800ms",
+  severity: "Medium 🟡",
+  suggestion: "Prioritize above-the-fold content and optimize critical rendering paths."
+});
+
+if (siScore === 0) warning.push({
+  metric: "Speed Index (SI)",
+  current: siValue + "ms",
+  recommended: "< 3000ms",
+  severity: "Medium 🟡",
+  suggestion: "Improve above-the-fold content loading for faster perceived speed."
+});
+
+if (ttfbScore === 0) warning.push({
+  metric: "Time To First Byte (TTFB)",
+  current: ttfbValue + "ms",
+  recommended: "< 200ms",
+  severity: "Critical 🔴",
+  suggestion: "Use a CDN, optimize server performance, or enable caching to reduce server response time."
+});
+
+if (inpScore === 0) warning.push({
+  metric: "Time to Interactive (TTI)",
+  current: inpValue + "ms",
+  recommended: "< 3800ms",
+  severity: "High 🟠",
+  suggestion: "Reduce main-thread work and optimize JS execution for faster interactivity."
+});
+
+const actualPercentage = actuallcpScore + actualtbtScore + actualclsScore + actualfcpScore + actualsiScore + actualttfbScore + actualinpScore
+
+// console.log(actuallcpScore);
+// console.log(actualtbtScore);
+// console.log(actualclsScore);
+// console.log(actualfcpScore);
+// console.log(actualsiScore);
+// console.log(actualttfbScore);
+// console.log(actualinpScore);
+  // console.log(coreWebVitals);
+  // console.log(deliveryAndRender);
+  // console.log(crawlabilityAndHygiene);
+  // console.log(actualPercentage);
+  // console.log(warning);
+  // console.log(Total);
+  // console.log(improvements);
   
   return {
     coreWebVitals,
     deliveryAndRender,
     crawlabilityAndHygiene,
-    Total
+    actualPercentage,warning,
+    Total,improvements
   };
 }

@@ -17,10 +17,10 @@ export default async function puppeteers(url) {
     );
     await page.setExtraHTTPHeaders({ "Accept-Language": "en-US,en;q=0.9" });
 
-    await page.goto(url, { waitUntil: "networkidle2",timeout: 240000 });
+    const response = await page.goto(url, { waitUntil: "networkidle2",timeout: 240000 });
     await page.waitForSelector("body", { timeout: 240000 });
 
-    return {page,browser}; 
+    return {browser,page,response}; 
 
   } catch (error) {
     if (browser) await browser.close();
