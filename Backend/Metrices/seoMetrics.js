@@ -457,126 +457,106 @@ const B1 = {
 };
 
 
-const images = $("img").toArray();
-const meaningfulAlts = images.filter((img) => {
-  const alt = $(img).attr("alt")?.trim().toLowerCase() || "";
-  const meaningless = ["", "image", "logo", "icon","pic","picture","photo"," ","12345","-","graphics"];
-  return !meaningless.includes(alt);
-});
-const imageAltScore = meaningfulAlts ? 1 : 0;
-
-// const headings = $("h1,h2,h3").map((i, el) => el.tagName.toLowerCase()).get();
-// let hierarchyScore =0; // no h1->h2->h3 found
-// let hierarchyfollow=headings?1:0;
-// if (headings.length > 0) {
-//   let broken = false;
-//   for (let i = 0; i < headings.length - 1; i++) {
-//     if (headings[i] === "h3" && headings[i + 1] === "h1") {
-//       hierarchyfollow=2;
-//       hierarchyScore=0;  //follow h1->h2->h3
-//       broken = true;;
-
-//       break;
-//     }
-//   }
-//   if (!broken) {
-//     hierarchyfollow=1;
-//     hierarchyScore = 1;  // follow h1->h2->h3
-//   }
-// }
 
 
+const  altPresence= imageAltScore($) < 75 ? 1 : 0;
+console.log("Alt Presence Score:", altPresence);
 
-const headings = $("h1,h2,h3")
-  .map((i, el) => el.tagName.toLowerCase())
-  .get();
+const altMeaningfullPercentage= meaningfulAltScore($) < 75 ? 1 : 0;
+console.log("Alt Meaningful % Score:", altMeaningfullPercentage);
 
-let hierarchyScore = 0;      // 1 = correct, 0 = broken
-let hierarchyFollow = 0;     // 0 = no headings, 1 = correct, 2 = broken
+const compressionScore = await checkImagesSize($); // make sure this returns a % value
+const imageCompressionScore = compressionScore > 75 ? 1 : 0;
+console.log("Image Compression Score:", imageCompressionScore);
 
-if (headings.length === 0) {
-  hierarchyFollow = 0; // no headings
-} else {
-  let valid = true;
-  let lastLevel = 0; // 0 = no heading yet
+let  embedding
+let lazyLoading
+let structuredMetadata
+let videoExistanceScore=checkVideoExistance($)
+console.log("Video Existence Score:", videoExistanceScore);
+if(videoExistanceScore==0){
 
-  for (let tag of headings) {
-    let currentLevel = parseInt(tag.charAt(1)); // h1 -> 1, h2 -> 2, h3 -> 3
+  embedding=1;
+  lazyLoading=1;
+  structuredMetadata=1;
 
-    if (currentLevel - lastLevel > 1) {
-      // skipped a level (e.g., h1 -> h3 directly)
-      valid = false;
-      break;
-    }
-    lastLevel = currentLevel;
-  }
+  console.log("Video Embedding:", embedding);
+  console.log("Lazy Loading of Videos:", lazyLoading);
+  console.log("Structured Metadata for Videos:", structuredMetadata);
+}
+else{
 
-  if (valid) {
-    hierarchyScore = 1;
-    hierarchyFollow = 1; // hierarchy correct
-  } else {
-    hierarchyScore = 0;
-    hierarchyFollow = 2; // hierarchy broken
-  }
+  
+  embedding= checkVideoEmbedding($)
+  console.log("Video Embedding:", embedding);
+  
+  lazyLoading= checkLazyLoading($)
+  console.log("Lazy Loading of Videos:", lazyLoading);
+  
+  structuredMetadata= checkStructuredMetadata($)
+  console.log("Structured Metadata for Videos:", structuredMetadata);
 }
 
-console.log("Headings:", headings);
-console.log("Hierarchy Score:", hierarchyScore);
-console.log("Hierarchy Status:", hierarchyFollow);
+
+//Extracting all headings
+const headings = $("h1, h2, h3, h4, h5, h6")
+  .map((i, el) => ({
+    tag: el.tagName.toLowerCase(),
+    text: $(el).text().trim()
+  }))
+  .get();
+
+  const keywords = ["SEO", "Audit","image"];
+
+
+  let hierarchy;
+if(h1Count==0 && h2Count==0 && h3Count==0 && h4Count==0 && h5Count==0 &&h6Count==0){
+hierarchy=1
+console.log("hiere not found",hierarchy);
+
+  }
+else{
+
+  hierarchy= checkHierarchy(headings)
+  console.log("Heading Hierarchy Score:", hierarchy);
+}
+  
+let keywordPresence= checkKeywordsInHeadings(headings, keywords)
+console.log("Keyword Presence in Headings:", keywordPresence);
+
+const alttextScore=altTextSEOScore($,keywords)?1:0
+console.log("ALT text Score",alttextScore);
 
 
 const links = $("a").toArray();
-const goodLinks = links.filter(
-  (a) => !["click here", "read more","learn more","details","link","more","go","this"].includes($(a).text().toLowerCase().trim())
-);
-const linkScore = goodLinks ? 1 : 0; 
-
-const B2 = {
-  imageAltScore: imageAltScore,
-  follow:hierarchyFollow,
-  hierarchyScore: hierarchyScore,
-  linkScore: linkScore,
-  total: (imageAltScore + hierarchyScore + linkScore),
-};
+const internal_and_discripitive_Link=checkInternalLinks($,url,links);
+console.log("Internal & Descriptive Link Audit:", internal_and_discripitive_Link);
 
 
-let urlSlugScore; 
-const slug = new URL(url).pathname.slice(1);
-const slugLength = slug.length 
-if(!slug){
-  urlSlugScore = 1
-}
-else if(slug && (!/^([a-z0-9]+(-[a-z0-9]+)*)$/.test(slug) && slugLength > 75)) {
-    urlSlugScore = 2; 
-}
-else{
-    urlSlugScore = 3;
-} 
 
-let urlScore;
-if(urlSlugScore==1 && urlSlugScore == 3){urlScore = 0}
-else{urlScore=1}
+const semanticTagScore=checkSemanticTags($);
+console.log("Semantic Tag Audit:", semanticTagScore);
 
 const pageText = extractText($);
 const dupScore = simpleDuplicateCheck(pageText);
+console.log("dupScore",dupScore);
 
-const paginationScore = $("link[rel='next'], link[rel='prev']").length ? 1 : 0; 
+const slug=getSlug(url);
+let slugCheckScore=slugCheck(url);
+let slugScore;
+if(slugCheckScore==0){
+  slugScore=1;
+  }
+else{
+  slugScore=slugValid(slug)
+}
 
-  const B3 = {
-    slug:slug,
-    urlSlugScore: urlSlugScore,
-    slugLength:slugLength,
-    duplicateContent: dupScore,
-    paginationScore: paginationScore,
-    total: (urlScore + dupScore + paginationScore),
-  };
+console.log("slug check Score ",slugCheckScore);
+console.log("slugScore ",slugScore);
 
-  const totalSEO = ((B1.total + B2.total + B3.total)/10)*100;
+const paginationScore =checkPagination($)
+console.log("paginationScore",paginationScore);
 
-  return {
-    B1,
-    B2,
-    B3,
-    totalSEO:parseFloat(totalSEO.toFixed(0)),
-  };
+
+
 }
