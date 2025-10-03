@@ -4,81 +4,25 @@ function extractText($) {
   return $("body").text().replace(/\s+/g, " ").trim();
 }
 
-//SiteMap Check point 1
-const sitemap = async (robotsText) => {
-  let sitemapScore = 0; // default
 
-  // safety check
-  if (!robotsText || typeof robotsText !== "string") {
-    return sitemapScore;
-  }
-
-  const sitemapMatch = robotsText.match(/Sitemap:\s*(.*)/i);
-  if (sitemapMatch) {
-    const sitemapUrl = sitemapMatch[1].trim();
-    try {
-      const sitemapRes = await axios.get(sitemapUrl);
-      sitemapScore = sitemapRes.status === 200 ? 1 : 0;
-    } catch (err) {
-      sitemapScore = 0;
-    }
-  }
-
-  return sitemapScore;
-};
-
-//Robots check point 1
-const robots =  (robotsText) => {
-  let robotsScore = 0;
-
-  try {
-    if (robotsText && typeof robotsText === "string") {
-      // Check if there is a global Disallow: /
-      const hasGlobalDisallow = /Disallow:\s*\/\s*$/mi.test(robotsText);
-      robotsScore = !hasGlobalDisallow ? 1 : 0;
-    } else {
-      robotsScore = 0;
-    }
-  } catch (err) {
-    robotsScore = 0;
-  }
-
-  return robotsScore;
-};
-
-/*
-// check for https point out of 2
-const checkHTTPS = async (url) => {
+const checkHTTPS = (url) => {
   try {
     const parsedUrl = new URL(url);
-
-    // Check if protocol is HTTPS
-    if (parsedUrl.protocol !== "https:") return 0;
-
-    // Test if HTTPS request succeeds
-    return new Promise((resolve) => {
-      https
-        .get(url, (res) => {
-          if (res.statusCode >= 200 && res.statusCode < 400) {
-            resolve(1); // HTTPS working
-          } else {
-            resolve(0); // HTTPS exists but not reachable
-          }
-        })
-        .on("error", () => resolve(0)); // Error in connection
-    });
-  } catch (err) {
-    return 0; // Invalid URL
+    // Check if protocol is https
+    return parsedUrl.protocol === 'https:' ? 1 : 0;
+  } catch (error) {
+    // Invalid URL
+    return 0;
   }
 };
-let httpsScore=checkHTTPS(url);
-*/
 
+const imagePresence=($)=>{
+  const images = $("img").toArray();
+  return images.length > 0 ? 1 : 0 ;
+}
 //Image havind alt
 const imageAltScore = ($) => {
   const images = $("img").toArray();
-  if (images.length === 0) return 0;
-
   const imagesWithAlt = images.filter((img) => {
     const alt = $(img).attr("alt");
     return alt !== undefined && alt.trim() !== "";
@@ -188,6 +132,8 @@ const checkStructuredMetadata = ($) => {
   // Check for multiple h1 tags point out of 1
 
   //  check if keyboard is included point out of 1
+  const keywords=["Canonical","Result","Audits"]
+
   const checkKeywordsInHeadings = (headings, keywords = []) => {
     if (keywords.length === 0) return 1; // no keywords specified
     const matched = headings.some(h => 
@@ -423,51 +369,45 @@ console.log("Canonical:", canonical);
 console.log("Canonical Self Refe Score:", canonicalScore);
 
 
-let sitemapscore=await sitemap(robotsText);
-console.log("Sitemap Score:", sitemapscore);
-
-let robotscore= robots(robotsText);
-console.log("Robots.txt Score:", robotscore);
-
-
 const h1Count = $("h1").length;
 const h2Count = $("h2").length;
 const h3Count = $("h3").length;
 const h4Count = $("h4").length;
 const h5Count = $("h5").length;
 const h6Count = $("h6").length;
+const h1CountScore = h1Count === 0 ? 0 : h1Count=== 1 ? 1 : 0 ;
 const h1Score = h1Count === 0 ? 0 : h1Count=== 1 ? 1 : 2 ;
 console.log("H1 Count:", h1Count);
 console.log("H1 Score:", h1Score);
 
 
-
-const B1 = {
-  title: title,
-  titleLength: titleLength,
-  titleScore: titleScore,
-  metaDescription: metaDesc,
-  metaDescLength: metaDescLength,
-  metaDescScore: metaDescScore,
-  canonical: canonical,
-  canonicalScore: canonicalScore,
-  h1Count:h1Count,
-  h1Score:h1Score,
-  total: (titleScore + metaDescScore + canonicalScore + h1Score),
-};
+const imagePresenceScore=imagePresence($);
+console.log("imagePresence Score",imagePresenceScore)
+let  altPresence;
 
 
+let altMeaningfullPercentage;
 
 
-const  altPresence= imageAltScore($) < 75 ? 1 : 0;
-console.log("Alt Presence Score:", altPresence);
+let compressionScore = await checkImagesSize($); // make sure this returns a % value
+let imageCompressionScore ;
 
-const altMeaningfullPercentage= meaningfulAltScore($) < 75 ? 1 : 0;
-console.log("Alt Meaningful % Score:", altMeaningfullPercentage);
+if(imagePresenceScore==0){
+  altPresence=1
+  altMeaningfullPercentage=1
+  imageCompressionScore=1
+  console.log("image is absent",altPresence,altMeaningfullPercentage,imageCompressionScore);
+  
 
-const compressionScore = await checkImagesSize($); // make sure this returns a % value
-const imageCompressionScore = compressionScore > 75 ? 1 : 0;
-console.log("Image Compression Score:", imageCompressionScore);
+}
+else{
+  altPresence= imageAltScore($) < 75 ? 1 : 0;
+  altMeaningfullPercentage= meaningfulAltScore($) < 75 ? 1 : 0;
+  imageCompressionScore =compressionScore > 75 ? 1 : 0;
+  console.log("image present",altPresence,altMeaningfullPercentage,imageCompressionScore);
+  
+}
+
 
 let  embedding
 let lazyLoading
@@ -506,7 +446,7 @@ const headings = $("h1, h2, h3, h4, h5, h6")
   }))
   .get();
 
-  const keywords = ["SEO", "Audit","image"];
+
 
 
   let hierarchy;
@@ -521,9 +461,6 @@ else{
   console.log("Heading Hierarchy Score:", hierarchy);
 }
   
-let keywordPresence= checkKeywordsInHeadings(headings, keywords)
-console.log("Keyword Presence in Headings:", keywordPresence);
-
 const alttextScore=altTextSEOScore($,keywords)?1:0
 console.log("ALT text Score",alttextScore);
 
@@ -551,11 +488,63 @@ else{
   slugScore=slugValid(slug)
 }
 
-console.log("slug check Score ",slugCheckScore);
+const checkHTTPSScore=checkHTTPS(url);
+console.log("slug Presence Score ",slugCheckScore);
 console.log("slugScore ",slugScore);
 
 const paginationScore =checkPagination($)
 console.log("paginationScore",paginationScore);
+
+const internalLinksScore = (await internal_and_discripitive_Link).descriptiveScore;
+const articleScore=(await semanticTagScore ).article;
+const sectionScore=(await semanticTagScore ).section
+const headerScore=(await semanticTagScore ).header
+const footerScore=(await semanticTagScore ).footer
+
+console.log("titleExistanceScore:", titleExistanceScore);
+console.log("titleScore:", titleScore);
+console.log("metaDescExistanceScore:", metaDescExistanceScore);
+console.log("metaDescScore:", metaDescScore);
+console.log("URLStructureSrcore:", URLStructureSrcore);
+console.log("canonicalExistanceScore:", canonicalExistanceScore);
+console.log("canonicalScore:", canonicalScore);
+console.log("h1Score:", h1Score);
+console.log("altPresence:", altPresence);
+console.log("altMeaningfullPercentage:", altMeaningfullPercentage);
+console.log("imageCompressionScore:", imageCompressionScore);
+console.log("embedding:", embedding);
+console.log("lazyLoading:", lazyLoading);
+console.log("structuredMetadata:", structuredMetadata);
+console.log("hierarchy:", hierarchy);
+console.log("alttextScore:", alttextScore);
+console.log("internalLinksScore:", internalLinksScore);
+console.log(semanticTagScore);
+
+console.log("semanticTagScore.article:", articleScore);
+console.log("semanticTagScore.section:", sectionScore);
+console.log("semanticTagScore.header:", headerScore);
+console.log("semanticTagScore.footer:", footerScore);
+console.log("dupScore:", dupScore);
+console.log("slugScore:", slugScore);
+console.log("paginationScore:", paginationScore);
+
+
+const ActualScore=(paginationScore+titleExistanceScore+metaDescExistanceScore+internalLinksScore+canonicalExistanceScore+canonicalScore+alttextScore+checkHTTPSScore)/8*100
+
+const totalScore = (
+  titleExistanceScore + titleScore + metaDescExistanceScore + metaDescScore +
+  URLStructureSrcore + canonicalExistanceScore + canonicalScore + h1Score +
+  altPresence + altMeaningfullPercentage + imageCompressionScore + embedding +
+  lazyLoading + structuredMetadata + hierarchy + alttextScore +
+  internalLinksScore + 
+  // articleScore +sectionScore+headerScore+footerScore+
+  dupScore + slugScore + paginationScore
+) / 20 * 100;
+
+console.log("Actual ",ActualScore);
+
+
+console.log("Total Seo",totalScore);
 
 
 

@@ -14,11 +14,12 @@
   "dependencies": {
     "@axe-core/puppeteer": "^4.10.2",
     "axe-core": "^4.10.3",
-    "axios": "^1.7.0",
+    "axios": "^1.12.2",
     "cheerio": "^1.1.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
     "express": "^4.19.0",
+    "https": "^1.0.0",
     "jsdom": "^27.0.0",
     "nodemon": "^3.1.10",
     "p-queue": "^8.1.1",
