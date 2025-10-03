@@ -4,32 +4,51 @@ function coreWebVitalsScore(value, threshold) {
   return value <= threshold ? 1 : 0;
 }
 
+function actualCalculation(observed,good,poor,weight) {
+    let score = 0;
+    if (observed <= good) {
+      score = 100;
+    } else if (observed >= poor) {
+      score = 0;
+    } else {
+      score = ((poor - observed) / (poor - good)) * 100;
+    }
+  return parseFloat((score * weight).toFixed(0));
+}
+
 export default async function technicalMetrics(url,data,puppeteerData) {
 
   // Technical Performance (Core Web Vitals)
   const lcpValue = parseFloat((data?.lighthouseResult?.audits?.["largest-contentful-paint"]?.numericValue || 0).toFixed(0)); 
   const lcpScore = coreWebVitalsScore(lcpValue,2500);
+  const actuallcpScore = actualCalculation(lcpValue,2500,4000,0.25);
   
   const fidValue = parseFloat((data.lighthouseResult.audits['max-potential-fid'].numericValue || 0).toFixed(0)); 
   const fidScore = coreWebVitalsScore(fidValue,100);
   
   const clsValue = parseFloat((data?.lighthouseResult?.audits?.["cumulative-layout-shift"]?.numericValue || 0).toFixed(1)); 
   const clsScore = coreWebVitalsScore(clsValue,0.1);
+  const actualclsScore = actualCalculation(clsValue,0.1,0.25,0.05);
   
   const fcpValue = parseFloat((data.lighthouseResult.audits['first-contentful-paint'].numericValue || 0).toFixed(0));
   const fcpScore = coreWebVitalsScore(fcpValue,1800);
+  const actualfcpScore = actualCalculation(fcpValue,1800,3000,0.10);
 
   const ttfbValue = parseFloat((data?.lighthouseResult?.audits?.["server-response-time"]?.numericValue || 0).toFixed(0)); 
   const ttfbScore = coreWebVitalsScore(ttfbValue,200);
+  const actualttfbScore = actualCalculation(ttfbValue,200,600,0.10);
 
   const tbtValue = parseFloat((data?.lighthouseResult?.audits?.["total-blocking-time"]?.numericValue || 0).toFixed(0));
   const tbtScore = coreWebVitalsScore(tbtValue,300);
+  const actualtbtScore = actualCalculation(tbtValue,300,600,0.25);
   
   const siValue = parseFloat((data?.lighthouseResult?.audits?.["speed-index"]?.numericValue || 0).toFixed(0));
   const siScore = coreWebVitalsScore(siValue,3000);
+  const actualsiScore = actualCalculation(siValue,3000,5000,0.10);
 
   const inpValue = parseFloat((data?.lighthouseResult?.audits?.["interactive"]?.numericValue || 0).toFixed(0)); 
   const inpScore = coreWebVitalsScore(inpValue,3800);
+  const actualinpScore = actualCalculation(inpValue,3800,7000,0.15);
 
   const coreWebVitalsTotal = lcpScore + fidScore + clsScore + ttfbScore + tbtScore + siScore + fcpScore + inpScore
   
@@ -183,68 +202,12 @@ export default async function technicalMetrics(url,data,puppeteerData) {
   const improvements = [];
 
 // Technical Performance (Core Web Vitals)
-if (lcpScore === 0) improvements.push({
-  metric: "Largest Contentful Paint (LCP)",
-  current: lcpValue + "ms",
-  recommended: "< 2500ms",
-  severity: "Critical 🔴",
-  suggestion: "Optimize hero images, defer non-critical CSS, and improve server response for faster page loading."
-});
-
 if (fidScore === 0) improvements.push({
   metric: "First Input Delay (FID)",
   current: fidValue + "ms",
   recommended: "< 100ms",
   severity: "High 🟠",
   suggestion: "Reduce JavaScript execution time and break up long tasks to improve interactivity."
-});
-
-if (clsScore === 0) improvements.push({
-  metric: "Cumulative Layout Shift (CLS)",
-  current: clsValue,
-  recommended: "< 0.1",
-  severity: "High 🟠",
-  suggestion: "Set size attributes for images, videos, and ads to prevent layout shifts."
-});
-
-if (fcpScore === 0) improvements.push({
-  metric: "First Contentful Paint (FCP)",
-  current: fcpValue + "ms",
-  recommended: "< 1800ms",
-  severity: "Medium 🟡",
-  suggestion: "Prioritize above-the-fold content and optimize critical rendering paths."
-});
-
-if (ttfbScore === 0) improvements.push({
-  metric: "Time To First Byte (TTFB)",
-  current: ttfbValue + "ms",
-  recommended: "< 200ms",
-  severity: "Critical 🔴",
-  suggestion: "Use a CDN, optimize server performance, or enable caching to reduce server response time."
-});
-
-if (tbtScore === 0) improvements.push({
-  metric: "Total Blocking Time (TBT)",
-  current: tbtValue + "ms",
-  recommended: "< 300ms",
-  severity: "High 🟠",
-  suggestion: "Split heavy JS tasks, defer non-essential scripts to unblock main thread."
-});
-
-if (siScore === 0) improvements.push({
-  metric: "Speed Index (SI)",
-  current: siValue + "ms",
-  recommended: "< 3000ms",
-  severity: "Medium 🟡",
-  suggestion: "Improve above-the-fold content loading for faster perceived speed."
-});
-
-if (inpScore === 0) improvements.push({
-  metric: "Time to Interactive (TTI)",
-  current: inpValue + "ms",
-  recommended: "< 3800ms",
-  severity: "High 🟠",
-  suggestion: "Reduce main-thread work and optimize JS execution for faster interactivity."
 });
 
 // Technical Performance (Delivery & Render)
@@ -329,17 +292,80 @@ if (redirectScore === 0) improvements.push({
   suggestion: "Reduce redirect chains to speed up page load and improve crawlability."
 });
 
-  console.log(coreWebVitals);
-  console.log(deliveryAndRender);
-  console.log(crawlabilityAndHygiene);
-  console.log(Total);
-  console.log(improvements);
+// Warning
+const warning = [];
+
+if (lcpScore === 0) warning.push({
+  metric: "Largest Contentful Paint (LCP)",
+  current: lcpValue + "ms",
+  recommended: "< 2500ms",
+  severity: "Critical 🔴",
+  suggestion: "Optimize hero images, defer non-critical CSS, and improve server response for faster page loading."
+});
+
+if (tbtScore === 0) warning.push({
+  metric: "Total Blocking Time (TBT)",
+  current: tbtValue + "ms",
+  recommended: "< 300ms",
+  severity: "High 🟠",
+  suggestion: "Split heavy JS tasks, defer non-essential scripts to unblock main thread."
+});
+
+if (clsScore === 0) warning.push({
+  metric: "Cumulative Layout Shift (CLS)",
+  current: clsValue,
+  recommended: "< 0.1",
+  severity: "High 🟠",
+  suggestion: "Set size attributes for images, videos, and ads to prevent layout shifts."
+});
+
+if (fcpScore === 0) warning.push({
+  metric: "First Contentful Paint (FCP)",
+  current: fcpValue + "ms",
+  recommended: "< 1800ms",
+  severity: "Medium 🟡",
+  suggestion: "Prioritize above-the-fold content and optimize critical rendering paths."
+});
+
+if (siScore === 0) warning.push({
+  metric: "Speed Index (SI)",
+  current: siValue + "ms",
+  recommended: "< 3000ms",
+  severity: "Medium 🟡",
+  suggestion: "Improve above-the-fold content loading for faster perceived speed."
+});
+
+if (ttfbScore === 0) warning.push({
+  metric: "Time To First Byte (TTFB)",
+  current: ttfbValue + "ms",
+  recommended: "< 200ms",
+  severity: "Critical 🔴",
+  suggestion: "Use a CDN, optimize server performance, or enable caching to reduce server response time."
+});
+
+if (inpScore === 0) warning.push({
+  metric: "Time to Interactive (TTI)",
+  current: inpValue + "ms",
+  recommended: "< 3800ms",
+  severity: "High 🟠",
+  suggestion: "Reduce main-thread work and optimize JS execution for faster interactivity."
+});
+
+const actualPercentage = actuallcpScore + actualtbtScore + actualclsScore + actualfcpScore + actualsiScore + actualttfbScore + actualinpScore
+
+  // console.log(coreWebVitals);
+  // console.log(deliveryAndRender);
+  // console.log(crawlabilityAndHygiene);
+  // console.log(actualPercentage);
+  // console.log(warning);
+  // console.log(Total);
+  // console.log(improvements);
   
   return {
     coreWebVitals,
     deliveryAndRender,
     crawlabilityAndHygiene,
-    Total,
-    improvements
+    actualPercentage,warning,
+    Total,improvements
   };
 }
