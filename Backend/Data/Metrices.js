@@ -47,14 +47,14 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data,tim
         SI:{
           Score: MetricesCalculation_Data.technicalReport.coreWebVitals.siScore,
           Value: MetricesCalculation_Data.technicalReport.coreWebVitals.siValue,
-          Parameter:'Set 1 if INP ≤ 3000ms, otherwise set 0'
+          Parameter:'Set 1 if SI ≤ 3000ms, otherwise set 0'
         },
         INP:{
           Score: MetricesCalculation_Data.technicalReport.coreWebVitals.inpScore,
           Value: MetricesCalculation_Data.technicalReport.coreWebVitals.inpValue,
           Parameter:'Set 1 if INP ≤ 200ms, otherwise set 0'
         },
-        Total_Score_A1: MetricesCalculation_Data.technicalReport.coreWebVitals.coreWebVitalsTotal,
+        Core_Web_Vitals_Total_Score: MetricesCalculation_Data.technicalReport.coreWebVitals.coreWebVitalsTotal,
       },
       Delivery_and_Render: {
         Compression:{
@@ -81,7 +81,7 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data,tim
           Value: MetricesCalculation_Data.technicalReport.deliveryAndRender.httpsValue,
           Parameter:'Set 1 if HTTP/2 is enabled, otherwise set 0 if not enabled'
         },
-        Total_Score_A2: MetricesCalculation_Data.technicalReport.deliveryAndRender.deliveryAndRenderTotal,
+        Delivery_and_Render_Total_Score: MetricesCalculation_Data.technicalReport.deliveryAndRender.deliveryAndRenderTotal,
       },
       Crawlability_and_Hygiene: {
         Sitemap:{
@@ -106,7 +106,7 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data,tim
           Value: MetricesCalculation_Data.technicalReport.crawlabilityAndHygiene.hops,
           Parameter:'Set 1 if ≤ 1 hop, otherwise set 0'
         },
-        Total_Score_A3: MetricesCalculation_Data.technicalReport.crawlabilityAndHygiene.crawlabilityAndHygieneTotal,
+        Crawlability_and_Hygiene_Total_Score: MetricesCalculation_Data.technicalReport.crawlabilityAndHygiene.crawlabilityAndHygieneTotal,
       },
       Percentage: MetricesCalculation_Data.technicalReport.actualPercentage,
       Warning: MetricesCalculation_Data.technicalReport.warning,
