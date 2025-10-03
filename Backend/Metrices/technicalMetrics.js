@@ -353,6 +353,13 @@ if (inpScore === 0) warning.push({
 
 const actualPercentage = actuallcpScore + actualtbtScore + actualclsScore + actualfcpScore + actualsiScore + actualttfbScore + actualinpScore
 
+// console.log(actuallcpScore);
+// console.log(actualtbtScore);
+// console.log(actualclsScore);
+// console.log(actualfcpScore);
+// console.log(actualsiScore);
+// console.log(actualttfbScore);
+// console.log(actualinpScore);
   // console.log(coreWebVitals);
   // console.log(deliveryAndRender);
   // console.log(crawlabilityAndHygiene);

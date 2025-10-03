@@ -15,62 +15,103 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data,tim
     Technical_Performance: {
       Core_Web_Vitals: {
         LCP:{
-          Score: MetricesCalculation_Data.technicalReport.lcpScore,
-          Time: MetricesCalculation_Data.technicalReport.lcpRaw,
-          Parameter:'Set 1 if the largest contentful paint (LCP) is 2500 ms or less, otherwise set 0 if it’s greater or missing'
+          Score: MetricesCalculation_Data.technicalReport.coreWebVitals.lcpScore,
+          Value: MetricesCalculation_Data.technicalReport.coreWebVitals.lcpValue,
+          Parameter:'Set 1 if the Largest Contentful Paint (LCP) is 2500 ms or less, otherwise set 0 if it’s greater or missing'
+        },
+        FID:{
+          Score: MetricesCalculation_Data.technicalReport.coreWebVitals.fidScore,
+          Value: MetricesCalculation_Data.technicalReport.coreWebVitals.fidValue,
+          Parameter:'Set 1 if the First Input Delay (FID) is 100 ms or less, otherwise set 0 if it’s greater or missing'
         },
         CLS:{
-          Score: MetricesCalculation_Data.technicalReport.clsScore,
-          Time: MetricesCalculation_Data.technicalReport.clsRaw,
-          Parameter:'Set 1 if the cumulative layout shift (CLS) is 0.1 or less, otherwise set 0 if it’s greater or missing'
+          Score: MetricesCalculation_Data.technicalReport.coreWebVitals.clsScore,
+          Value: MetricesCalculation_Data.technicalReport.coreWebVitals.clsValue,
+          Parameter:'Set 1 if the Cumulative Layout Shift (CLS) is 0.1 or less, otherwise set 0 if it’s greater or missing'
         },
-        INP:{
-          Score: MetricesCalculation_Data.technicalReport.inpScore,
-          Time: MetricesCalculation_Data.technicalReport.inpRaw,
-          Parameter:'Set 1 if the page is interactive (INP) within 200 ms or less, otherwise set 0 if it’s greater or missing'
+        FCP:{
+          Score: MetricesCalculation_Data.technicalReport.coreWebVitals.fcpScore,
+          Value: MetricesCalculation_Data.technicalReport.coreWebVitals.fcpValue,
+          Parameter:'Set 1 if the First Contentful Paint (FCP) is 1800 ms or less, otherwise set 0 if it’s greater or missing'
         },
-        Total_Score_A1: MetricesCalculation_Data.technicalReport.total_A1,
-      },
-      Delivery_and_Render: {
         TTFB:{
-          Score: MetricesCalculation_Data.technicalReport.ttfbScore,
-          Time: MetricesCalculation_Data.technicalReport.ttfbRaw,
+          Score: MetricesCalculation_Data.technicalReport.coreWebVitals.ttfbScore,
+          Value: MetricesCalculation_Data.technicalReport.coreWebVitals.ttfbValue,
           Parameter:'Set 1 if the Time to First Byte (TTFB) is 200 ms or less, otherwise set 0 if it’s greater or missing'
         },
+        TBT:{
+          Score: MetricesCalculation_Data.technicalReport.coreWebVitals.tbtScore,
+          Value: MetricesCalculation_Data.technicalReport.coreWebVitals.tbtValue,
+          Parameter:'Set 1 if the Total Blocking Time (TBT) is 300 ms or less, otherwise set 0 if it’s greater or missing'
+        },
+        SI:{
+          Score: MetricesCalculation_Data.technicalReport.coreWebVitals.siScore,
+          Value: MetricesCalculation_Data.technicalReport.coreWebVitals.siValue,
+          Parameter:'Set 1 if the Speed Index (SI) is 3000 ms or less, otherwise set 0 if it’s greater or missing'
+        },
+        INP:{
+          Score: MetricesCalculation_Data.technicalReport.coreWebVitals.inpScore,
+          Value: MetricesCalculation_Data.technicalReport.coreWebVitals.inpValue,
+          Parameter:'Set 1 if the Interaction to Next Paint (INP) is 3800 ms or less, otherwise set 0 if it’s greater or missing'
+        },
+        Total_Score_A1: MetricesCalculation_Data.technicalReport.coreWebVitals.coreWebVitalsTotal,
+      },
+      Delivery_and_Render: {
         Compression:{
-          Score: MetricesCalculation_Data.technicalReport.compressionScore,
-          Parameter:'Set 1 if text compression is enabled, otherwise set 0 if it’s disabled or missing'
+          Score: MetricesCalculation_Data.technicalReport.deliveryAndRender.compressionScore,
+          Value: MetricesCalculation_Data.technicalReport.deliveryAndRender.compressionValue,
+          Parameter:'Set 1 if "gzip" or "brotli" compression is enabled, otherwise set 0 if it’s disabled or missing.'
         },
         Caching:{
-          Score: MetricesCalculation_Data.technicalReport.cachingscore,
-          Parameter:'Set 1 if long-term caching is enabled, otherwise set 0 if it’s disabled or missing'
+          Score: MetricesCalculation_Data.technicalReport.deliveryAndRender.cachingScore,
+          Value: MetricesCalculation_Data.technicalReport.deliveryAndRender.cachingValue,
+          Parameter:'Set 1 if static resources have TTL ≥ 7 days, otherwise set 0 if TTL is less than 7 days or missing'
+        },
+        Resource_Optimization:{
+          Score: MetricesCalculation_Data.technicalReport.deliveryAndRender.resourceOptimizationScore,
+          Parameter:'Set 1 if images are optimized, CSS/JS minified, and offscreen images deferred; otherwise set 0.'
+        },
+        Render_Blocking:{
+          Score: MetricesCalculation_Data.technicalReport.deliveryAndRender.renderBlockingScore,
+          Value: MetricesCalculation_Data.technicalReport.deliveryAndRender.renderBlockingValue,
+          Parameter:'Set 1 if there are no render-blocking CSS/JS resources, otherwise set 0'
         },
         HTTP:{
-          Score: MetricesCalculation_Data.technicalReport.httpscore,
-          Parameter:'Set 1 if HTTP/2 is enabled, otherwise set 0 if it’s disabled or missing'
+          Score: MetricesCalculation_Data.technicalReport.deliveryAndRender.httpScore,
+          Value: MetricesCalculation_Data.technicalReport.deliveryAndRender.httpsValue,
+          Parameter:'Set 1 if HTTP/2 is enabled, otherwise set 0 if not enabled'
         },
-        Total_Score_A2: MetricesCalculation_Data.technicalReport.total_A2,
+        Total_Score_A2: MetricesCalculation_Data.technicalReport.deliveryAndRender.deliveryAndRenderTotal,
       },
       Crawlability_and_Hygiene: {
         Sitemap:{
-          Score: MetricesCalculation_Data.technicalReport.sitemapScore,
-          Parameter:'Checks if a sitemap URL exists in "robots.txt" and is reachable'
+          Score: MetricesCalculation_Data.technicalReport.crawlabilityAndHygiene.sitemapScore,
+          Parameter:'Set 1 if /sitemap.xml exists, otherwise set 0'
         },
         Robots:{
-          Score: MetricesCalculation_Data.technicalReport.robotsScore,
-          Parameter:'Checks if the "robots.txt" does not block the entire site.'
+          Score: MetricesCalculation_Data.technicalReport.crawlabilityAndHygiene.robotsScore,
+          Parameter:'Set 1 if robots.txt exists, otherwise set 0'
+        },
+        Structured_Data:{
+          Score: MetricesCalculation_Data.technicalReport.crawlabilityAndHygiene.structuredDataScore,
+          Parameter:'Set 1 if JSON-LD structured data is present, otherwise set 0'
         },
         Broken_Links:{
-          Score: MetricesCalculation_Data.technicalReport.brokenLinksScore,
-          Parameter:'Checks if a webpage has broken external links.'
+          Score: MetricesCalculation_Data.technicalReport.crawlabilityAndHygiene.brokenScore,
+          Value: MetricesCalculation_Data.technicalReport.crawlabilityAndHygiene.brokenPercent,
+          Parameter:'Set 1 if 0% broken links, otherwise set 0'
         },
         Redirect_Chains:{
-          Score: MetricesCalculation_Data.technicalReport.redirectChainsScore,
-          Parameter:'Checks if a URL redirects.'
+          Score: MetricesCalculation_Data.technicalReport.crawlabilityAndHygiene.redirectScore,
+          Value: MetricesCalculation_Data.technicalReport.crawlabilityAndHygiene.hops,
+          Parameter:'Set 1 if ≤ 1 hop, otherwise set 0'
         },
-        Total_Score_A3: MetricesCalculation_Data.technicalReport.totalScore_A3,
+        Total_Score_A3: MetricesCalculation_Data.technicalReport.crawlabilityAndHygiene.crawlabilityAndHygieneTotal,
       },
-      Technical_Performance_Score_Total: MetricesCalculation_Data.technicalReport.totalScore,
+      Percentage: MetricesCalculation_Data.technicalReport.actualPercentage,
+      Warning: MetricesCalculation_Data.technicalReport.warning,
+      Total: MetricesCalculation_Data.technicalReport.Total,
+      Improvements: MetricesCalculation_Data.technicalReport.improvements,
     },
     On_Page_SEO: {
       Essentials: {
