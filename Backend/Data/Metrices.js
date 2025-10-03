@@ -17,42 +17,42 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data,tim
         LCP:{
           Score: MetricesCalculation_Data.technicalReport.coreWebVitals.lcpScore,
           Value: MetricesCalculation_Data.technicalReport.coreWebVitals.lcpValue,
-          Parameter:'Set 1 if the Largest Contentful Paint (LCP) is 2500 ms or less, otherwise set 0 if it’s greater or missing'
+          Parameter:'Set 1 if LCP ≤ 2500ms, otherwise set 0'
         },
         FID:{
           Score: MetricesCalculation_Data.technicalReport.coreWebVitals.fidScore,
           Value: MetricesCalculation_Data.technicalReport.coreWebVitals.fidValue,
-          Parameter:'Set 1 if the First Input Delay (FID) is 100 ms or less, otherwise set 0 if it’s greater or missing'
+          Parameter:'Set 1 if FID ≤ 100ms, otherwise set 0'
         },
         CLS:{
           Score: MetricesCalculation_Data.technicalReport.coreWebVitals.clsScore,
           Value: MetricesCalculation_Data.technicalReport.coreWebVitals.clsValue,
-          Parameter:'Set 1 if the Cumulative Layout Shift (CLS) is 0.1 or less, otherwise set 0 if it’s greater or missing'
+          Parameter:'Set 1 if CLS ≤ 0.1, otherwise set 0'
         },
         FCP:{
           Score: MetricesCalculation_Data.technicalReport.coreWebVitals.fcpScore,
           Value: MetricesCalculation_Data.technicalReport.coreWebVitals.fcpValue,
-          Parameter:'Set 1 if the First Contentful Paint (FCP) is 1800 ms or less, otherwise set 0 if it’s greater or missing'
+          Parameter:'Set 1 if FCP ≤ 1800ms, otherwise set 0'
         },
         TTFB:{
           Score: MetricesCalculation_Data.technicalReport.coreWebVitals.ttfbScore,
           Value: MetricesCalculation_Data.technicalReport.coreWebVitals.ttfbValue,
-          Parameter:'Set 1 if the Time to First Byte (TTFB) is 200 ms or less, otherwise set 0 if it’s greater or missing'
+          Parameter:'Set 1 if TTFB ≤ 200ms, otherwise set 0'
         },
         TBT:{
           Score: MetricesCalculation_Data.technicalReport.coreWebVitals.tbtScore,
           Value: MetricesCalculation_Data.technicalReport.coreWebVitals.tbtValue,
-          Parameter:'Set 1 if the Total Blocking Time (TBT) is 300 ms or less, otherwise set 0 if it’s greater or missing'
+          Parameter:'Set 1 if TBT ≤ 300ms, otherwise set 0'
         },
         SI:{
           Score: MetricesCalculation_Data.technicalReport.coreWebVitals.siScore,
           Value: MetricesCalculation_Data.technicalReport.coreWebVitals.siValue,
-          Parameter:'Set 1 if the Speed Index (SI) is 3000 ms or less, otherwise set 0 if it’s greater or missing'
+          Parameter:'Set 1 if INP ≤ 3000ms, otherwise set 0'
         },
         INP:{
           Score: MetricesCalculation_Data.technicalReport.coreWebVitals.inpScore,
           Value: MetricesCalculation_Data.technicalReport.coreWebVitals.inpValue,
-          Parameter:'Set 1 if the Interaction to Next Paint (INP) is 3800 ms or less, otherwise set 0 if it’s greater or missing'
+          Parameter:'Set 1 if INP ≤ 200ms, otherwise set 0'
         },
         Total_Score_A1: MetricesCalculation_Data.technicalReport.coreWebVitals.coreWebVitalsTotal,
       },
