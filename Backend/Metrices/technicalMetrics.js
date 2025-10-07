@@ -65,7 +65,7 @@ export default async function technicalMetrics(url,data,puppeteerData) {
   }
   
   // Technical Performance (Delivery & Render)
-  const compressionValue = data?.lighthouseResult?.audits?.["uses-text-compression"]?.numericValue || 0; 
+  const compressionValue = data?.lighthouseResult?.audits?.["uses-text-compression"]?.score || 0; 
   const compressionScore = compressionValue === 1 ? 1 : 0; 
   
   const cachingValue = parseFloat((data?.lighthouseResult?.audits?.["uses-long-cache-ttl"]?.numericValue || 0).toFixed(0));
@@ -79,7 +79,7 @@ export default async function technicalMetrics(url,data,puppeteerData) {
   const renderBlockingValue = data?.lighthouseResult?.audits?.["render-blocking-resources"]?.score || 0;
   const renderBlockingScore = renderBlockingValue === 1 ? 1 : 0;
 
-  const httpsValue = data?.lighthouseResult?.audits?.["uses-http2"]?.numericValue || 0;
+  const httpsValue = data?.lighthouseResult?.audits?.["uses-http2"]?.score || 0;
   const httpsScore = httpsValue === 1 ? 1 : 0;
 
   const deliveryAndRenderTotal = compressionScore + cachingScore + httpsScore + renderBlockingScore + resourceOptimizationScore;

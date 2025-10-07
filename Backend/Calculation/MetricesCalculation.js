@@ -11,7 +11,7 @@ export default async function MetricesCalculation(url,data,$,puppeteerData,robot
 
 const {browser,page,response} = puppeteerData;
 const technicalReport = await technicalMetrics(url,data,puppeteerData);
-const seoReport = await seoMetrics(url, $);
+const seoReport = await seoMetrics(url,$);
 const accessibilityReport = await accessibilityMetrics(url,device);
 const securityReport = await securityCompliance(url,data);
 const uxReport = await uxContentStructure(url, $);
