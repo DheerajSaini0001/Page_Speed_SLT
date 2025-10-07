@@ -1,53 +1,80 @@
 import axios from "axios";
 
-function extractText($) {
-  return $("body").text().replace(/\s+/g, " ").trim();
+// On-Page SEO (Essentials) 
+function checkURLStructure(url) {
+  try {
+    const { pathname } = new URL(url);
+    
+    // Rule 1: Short and readable (less than 5 segments)
+    const segments = pathname.split('/').filter(Boolean);
+    if (segments.length > 5) return 0;
+    
+    // Rule 2: Only contains lowercase letters, numbers, and hyphens
+    const validChars = segments.every(seg => /^[a-z0-9-]+$/.test(seg));
+    if (!validChars) return 0;
+
+    // Rule 3: No underscores, spaces, or other separators
+    const noUnderscore = segments.every(seg => !seg.includes('_'));
+    if (!noUnderscore) return 0;
+
+    // Rule 4: Reasonably short segments (less than 30 chars each)
+    const shortSegments = segments.every(seg => seg.length <= 30);
+    if (!shortSegments) return 0;
+
+    return 1; // All rules passed
+  } catch (err) {
+    return 0; // Invalid URL
+  }
 }
 
-
-const checkHTTPS = (url) => {
+function normalizeUrl(url) {
   try {
-    const parsedUrl = new URL(url);
-    // Check if protocol is https
-    return parsedUrl.protocol === 'https:' ? 1 : 0;
-  } catch (error) {
-    // Invalid URL
-    return 0;
+    const u = new URL(url);
+    let hostname = u.hostname.toLowerCase();
+    if (hostname.startsWith("www.")) hostname = hostname.slice(4);
+    const path = u.pathname.replace(/\/$/, "");
+    return hostname + path;
+  } catch {
+    return null;
   }
-};
+}
+function isValidCanonical(canonical, pageUrl) {
+  const c = normalizeUrl(canonical);
+  const p = normalizeUrl(pageUrl);
+  return c && p && c === p;
+}
 
-const imagePresence=($)=>{
+// On-Page SEO (Media & Semantics) 
+function imagePresence($){
   const images = $("img").toArray();
   return images.length > 0 ? 1 : 0 ;
 }
-//Image havind alt
+
 const imageAltScore = ($) => {
   const images = $("img").toArray();
   const imagesWithAlt = images.filter((img) => {
     const alt = $(img).attr("alt");
     return alt !== undefined && alt.trim() !== "";
   });
-
+  
   const percentage = (imagesWithAlt.length / images.length) * 100;
   return percentage > 75 ? 1 : 0;
 };
 
-//Image have meaningfull Alt tag
 const meaningfulAltScore = ($) => {
   const images = $("img").toArray();
   if (images.length === 0) return 0;
-
+  
   const meaningfulAlts = images.filter((img) => {
     const alt = $(img).attr("alt")?.trim().toLowerCase() || "";
     const meaningless = ["", "image", "logo", "icon", "pic", "picture", "photo", " ", "12345", "-", "graphics"];
     return !meaningless.includes(alt);
   });
-
+  
   const percentage = (meaningfulAlts.length / images.length) * 100;
   return percentage > 75 ? 1 : 0;
 };
 
-//checkig the image compression size point out of 1
 const checkImagesSize = async ($) => {
   const images = $("img").toArray();
 
@@ -83,13 +110,11 @@ const checkVideoExistance = ($) => {
   return videos.length == 0 ? 0 : 1; 
 };
 
-//Proper Embedding of video point out of 1
 const checkVideoEmbedding = ($) => {
   const videos = $("video, iframe[src*='youtube'], iframe[src*='vimeo']").toArray();
   return videos.length > 0 ? 1 : 0; // 1 = properly embedded, 0 = none
 };
 
-//Lazy loadinng of video point out of 1
 const checkLazyLoading = ($) => {
   const videos = $("video, iframe").toArray();
   if (videos.length === 0) return 1;
@@ -99,7 +124,6 @@ const checkLazyLoading = ($) => {
   // score 1 if ≥50% of videos are lazy loaded
 };
 
-// structured matadat of videos point out of 1
 const checkStructuredMetadata = ($) => {
   const scripts = $("script[type='application/ld+json']").toArray();
   if (scripts.length === 0) return 1;
@@ -116,33 +140,18 @@ const checkStructuredMetadata = ($) => {
   return 0;
 };
 
-  //Check heading herirchy order point out of 1
-  const checkHierarchy = (headings) => {
-    let lastLevel = 0;
-    for (const h of headings) {
-      const currentLevel = parseInt(h.tag[1]); // h1 -> 1, h2 -> 2
-      if (lastLevel && currentLevel > lastLevel + 1) {
-        return 0; // hierarchy broken
-      }
-      lastLevel = currentLevel;
+const checkHierarchy = (headings) => {
+  let lastLevel = 0;
+  for (const h of headings) {
+    const currentLevel = parseInt(h.tag[1]); // h1 -> 1, h2 -> 2
+    if (lastLevel && currentLevel > lastLevel + 1) {
+      return 0; // hierarchy broken
     }
-    return 1; // hierarchy okay
-  };
+    lastLevel = currentLevel;
+  }
+  return 1; // hierarchy okay
+};
 
-  // Check for multiple h1 tags point out of 1
-
-  //  check if keyboard is included point out of 1
-  const keywords=["Canonical","Result","Audits"]
-
-  const checkKeywordsInHeadings = (headings, keywords = []) => {
-    if (keywords.length === 0) return 1; // no keywords specified
-    const matched = headings.some(h => 
-      keywords.some(kw => h.text.toLowerCase().includes(kw.toLowerCase()))
-    );
-    return matched ? 1 : 0;
-  };
-
-//Check for alt are discriptive
 const altTextSEOScore =  ($, keywords = []) => {
   try {
     const images = $("img").toArray();
@@ -175,7 +184,6 @@ const altTextSEOScore =  ($, keywords = []) => {
   }
 };
 
-// Dicripitive Link
 const checkInternalLinks = async ($, url, links) => {
   try {
     const domain = new URL(url).hostname;
@@ -211,7 +219,6 @@ const checkInternalLinks = async ($, url, links) => {
   }
 };
 
-// check for Semantic HTML Tags
 const checkSemanticTags = async ($) => {
   try {
     const tags = ["article", "section", "header", "footer"];
@@ -228,6 +235,10 @@ const checkSemanticTags = async ($) => {
   }
 };
 
+// On-Page SEO (Structure & Uniqueness) 
+function extractText($) {
+  return $("body").text().replace(/\s+/g, " ").trim();
+}
 function simpleDuplicateCheck(text) {
     const words = text.split(/\s+/);
     const wordCounts = {};
@@ -245,51 +256,6 @@ function simpleDuplicateCheck(text) {
     const duplicationPercent = (duplicates / words.length) * 100;
     const score = duplicationPercent <=75  ? 1 : 0;
     return score;
-}
-
-function normalizeUrl(url) {
-  try {
-    const u = new URL(url);
-    let hostname = u.hostname.toLowerCase();
-    if (hostname.startsWith("www.")) hostname = hostname.slice(4);
-    const path = u.pathname.replace(/\/$/, "");
-    return hostname + path;
-  } catch {
-    return null;
-  }
-}
-
-function isValidCanonical(canonical, pageUrl) {
-  const c = normalizeUrl(canonical);
-  const p = normalizeUrl(pageUrl);
-  return c && p && c === p;
-}
-
-//Check URL Structure
-function checkURLStructure(url) {
-  try {
-    const { pathname } = new URL(url);
-
-    // Rule 1: Short and readable (less than 5 segments)
-    const segments = pathname.split('/').filter(Boolean);
-    if (segments.length > 5) return 0;
-
-    // Rule 2: Only contains lowercase letters, numbers, and hyphens
-    const validChars = segments.every(seg => /^[a-z0-9-]+$/.test(seg));
-    if (!validChars) return 0;
-
-    // Rule 3: No underscores, spaces, or other separators
-    const noUnderscore = segments.every(seg => !seg.includes('_'));
-    if (!noUnderscore) return 0;
-
-    // Rule 4: Reasonably short segments (less than 30 chars each)
-    const shortSegments = segments.every(seg => seg.length <= 30);
-    if (!shortSegments) return 0;
-
-    return 1; // All rules passed
-  } catch (err) {
-    return 0; // Invalid URL
-  }
 }
 
 function getSlug(url) {
@@ -316,7 +282,18 @@ function slugValid(slug){
   return regex.test(slug) ? 1 : 0;
 
 }
-// Check Pagination
+
+const checkHTTPS = (url) => {
+  try {
+    const parsedUrl = new URL(url);
+    // Check if protocol is https
+    return parsedUrl.protocol === 'https:' ? 1 : 0;
+  } catch (error) {
+    // Invalid URL
+    return 0;
+  }
+};
+
 function checkPagination($) {
   try {
     // Look for common pagination patterns
@@ -337,38 +314,33 @@ function checkPagination($) {
   }
 }
 
+export default async function seoMetrics(url,$) {
 
-export default async function seoMetrics(url, $,robotsText) {
-const titleExistanceScore = $("title") ? 1 : 0;
+// On-Page SEO (Essentials) 
 const title = $("title").text().trim() || "";
+const titleExistanceScore = $("title") ? 1 : 0;
 const titleLength = title.length;
 const titleScore = titleLength >= 30 && titleLength <= 60 ? 1 : 0 ; 
-console.log("Title:", title);
-console.log("Title Existance Score:", titleExistanceScore);
-console.log("Title Length:", titleLength);
-console.log("Title Score:", titleScore);
 
-const metaDescExistanceScore = $('meta[name="description"]') ? 1 : 0;
 const metaDesc = $('meta[name="description"]').attr("content") || "";
-const metaDescLength = metaDesc.length
-const metaDescScore = metaDescLength <= 165 ? 1 : 0 
-console.log("Meta Description Existance Score:", metaDescExistanceScore);
-console.log("Meta Description:", metaDesc);
-console.log("Meta Description Length:", metaDescLength);
-console.log("Meta Description Score:", metaDescScore);
+const metaDescExistanceScore = $('meta[name="description"]') ? 1 : 0;
+const metaDescLength = metaDesc.length;
+const metaDescScore = metaDescLength <= 165 ? 1 : 0 ;
 
-const URLStructureSrcore=checkURLStructure(url);
-console.log("URL Structure Score:", URLStructureSrcore);
+const URLStructureSrcore = checkURLStructure(url);
 
-
-const canonicalExistanceScore = $('link[rel="canonical"]') ? 1 : 0 ;
 const canonical = $('link[rel="canonical"]').attr("href") || "";
+const canonicalExistanceScore = $('link[rel="canonical"]') ? 1 : 0 ;
 const canonicalScore = isValidCanonical(canonical, url) ? 1 : 0; 
-console.log("Canonical Existance Score:", canonicalExistanceScore);
-console.log("Canonical:", canonical);
-console.log("Canonical Self Refe Score:", canonicalScore);
+ 
+const essentials ={
+  title,titleExistanceScore,titleLength,titleScore,
+  metaDesc,metaDescExistanceScore,metaDescLength,metaDescScore,
+  URLStructureSrcore,
+  canonical,canonicalExistanceScore,canonicalScore
+}
 
-
+// On-Page SEO (Media & Semantics) 
 const h1Count = $("h1").length;
 const h2Count = $("h2").length;
 const h3Count = $("h3").length;
@@ -377,175 +349,372 @@ const h5Count = $("h5").length;
 const h6Count = $("h6").length;
 const h1CountScore = h1Count === 0 ? 0 : h1Count=== 1 ? 1 : 0 ;
 const h1Score = h1Count === 0 ? 0 : h1Count=== 1 ? 1 : 2 ;
-console.log("H1 Count:", h1Count);
-console.log("H1 Score:", h1Score);
 
+const imagePresenceScore = imagePresence($);
 
-const imagePresenceScore=imagePresence($);
-console.log("imagePresence Score",imagePresenceScore)
-let  altPresence;
-
-
+let altPresence;
 let altMeaningfullPercentage;
-
-
-let compressionScore = await checkImagesSize($); // make sure this returns a % value
 let imageCompressionScore ;
+let compressionScore = await checkImagesSize($);
 
 if(imagePresenceScore==0){
   altPresence=1
   altMeaningfullPercentage=1
   imageCompressionScore=1
-  console.log("image is absent",altPresence,altMeaningfullPercentage,imageCompressionScore);
-  
-
+  // console.log("image is absent",altPresence,altMeaningfullPercentage,imageCompressionScore);
 }
 else{
   altPresence= imageAltScore($) < 75 ? 1 : 0;
   altMeaningfullPercentage= meaningfulAltScore($) < 75 ? 1 : 0;
   imageCompressionScore =compressionScore > 75 ? 1 : 0;
-  console.log("image present",altPresence,altMeaningfullPercentage,imageCompressionScore);
-  
+  // console.log("image present",altPresence,altMeaningfullPercentage,imageCompressionScore);
 }
 
+const videoExistanceScore = checkVideoExistance($);
 
-let  embedding
-let lazyLoading
-let structuredMetadata
-let videoExistanceScore=checkVideoExistance($)
-console.log("Video Existence Score:", videoExistanceScore);
+let embedding;
+let lazyLoading;
+let structuredMetadata;
+
 if(videoExistanceScore==0){
-
   embedding=1;
   lazyLoading=1;
   structuredMetadata=1;
-
-  console.log("Video Embedding:", embedding);
-  console.log("Lazy Loading of Videos:", lazyLoading);
-  console.log("Structured Metadata for Videos:", structuredMetadata);
+  // console.log("Video Embedding:", embedding);
+  // console.log("Lazy Loading of Videos:", lazyLoading);
+  // console.log("Structured Metadata for Videos:", structuredMetadata);
 }
 else{
-
-  
   embedding= checkVideoEmbedding($)
-  console.log("Video Embedding:", embedding);
-  
+  // console.log("Video Embedding:", embedding);
   lazyLoading= checkLazyLoading($)
-  console.log("Lazy Loading of Videos:", lazyLoading);
-  
+  // console.log("Lazy Loading of Videos:", lazyLoading);
   structuredMetadata= checkStructuredMetadata($)
-  console.log("Structured Metadata for Videos:", structuredMetadata);
+  // console.log("Structured Metadata for Videos:", structuredMetadata);
 }
 
-
-//Extracting all headings
 const headings = $("h1, h2, h3, h4, h5, h6")
   .map((i, el) => ({
     tag: el.tagName.toLowerCase(),
     text: $(el).text().trim()
-  }))
-  .get();
+  })).get();
 
-
-
-
-  let hierarchy;
+let hierarchy;
 if(h1Count==0 && h2Count==0 && h3Count==0 && h4Count==0 && h5Count==0 &&h6Count==0){
-hierarchy=1
-console.log("hiere not found",hierarchy);
-
-  }
-else{
-
-  hierarchy= checkHierarchy(headings)
-  console.log("Heading Hierarchy Score:", hierarchy);
+   hierarchy=1
+  // console.log("hiere not found",hierarchy);
 }
-  
-const alttextScore=altTextSEOScore($,keywords)?1:0
-console.log("ALT text Score",alttextScore);
+else{
+    hierarchy= checkHierarchy(headings)
+    // console.log("Heading Hierarchy Score:", hierarchy);
+}
 
+const keywords=["Canonical","Result","Audits"];
+const alttextScore = altTextSEOScore($,keywords)?1:0;
 
 const links = $("a").toArray();
-const internal_and_discripitive_Link=checkInternalLinks($,url,links);
-console.log("Internal & Descriptive Link Audit:", internal_and_discripitive_Link);
+const internal_and_discripitive_Link = await checkInternalLinks($,url,links);
+const totalInternalLinks = internal_and_discripitive_Link.totalInternal;
+const internalLinksDescriptiveScore = internal_and_discripitive_Link.descriptiveScore;
 
+const semanticTagScoreResolved = await checkSemanticTags($);
+const articleScore = semanticTagScoreResolved.article;
+const sectionScore = semanticTagScoreResolved.section;
+const headerScore = semanticTagScoreResolved.header;
+const footerScore = semanticTagScoreResolved.footer;
 
-
-const semanticTagScore=checkSemanticTags($);
-console.log("Semantic Tag Audit:", semanticTagScore);
-
-const pageText = extractText($);
-const dupScore = simpleDuplicateCheck(pageText);
-console.log("dupScore",dupScore);
-
-const slug=getSlug(url);
-let slugCheckScore=slugCheck(url);
-let slugScore;
-if(slugCheckScore==0){
-  slugScore=1;
-  }
-else{
-  slugScore=slugValid(slug)
+const  mediaAndSemantics = {
+  h1Count,h2Count,h3Count,h4Count,h5Count,h6Count,h1CountScore,h1Score,
+  imagePresenceScore,altPresence,altMeaningfullPercentage,imageCompressionScore,
+  videoExistanceScore,embedding,lazyLoading,structuredMetadata,
+  headings,hierarchy,
+  alttextScore,
+  totalInternalLinks,internalLinksDescriptiveScore,
+  articleScore,sectionScore,headerScore,footerScore
 }
 
-const checkHTTPSScore=checkHTTPS(url);
-console.log("slug Presence Score ",slugCheckScore);
-console.log("slugScore ",slugScore);
+// On-Page SEO (Structure & Uniqueness) 
+const pageText = extractText($);
+const dupScore = simpleDuplicateCheck(pageText);
 
-const paginationScore =checkPagination($)
-console.log("paginationScore",paginationScore);
+const slug = getSlug(url);
+let slugCheckScore = slugCheck(url);
+let slugScore;
+if(slugCheckScore == 0){
+  slugScore = 1;
+}
+else{
+  slugScore = slugValid(slug)
+}
 
-const internalLinksScore = (await internal_and_discripitive_Link).descriptiveScore;
-const articleScore=(await semanticTagScore ).article;
-const sectionScore=(await semanticTagScore ).section
-const headerScore=(await semanticTagScore ).header
-const footerScore=(await semanticTagScore ).footer
+const checkHTTPSScore = checkHTTPS(url);
 
-console.log("titleExistanceScore:", titleExistanceScore);
-console.log("titleScore:", titleScore);
-console.log("metaDescExistanceScore:", metaDescExistanceScore);
-console.log("metaDescScore:", metaDescScore);
-console.log("URLStructureSrcore:", URLStructureSrcore);
-console.log("canonicalExistanceScore:", canonicalExistanceScore);
-console.log("canonicalScore:", canonicalScore);
-console.log("h1Score:", h1Score);
-console.log("altPresence:", altPresence);
-console.log("altMeaningfullPercentage:", altMeaningfullPercentage);
-console.log("imageCompressionScore:", imageCompressionScore);
-console.log("embedding:", embedding);
-console.log("lazyLoading:", lazyLoading);
-console.log("structuredMetadata:", structuredMetadata);
-console.log("hierarchy:", hierarchy);
-console.log("alttextScore:", alttextScore);
-console.log("internalLinksScore:", internalLinksScore);
-console.log(semanticTagScore);
+const paginationScore = checkPagination($);
 
-console.log("semanticTagScore.article:", articleScore);
-console.log("semanticTagScore.section:", sectionScore);
-console.log("semanticTagScore.header:", headerScore);
-console.log("semanticTagScore.footer:", footerScore);
-console.log("dupScore:", dupScore);
-console.log("slugScore:", slugScore);
-console.log("paginationScore:", paginationScore);
+const structureAndUniqueness = {
+  dupScore,
+  slug,slugCheckScore,slugScore,
+  checkHTTPSScore,
+  paginationScore
+}
 
-
-const ActualScore=(paginationScore+titleExistanceScore+metaDescExistanceScore+internalLinksScore+canonicalExistanceScore+canonicalScore+alttextScore+checkHTTPSScore)/8*100
-
-const totalScore = (
+const Total = parseFloat((((
   titleExistanceScore + titleScore + metaDescExistanceScore + metaDescScore +
   URLStructureSrcore + canonicalExistanceScore + canonicalScore + h1Score +
   altPresence + altMeaningfullPercentage + imageCompressionScore + embedding +
   lazyLoading + structuredMetadata + hierarchy + alttextScore +
-  internalLinksScore + 
+  internalLinksDescriptiveScore + 
   // articleScore +sectionScore+headerScore+footerScore+
   dupScore + slugScore + paginationScore
-) / 20 * 100;
+) / 20) * 100).toFixed(0));
 
-console.log("Actual ",ActualScore);
+// Improvements
+const improvements = [];
 
+// On-Page SEO (Essentials) 
+if (URLStructureSrcore === 0){
+  improvements.push({
+    metric: "URL Structure",
+    current: "Long or complex URL",
+    recommended: "≤ 5 segments, lowercase, hyphen-separated",
+    severity: "Medium 🟡",
+    suggestion: "Use clean, SEO-friendly URLs with hyphens instead of underscores or symbols."
+  })};
 
-console.log("Total Seo",totalScore);
+// On-Page SEO (Media & Semantics) 
+if (h1Count === 0) {
+  improvements.push({
+    metric: "H1 Tag",
+    current: "No H1 tag found",
+    recommended: "Exactly 1 H1 per page",
+    severity: "High 🔴",
+    suggestion: "Add a single H1 tag to represent the main topic of the page."
+  });
+} else if (h1Count > 1) {
+  improvements.push({
+    metric: "H1 Tag",
+    current: `${h1Count} H1 tags found`,
+    recommended: "Exactly 1 H1 per page",
+    severity: "Medium 🟡",
+    suggestion: "Keep only one H1 tag and use H2–H6 for subheadings."
+  });
+}
 
+if (imagePresenceScore === 0) {
+  improvements.push({
+    metric: "Images",
+    current: "No images found",
+    recommended: "At least one relevant image per page",
+    severity: "Low 🟢",
+    suggestion: "Add relevant images to improve engagement and SEO ranking."
+  });
+} else if (altPresence === 0 || altMeaningfullPercentage === 0 || imageCompressionScore === 0) {
+  improvements.push({
+    metric: "Image Alt Text",
+    current: "Images have issues with alt text or size",
+    recommended: "> 90% images should have descriptive alt text",
+    severity: "Medium 🟡",
+    suggestion: "Add descriptive, meaningful alt text for images to improve accessibility and SEO."
+  });
+}
 
+if (videoExistanceScore === 0) {
+  improvements.push({
+    metric: "Video Content",
+    current: "No embedded videos",
+    recommended: "At least one video if applicable",
+    severity: "Low 🟢",
+    suggestion: "Embed relevant videos to improve engagement and SEO signals."
+  });
+} else if (embedding === 0 || lazyLoading === 0 || structuredMetadata === 0) {
+  improvements.push({
+    metric: "Video SEO",
+    current: "Videos not fully optimized",
+    recommended: "Proper embedding, lazy-loading, structured data",
+    severity: "Medium 🟡",
+    suggestion: "Ensure videos are embedded correctly, use lazy loading, and add JSON-LD metadata."
+  });
+}
 
+if (hierarchy === 0) {
+  improvements.push({
+    metric: "Heading Hierarchy",
+    current: "Improper or skipped heading levels",
+    recommended: "Logical H1 → H2 → H3 structure",
+    severity: "Medium 🟡",
+    suggestion: "Ensure headings follow a proper nested hierarchy for better crawlability."
+  });
+}
+
+["article", "section", "header", "footer"].forEach(tag => {
+  if (semanticTagScoreResolved[tag] === 0) {
+    improvements.push({
+      metric: `${tag.charAt(0).toUpperCase() + tag.slice(1)} Tag`,
+      current: "Missing",
+      recommended: `Use <${tag}> for semantic structure`,
+      severity: "Low 🟢",
+      suggestion: `Add <${tag}> tag to improve semantic HTML and accessibility.`
+    });
+  }
+});
+
+// On-Page SEO (Structure & Uniqueness) 
+if (dupScore === 0) {
+  improvements.push({
+    metric: "Duplicate Content",
+    current: "Duplicate or thin content detected",
+    recommended: "Unique content per page",
+    severity: "High 🔴",
+    suggestion: "Rewrite or merge duplicate pages and use canonical tags to consolidate authority."
+  });
+}
+
+if (slugCheckScore === 0 || slugScore === 0) {
+  improvements.push({
+    metric: "Slug Structure",
+    current: slug || "Missing or invalid slug",
+    recommended: "Lowercase, hyphen-separated, ≤ 25 characters",
+    severity: "Medium 🟡",
+    suggestion: "Simplify slugs and include target keywords (e.g., /best-laptops-2025)."
+  });
+}
+
+// Warning
+const warning = [];
+
+if (!title || titleExistanceScore === 0) {
+  warning.push ( {
+    metric: "Title Tag",
+    current: "Missing",
+    recommended: "30–60 characters, unique per page",
+    severity: "High 🔴",
+    suggestion: "Add a unique, keyword-rich title within 30–60 characters."
+  });
+}
+else{
+if (titleLength < 30) {
+  warning.push ( {
+    metric: "Title Tag",
+    current: `Too short (${titleLength} characters)`,
+    recommended: "30–60 characters, unique per page",
+    severity: "High 🔴",
+    suggestion: "Lengthen the title to at least 30 characters, include main keywords."
+  });
+} 
+if (titleLength > 60) {
+  warning.push ( {
+    metric: "Title Tag",
+    current: `Too long (${titleLength} characters)`,
+    recommended: "30–60 characters, unique per page",
+    severity: "High 🔴",
+    suggestion: "Shorten the title to under 60 characters and keep it concise."
+  });
+}}
+
+if (!metaDesc || metaDescExistanceScore === 0) {
+  warning.push ( {
+    metric: "Meta Description",
+    current: "Missing",
+    recommended: "≤ 160 characters, unique per page",
+    severity: "High 🔴",
+    suggestion: "Add a concise meta description that summarizes the page content and includes relevant keywords."
+  });
+}
+else{
+if (metaDescLength < 50) {
+  warning.push ( {
+    metric: "Meta Description",
+    current: `Too short (${metaDescLength} characters)`,
+    recommended: "50–160 characters, unique per page",
+    severity: "Medium 🟡",
+    suggestion: "Lengthen the meta description to at least 50 characters to better summarize content."
+  });
+} 
+if (metaDescLength > 165) {
+  warning.push ( {
+    metric: "Meta Description",
+    current: `Too long (${metaDescLength} characters)`,
+    recommended: "50–160 characters, unique per page",
+    severity: "Medium 🟡",
+    suggestion: "Shorten the meta description to under 165 characters for optimal display in search results."
+  });
+}}
+
+if (!canonical || canonicalExistanceScore === 0) {
+  warning.push ( {
+    metric: "Canonical Tag",
+    current: "Missing",
+    recommended: "Self-referencing canonical tag",
+    severity: "High 🔴",
+    suggestion: "Add a canonical tag pointing to the same page to prevent duplicate content issues."
+  });
+} 
+else{
+if (canonicalScore === 0) {
+  warning.push ( {
+    metric: "Canonical Tag",
+    current: "Incorrect or not self-referencing",
+    recommended: "Self-referencing canonical tag",
+    severity: "High 🔴",
+    suggestion: "Update the canonical tag so it matches the current page URL exactly."
+  });
+}}
+
+if (checkHTTPSScore === 0) {
+  warning.push({
+    metric: "HTTPS Implementation",
+    current: "Not using HTTPS",
+    recommended: "All pages should use HTTPS",
+    severity: "High 🔴",
+    suggestion: "Secure all pages using HTTPS and fix mixed-content issues to improve trust and ranking."
+  });
+}
+
+if (internalLinksDescriptiveScore === 0) {
+  warning.push({
+    metric: "Internal Links",
+    current: `${internalLinksDescriptiveScore} descriptive`,
+    recommended: "≥ 75% descriptive anchors",
+    severity: "Medium 🟡",
+    suggestion: "Use keyword-rich descriptive text for internal links instead of generic phrases like 'click here'."
+  });
+}
+
+if (alttextScore === 0) {
+  warning.push({
+    metric: "ALT Text Relevance",
+    current: "ALT text not descriptive enough or missing keywords",
+    recommended: "Include relevant keywords in alt attributes",
+    severity: "Medium 🟡",
+    suggestion: "Ensure ALT attributes are meaningful and, where possible, include target keywords."
+  });
+}
+
+if (paginationScore === 0) {
+  warning.push({
+    metric: "Pagination",
+    current: "Pagination schema or links missing",
+    recommended: "Use rel=next/prev or logical pagination links",
+    severity: "Low 🟢",
+    suggestion: "Add pagination links or structured markup for multi-page content."
+  });
+}
+
+const actualPercentage = parseFloat((((paginationScore+titleExistanceScore+metaDescExistanceScore+internalLinksDescriptiveScore+canonicalExistanceScore+canonicalScore+alttextScore+checkHTTPSScore)/8)*100).toFixed(0))
+
+// console.log(essentials);
+// console.log(mediaAndSemantics);
+// console.log(structureAndUniqueness);
+// console.log(actualPercentage);
+// console.log(warning);
+// console.log(Total);
+// console.log(improvements);
+
+return {
+  essentials,
+  mediaAndSemantics,
+  structureAndUniqueness,
+  actualPercentage,warning,
+  Total,improvements
+}
 }
