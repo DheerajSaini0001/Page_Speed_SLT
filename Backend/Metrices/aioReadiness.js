@@ -137,6 +137,5 @@ export default async function aioReadiness(url, robotsText,page) {
     aioCompatibleBadge: aioCompatible,
   };
 
-  await browser.close();
   return report;
 }

@@ -75,8 +75,6 @@ export default async function evaluateMobileUX(url,page) {
 
     const totalEScore = ((mobileFriendliness + navigationDepth + layout_Shift_on_Interactions + readability + intrusive_Interstitials)/5)*100
 
-  await browser.close();
-
 
   const report = {};
   report.E = {
