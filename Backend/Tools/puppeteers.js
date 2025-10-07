@@ -1,26 +1,23 @@
 import puppeteer from "puppeteer";
 
-export default async function puppeteers(url) {
-    
-  let browser;
+export default async function puppeteers() {
+let browser;
   try {
-    browser = await puppeteer.launch({
+      browser = await puppeteer.launch({
       headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
-    const page = await browser.newPage();
+      args: ["--no-sandbox", "--disable-setuid-sandbox"]
+  });
 
+  const page = await browser.newPage();
 
-    await page.setUserAgent(
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
-      "(KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
-    );
-    await page.setExtraHTTPHeaders({ "Accept-Language": "en-US,en;q=0.9" });
+  await page.setUserAgent(
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
+    "(KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+  );
 
-    const response = await page.goto(url, { waitUntil: "networkidle2",timeout: 240000 });
-    await page.waitForSelector("body", { timeout: 240000 });
+  await page.setExtraHTTPHeaders({ "Accept-Language": "en-US,en;q=0.9" });
 
-    return {browser,page,response}; 
+  return {browser,page}; 
 
   } catch (error) {
     if (browser) await browser.close();

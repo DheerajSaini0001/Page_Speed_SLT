@@ -1,18 +1,6 @@
 import AxePuppeteer from "@axe-core/puppeteer";
-import puppeteer from "puppeteer";
 
-export default async function accessibilityMetrics(url,device = 'Desktop') {
-
-  const browser = await puppeteer.launch({ headless: true });
-  const page = await browser.newPage();
-
-      if (device === "mobile") {
-      await page.setViewport({ width: 375, height: 812, isMobile: true, hasTouch: true });
-      await page.setUserAgent(
-        "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) " +
-        "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1"
-      );
-    }
+export default async function accessibilityMetrics(url,page) {
 
   await page.setRequestInterception(true);
   page.on("request", (request) => {
@@ -77,8 +65,6 @@ function calculatePassRate(results, ruleIds) {
   const imageAlt = calculatePassRate(results, ["image-alt"]);
   const skipLinks = await page.$('a[href^="#"]:not([hidden])') ? 0 : 1
   const landMarks = await Landmarks(page);
-
-  await browser.close();
 
   const Total = colorContrast+focusOrder+focusableContent+tabindex+interactiveElementAffordance+label+ariaAllowedAttr+ariaRoles+ariaHiddenFocus+imageAlt+skipLinks+landMarks
 

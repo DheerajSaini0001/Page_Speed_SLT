@@ -21,11 +21,11 @@ export default async function main(message) {
 
     start = performance.now();
     const googleApi_Data = await googleAPI(url,device);
-    const puppeteer_cheerio_Data = await puppeteer_cheerio(url);
-    const puppeteer_Data = await puppeteers(url);
+    // const puppeteer_cheerio_Data = await puppeteer_cheerio(url);
+    // const puppeteer_Data = await puppeteers(url);
     const robotsRes_Data = await robotsRes(url);
 
-    const MetricesCalculation_Data = await MetricesCalculation(url,googleApi_Data,puppeteer_cheerio_Data,puppeteer_Data,robotsRes_Data,device)
+    const MetricesCalculation_Data = await MetricesCalculation(url,googleApi_Data,robotsRes_Data)
     const Overall_Data = await OverAll(MetricesCalculation_Data)
     end = performance.now();
     const timeTaken = ((end-start)/1000).toFixed(0);
