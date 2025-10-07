@@ -219,30 +219,56 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data,tim
     },
     Accessibility: {
       Color_Contrast:{
-        Score:MetricesCalculation_Data.accessibilityReport.C.colorContrast,
-        Parameter:'Check for color-contrast attribute is present or not',
+        Score:MetricesCalculation_Data.accessibilityReport.colorContrast,
+        Parameter:'1 if color contrast passes, else 0'
       },
-      Focusable:{
-        Score:MetricesCalculation_Data.accessibilityReport.C.keyboardNavigation,
-        Parameter:'Check for some missing attribute like ("focus-order","focusable-content","tabindex","interactive-element-affordance")',
+      Focus_Order:{
+        Score:MetricesCalculation_Data.accessibilityReport.focusOrder,
+        Parameter:'1 if tab/focus order is correct, else 0'
       },
-      ARIA:{
-        Score:MetricesCalculation_Data.accessibilityReport.C.ariaLabeling,
-        Parameter:'Check for some missing attribute ("label","aria-allowed-attr","aria-roles","aria-hidden-focus")',
+      Focusable_Content:{
+        Score:MetricesCalculation_Data.accessibilityReport.focusableContent,
+        Parameter:'1 if focusable elements are correctly used, else 0'
       },
-      Alt_or_Text_Equivalents:{
-        Score:MetricesCalculation_Data.accessibilityReport.C.altTextEquivalents,
-        Parameter:'Check for presence of image-alt attribute',
+      Tab_Index:{
+        Score:MetricesCalculation_Data.accessibilityReport.tabindex,
+        Parameter:'1 if tabindex attributes are valid, else 0'
+      },
+      Interactive_Element_Affordance:{
+        Score:MetricesCalculation_Data.accessibilityReport.interactiveElementAffordance,
+        Parameter:'1 if interactive elements have clear affordance, else 0'
+      },
+      Label:{
+        Score:MetricesCalculation_Data.accessibilityReport.label,
+        Parameter:'1 if form elements have labels, else 0'
+      },
+      Aria_Allowed_Attr:{
+        Score:MetricesCalculation_Data.accessibilityReport.ariaAllowedAttr,
+        Parameter:'1 if only allowed ARIA attributes are used, else 0'
+      },
+      Aria_Roles:{
+        Score:MetricesCalculation_Data.accessibilityReport.ariaRoles,
+        Parameter:'1 if ARIA roles are correctly applied, else 0'
+      },
+      Aria_Hidden_Focus:{
+        Score:MetricesCalculation_Data.accessibilityReport.ariaHiddenFocus,
+        Parameter:'1 if hidden elements do not receive focus, else 0'
+      },
+      Image_Alt:{
+        Score:MetricesCalculation_Data.accessibilityReport.imageAlt,
+        Parameter:'1 if images have descriptive alt text, else 0'
       },
       Skip_Links:{
-        Score:MetricesCalculation_Data.accessibilityReport.C.skipLinks,
-        Parameter:'Check for Skip Link is present or not',
+        Score:MetricesCalculation_Data.accessibilityReport.skipLinks,
+        Parameter:'1 if skip links exist, else 0',
       },
       Landmarks:{
-        Score:MetricesCalculation_Data.accessibilityReport.C.Landmark,
-        Parameter:'Check for some missing landmark roles ("banner","main","contentinfo","navigation","complementary")',
+        Score:MetricesCalculation_Data.accessibilityReport.landMarks,
+        Parameter:'1 if landmark roles (banner, main, contentinfo, navigation, complementary) exist, else 0'
       },
-      Accessibility_Score_Total: MetricesCalculation_Data.accessibilityReport.C.totalCScore,
+      Percentage: MetricesCalculation_Data.accessibilityReport.actualPercentage,
+      Warning: MetricesCalculation_Data.accessibilityReport.warning,
+      Total: MetricesCalculation_Data.accessibilityReport.Total
     },
     Security_or_Compliance: {
       HTTPS:{
