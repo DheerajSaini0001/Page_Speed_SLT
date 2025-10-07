@@ -327,17 +327,20 @@ const metaDescExistanceScore = $('meta[name="description"]') ? 1 : 0;
 const metaDescLength = metaDesc.length;
 const metaDescScore = metaDescLength <= 165 ? 1 : 0 ;
 
-const URLStructureSrcore = checkURLStructure(url);
+const URLStructureScore = checkURLStructure(url);
 
 const canonical = $('link[rel="canonical"]').attr("href") || "";
 const canonicalExistanceScore = $('link[rel="canonical"]') ? 1 : 0 ;
 const canonicalScore = isValidCanonical(canonical, url) ? 1 : 0; 
  
+const essentialsTotal = titleScore + titleExistanceScore + metaDescScore + metaDescExistanceScore + URLStructureScore + canonicalScore + canonicalExistanceScore
+
 const essentials ={
   title,titleExistanceScore,titleLength,titleScore,
   metaDesc,metaDescExistanceScore,metaDescLength,metaDescScore,
-  URLStructureSrcore,
-  canonical,canonicalExistanceScore,canonicalScore
+  URLStructureScore,
+  canonical,canonicalExistanceScore,canonicalScore,
+  essentialsTotal
 }
 
 // On-Page SEO (Media & Semantics) 
@@ -423,6 +426,8 @@ const sectionScore = semanticTagScoreResolved.section;
 const headerScore = semanticTagScoreResolved.header;
 const footerScore = semanticTagScoreResolved.footer;
 
+const mediaAndSemanticsTotal = h1Score + altPresence + altMeaningfullPercentage + imageCompressionScore + embedding + lazyLoading + structuredMetadata + hierarchy + alttextScore + internalLinksDescriptiveScore
+
 const  mediaAndSemantics = {
   h1Count,h2Count,h3Count,h4Count,h5Count,h6Count,h1CountScore,h1Score,
   imagePresenceScore,altPresence,altMeaningfullPercentage,imageCompressionScore,
@@ -430,7 +435,8 @@ const  mediaAndSemantics = {
   headings,hierarchy,
   alttextScore,
   totalInternalLinks,internalLinksDescriptiveScore,
-  articleScore,sectionScore,headerScore,footerScore
+  articleScore,sectionScore,headerScore,footerScore,
+  mediaAndSemanticsTotal
 }
 
 // On-Page SEO (Structure & Uniqueness) 
@@ -451,28 +457,23 @@ const checkHTTPSScore = checkHTTPS(url);
 
 const paginationScore = checkPagination($);
 
+const structureAndUniquenessTotal = dupScore + slugScore + paginationScore
+
 const structureAndUniqueness = {
   dupScore,
   slug,slugCheckScore,slugScore,
   checkHTTPSScore,
-  paginationScore
+  paginationScore,
+  structureAndUniquenessTotal
 }
 
-const Total = parseFloat((((
-  titleExistanceScore + titleScore + metaDescExistanceScore + metaDescScore +
-  URLStructureSrcore + canonicalExistanceScore + canonicalScore + h1Score +
-  altPresence + altMeaningfullPercentage + imageCompressionScore + embedding +
-  lazyLoading + structuredMetadata + hierarchy + alttextScore +
-  internalLinksDescriptiveScore + 
-  // articleScore +sectionScore+headerScore+footerScore+
-  dupScore + slugScore + paginationScore
-) / 20) * 100).toFixed(0));
+const Total = parseFloat((((essentialsTotal + mediaAndSemanticsTotal + structureAndUniquenessTotal) / 20) * 100).toFixed(0));
 
 // Improvements
 const improvements = [];
 
 // On-Page SEO (Essentials) 
-if (URLStructureSrcore === 0){
+if (URLStructureScore === 0){
   improvements.push({
     metric: "URL Structure",
     current: "Long or complex URL",

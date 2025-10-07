@@ -115,70 +115,107 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data,tim
     },
     On_Page_SEO: {
       Essentials: {
-        Unique_Title: {
-          Title: MetricesCalculation_Data.seoReport.B1.title,
-          Parameter:'Check for length of Title is in between 30-60 characters',
-          Title_Length: MetricesCalculation_Data.seoReport.B1.titleLength,
-          Score: MetricesCalculation_Data.seoReport.B1.titleScore,
+        Title: {
+          Title: MetricesCalculation_Data.seoReport.essentials.title,
+          Title_Exist : MetricesCalculation_Data.seoReport.essentials.titleExistanceScore,
+          Title_Length: MetricesCalculation_Data.seoReport.essentials.titleLength,
+          Score: MetricesCalculation_Data.seoReport.essentials.titleScore,
+          Parameter:'1 if title exists and 30–60 characters, else 0'
         },
         Meta_Description: {
-          MetaDescription: MetricesCalculation_Data.seoReport.B1.MetaDescription,
-          Parameter:'Check for length of MetaDescription is less than 160 characters',
-          MetaDescription_Length: MetricesCalculation_Data.seoReport.B1.metaDescLength,
-          Score: MetricesCalculation_Data.seoReport.B1.metaDescScore,
+          MetaDescription: MetricesCalculation_Data.seoReport.essentials.metaDesc,
+          MetaDescription_Exist: MetricesCalculation_Data.seoReport.essentials.metaDescExistanceScore,
+          MetaDescription_Length: MetricesCalculation_Data.seoReport.essentials.metaDescLength,
+          Score: MetricesCalculation_Data.seoReport.essentials.metaDescScore,
+          Parameter:'1 if meta description exists and ≤ 165 characters, else 0'
+        },
+        URL_Structure: {
+          Score: MetricesCalculation_Data.seoReport.essentials.URLStructureScore,
+          Parameter:'1 if URL ≤ 5 segments, lowercase, hyphen-separated, else 0'
         },
         Canonical: {
-          Canonical: MetricesCalculation_Data.seoReport.B1.canonical,
-          Parameter:'Check for Page URL is same as Canonical tag "href" URL',
-          Score: MetricesCalculation_Data.seoReport.B1.canonicalScore,
+          Canonical: MetricesCalculation_Data.seoReport.essentials.canonical,
+          Canonical_Exist: MetricesCalculation_Data.seoReport.essentials.canonicalExistanceScore,
+          Score: MetricesCalculation_Data.seoReport.essentials.canonicalScore,
+          Parameter:'1 if canonical tag exists and matches page URL, else 0'
         },
-        H1: {
-          H1_Count: MetricesCalculation_Data.seoReport.B1.h1Count,
-          Parameter:'Check for there is only one H1 tag on the Page',
-          Score: MetricesCalculation_Data.seoReport.B1.h1Score,
-        },
-        Total_Score_B1: MetricesCalculation_Data.seoReport.B1.total,
+        Essentials_Total_Score: MetricesCalculation_Data.seoReport.essentials.essentialsTotal,
       },
       Media_and_Semantics: {
-        Image_ALT:{
-          Parameter:'Check for Image tag which consist alt attribute is Meaningfull and not contain this ("", "image", "logo", "icon","pic","picture","photo"," ","12345","-","graphics")',
-          Score:MetricesCalculation_Data.seoReport.B2.imageAltScore
+        H1: {
+          H1_Count: MetricesCalculation_Data.seoReport.mediaAndSemantics.h1Count,
+          H1_Count_Score: MetricesCalculation_Data.seoReport.mediaAndSemantics.h1CountScore,
+          Score: MetricesCalculation_Data.seoReport.mediaAndSemantics.h1Score,
+          Parameter:'1 if exactly one H1, 2 if >1, 0 if none'
+        },
+        Image:{
+          Image_Exist: MetricesCalculation_Data.seoReport.mediaAndSemantics.imagePresenceScore,
+          Image_Alt_Exist: MetricesCalculation_Data.seoReport.mediaAndSemantics.altPresence,
+          Image_Alt_Meaningfull_Exist: MetricesCalculation_Data.seoReport.mediaAndSemantics.altMeaningfullPercentage,
+          Image_Compression_Exist: MetricesCalculation_Data.seoReport.mediaAndSemantics.imageCompressionScore,
+          Parameter:'Alt text ≥ 75% meaningful, images ≤ 200KB'
+        },
+        Video:{
+          Video_Exist: MetricesCalculation_Data.seoReport.mediaAndSemantics.videoExistanceScore,
+          Video_Embedding_Exist: MetricesCalculation_Data.seoReport.mediaAndSemantics.embedding,
+          Video_LazyLoading_Exist: MetricesCalculation_Data.seoReport.mediaAndSemantics.lazyLoading,
+          Video_Structured_Metadata_Exist: MetricesCalculation_Data.seoReport.mediaAndSemantics.structuredMetadata,
+          Parameter:'Proper embedding, lazy-loading, JSON-LD metadata'
         },
         Heading_Hierarchy:{
-          Parameter:'Check for heading hierarcy is followed "h1->h2->h3"',
-          Score:MetricesCalculation_Data.seoReport.B2.hierarchyScore,
-          Follow :MetricesCalculation_Data.seoReport.B2.follow
+          H1_Count: MetricesCalculation_Data.seoReport.mediaAndSemantics.h1Count,
+          H2_Count: MetricesCalculation_Data.seoReport.mediaAndSemantics.h2Count,
+          H3_Count: MetricesCalculation_Data.seoReport.mediaAndSemantics.h3Count,
+          H4_Count: MetricesCalculation_Data.seoReport.mediaAndSemantics.h4Count,
+          H5_Count: MetricesCalculation_Data.seoReport.mediaAndSemantics.h5Count,
+          H6_Count: MetricesCalculation_Data.seoReport.mediaAndSemantics.h6Count,
+          Heading: MetricesCalculation_Data.seoReport.mediaAndSemantics.headings,
+          Score:MetricesCalculation_Data.seoReport.mediaAndSemantics.hierarchy,
+          Parameter:'1 if headings follow proper H1→H2→H3 order, else 0',
         },
-        Descriptive_Links:{
-          Parameter:'Check for anchor tag text does not contain this ("click here", "read more","learn more","details","link","more","go","this")',
-          Score: MetricesCalculation_Data.seoReport.B2.linkScore
+        ALT_Text_Relevance: {
+          Score: MetricesCalculation_Data.seoReport.mediaAndSemantics.alttextScore,
+          Parameter: "1 if alt text contains keywords or is descriptive, else 0"
         },
-        Total_Score_B2: MetricesCalculation_Data.seoReport.B2.total,
+        Internal_Links: {
+          Total: MetricesCalculation_Data.seoReport.mediaAndSemantics.totalInternalLinks,
+          Descriptive_Score: MetricesCalculation_Data.seoReport.mediaAndSemantics.internalLinksDescriptiveScore,
+          Parameter: "1 if ≥ 75% internal links are descriptive, else 0"
+        },
+        Semantic_Tags: {
+          Article_Score: MetricesCalculation_Data.seoReport.mediaAndSemantics.articleScore,
+          Section_Score: MetricesCalculation_Data.seoReport.mediaAndSemantics.sectionScore,
+          Header_Score: MetricesCalculation_Data.seoReport.mediaAndSemantics.headerScore,
+          Footer_Score: MetricesCalculation_Data.seoReport.mediaAndSemantics.footerScore,
+          Parameter: "1 if tag exists, else 0"
+        },
+        Media_and_Semantics_Total_Score: MetricesCalculation_Data.seoReport.mediaAndSemantics.mediaAndSemanticsTotal
       },
       Structure_and_Uniqueness: {
-        //  URL_Slugs:{
-        //   Slug:MetricesCalculation_Data.seoReport.B3.slug,
-        //   Parameter:'Check for Slug is meaningfull & length is less than 75 characters ',
-        //   Score:MetricesCalculation_Data.seoReport.B3.urlSlugScore,
-        //   URL_Slugs_Length:MetricesCalculation_Data.seoReport.B3.slugLength
-        // },
-         URL_Structure:{
-          Slug:MetricesCalculation_Data.seoReport.B3.slug,
-          Parameter:'Check for Slug is meaningfull & length is less than 75 characters ',
-          Score:MetricesCalculation_Data.seoReport.B3.urlScore,
-          URL_Slugs_Length:MetricesCalculation_Data.seoReport.B3.slugLength
-        },
         Duplicate_Content:{
-          Parameter:'Check for Duplicate contnent occured within the page less than 50 %',
-          Score: MetricesCalculation_Data.seoReport.B3.duplicateContent
+          Score: MetricesCalculation_Data.seoReport.structureAndUniqueness.dupScore,
+          Parameter:'1 if duplication ≤ 75%, else 0'
+        },
+         URL_Slugs:{
+          Slug:MetricesCalculation_Data.seoReport.structureAndUniqueness.slug,
+          Slug_Check_Score:MetricesCalculation_Data.seoReport.structureAndUniqueness.slugCheckScore,
+          Score:MetricesCalculation_Data.seoReport.structureAndUniqueness.slugScore,
+          Parameter:'1 if slug exists, ≤25 characters, lowercase hyphenated, else 0'
+        },
+        HTTPS: {
+          Score: MetricesCalculation_Data.seoReport.structureAndUniqueness.checkHTTPSScore,
+          Parameter: "1 if HTTPS implemented, else 0"
         },
         Pagination_Tags:{
-          Parameter:'Check for presence of ("next" and "prev") in link rel',
-          Score: MetricesCalculation_Data.seoReport.B3.paginationScore
+          Score: MetricesCalculation_Data.seoReport.structureAndUniqueness.paginationScore,
+          Parameter:'1 if pagination links or rel=next/prev exist, else 0'
         },
-        Total_Score_B3: MetricesCalculation_Data.seoReport.B3.total,
+        Structure_and_Uniqueness_Total_Score: MetricesCalculation_Data.seoReport.structureAndUniqueness.structureAndUniquenessTotal,
       },
-      On_Page_SEO_Score_Total: MetricesCalculation_Data.seoReport.totalSEO,
+      Percentage: MetricesCalculation_Data.seoReport.actualPercentage,
+      Warning: MetricesCalculation_Data.seoReport.warning,
+      Total: MetricesCalculation_Data.seoReport.Total,
+      Improvements: MetricesCalculation_Data.seoReport.improvements
     },
     Accessibility: {
       Color_Contrast:{
