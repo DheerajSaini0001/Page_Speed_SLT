@@ -207,6 +207,10 @@ if (landMarks === 0) {
 
   const actualPercentage = parseFloat((((Total)/12)*100).toFixed(0));
 
+  // console.log(actualPercentage);
+  // console.log(warning);
+  // console.log(Total);
+
   return {
     colorContrast,
     focusOrder,
