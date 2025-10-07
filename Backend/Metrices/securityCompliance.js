@@ -432,19 +432,10 @@ async function checkCustomErrorPage(page, url) {
 }
 
 
-export default async function securityCompliance(url,apiResponse) {
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
-  });
-  const page = await browser.newPage();
+export default async function securityCompliance(url,apiResponse,page) {
 
-  await page.setExtraHTTPHeaders({ "Accept-Language": "en-GB,en;q=0.9" });
   await page.setGeolocation({ latitude: 48.8566, longitude: 2.3522 });
-  await page.setViewport({ width: 1200, height: 800 });
-
   const allHeaders = await getAllHeaders(page);
-
   await page.goto(url, { waitUntil: "networkidle2",timeout: 240000});
 
 const checkHTTPSScore=checkHTTPS(url);
@@ -487,14 +478,6 @@ console.log("checkCookiesSameSite Score",checkSecurityHeadersScore);
 
 const safeBrowsingScore=safeBrowsing(apiResponse);
 console.log("safeBrowsing Score",safeBrowsingScore);
-
-
-
-
-
-
-
-  await browser.close();
 
 
 }

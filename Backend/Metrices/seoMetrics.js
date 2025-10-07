@@ -1,4 +1,5 @@
 import axios from "axios";
+import * as cheerio from "cheerio";
 
 // On-Page SEO (Essentials) 
 function checkURLStructure(url) {
@@ -314,7 +315,12 @@ function checkPagination($) {
   }
 }
 
-export default async function seoMetrics(url,$) {
+export default async function seoMetrics(url,page) {
+
+await page.goto(url, { waitUntil: "networkidle2", timeout: 240000 });
+await page.waitForSelector("body", { timeout: 240000 });
+const htmlData = await page.content();
+const $ = cheerio.load(htmlData);
 
 // On-Page SEO (Essentials) 
 const title = $("title").text().trim() || "";

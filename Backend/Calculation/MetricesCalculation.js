@@ -5,18 +5,20 @@ import securityCompliance from "../Metrices/securityCompliance.js";
 import uxContentStructure from "../Metrices/uxContentStructure.js";
 import conversionLeadFlow from "../Metrices/conversionLeadFlow.js";
 import aioReadiness from "../Metrices/aioReadiness.js";
+import puppeteers from "../Tools/puppeteers.js";
 
 
-export default async function MetricesCalculation(url,data,$,puppeteerData,robotsText,device) {
+export default async function MetricesCalculation(url,data,robotsText) {
 
-const {browser,page,response} = puppeteerData;
-const technicalReport = await technicalMetrics(url,data,puppeteerData);
-const seoReport = await seoMetrics(url,$);
-const accessibilityReport = await accessibilityMetrics(url,device);
-const securityReport = await securityCompliance(url,data);
-const uxReport = await uxContentStructure(url, $);
-const conversionReport = await conversionLeadFlow($);
-const aioReport = await aioReadiness(url, robotsText);
+const {browser,page} = await puppeteers();
+
+const technicalReport = await technicalMetrics(url,data,page);
+const seoReport = await seoMetrics(url,page);
+const accessibilityReport = await accessibilityMetrics(url,page);
+const securityReport = await securityCompliance(url,data,page);
+const uxReport = await uxContentStructure(url, page);
+const conversionReport = await conversionLeadFlow(page);
+const aioReport = await aioReadiness(url, robotsText,page);
 browser.close();
 
   // console.log("Technical Report:", technicalReport)

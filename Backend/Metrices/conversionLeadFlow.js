@@ -1,5 +1,11 @@
+import * as cheerio from "cheerio";
 
-export default async function conversionLeadFlow($) {
+export default async function conversionLeadFlow(page) {
+
+      await page.goto(url, {waitUntil: "networkidle2",timeout: 240000});
+      await page.waitForSelector("body", { timeout: 240000 });
+      const htmlData = await page.content();
+      const $ = cheerio.load(htmlData);
   const report = {};
 
 

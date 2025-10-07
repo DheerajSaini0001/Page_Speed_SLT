@@ -1,4 +1,4 @@
-import puppeteer from "puppeteer";
+import * as cheerio from "cheerio";
 
 function estimateReadability(text) {
   const words = text.split(/\s+/).length || 1;
@@ -15,11 +15,12 @@ function estimateReadability(text) {
   return flesch;
 }
 
-export default async function evaluateMobileUX(url,$) {
-  const browser = await puppeteer.launch({ headless: true });
-  const page = await browser.newPage();
-  await page.setViewport({ width: 375, height: 667, isMobile: true });
+export default async function evaluateMobileUX(url,page) {
+
     await page.goto(url, {waitUntil: "networkidle2",timeout: 240000});
+    await page.waitForSelector("body", { timeout: 240000 });
+    const htmlData = await page.content();
+    const $ = cheerio.load(htmlData);
 
     const viewport = $("meta[name=viewport]").length > 0;
 

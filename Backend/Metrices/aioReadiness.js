@@ -1,22 +1,11 @@
 // import puppeteer from "puppeteer";
 import puppeteer from "../Tools/puppeteers.js";
 
-export default async function aioReadiness(url, robotsText) {
+export default async function aioReadiness(url, robotsText,page) {
   const report = {};
 
-  // const browser = await puppeteer.launch({ headless: true });
-  // const page = await browser.newPage();
 
-
-  // await page.setUserAgent(
-  //   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
-  //   "(KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
-  // );
-  // await page.setExtraHTTPHeaders({ "Accept-Language": "en-US,en;q=0.9" });
-
-  // await page.goto(url, {waitUntil: "networkidle2",timeout: 240000});
-
-  const {page, browser} = await puppeteer(url)
+  await page.goto(url, {waitUntil: "networkidle2",timeout: 240000});
  
   const bodyText = await page.evaluate(() => document.body.innerText || "");
   const headerText = await page.evaluate(() => document.querySelector("header")?.innerText || "");

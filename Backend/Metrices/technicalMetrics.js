@@ -16,21 +16,21 @@ function actualCalculation(observed,good,poor,weight) {
   return parseFloat((score * weight).toFixed(0));
 }
 
-export default async function technicalMetrics(url,data,puppeteerData) {
+export default async function technicalMetrics(url,data,page) {
 
   // Technical Performance (Core Web Vitals)
   const lcpValue = parseFloat((data?.lighthouseResult?.audits?.["largest-contentful-paint"]?.numericValue || 0).toFixed(0)); 
   const lcpScore = coreWebVitalsScore(lcpValue,2500);
   const actuallcpScore = actualCalculation(lcpValue,2500,4000,0.25);
   
-  const fidValue = parseFloat((data.lighthouseResult.audits['max-potential-fid'].numericValue || 0).toFixed(0)); 
+  const fidValue = parseFloat((data?.lighthouseResult?.audits?.['max-potential-fid']?.numericValue || 0).toFixed(0)); 
   const fidScore = coreWebVitalsScore(fidValue,100);
   
   const clsValue = parseFloat((data?.lighthouseResult?.audits?.["cumulative-layout-shift"]?.numericValue || 0).toFixed(1)); 
   const clsScore = coreWebVitalsScore(clsValue,0.1);
   const actualclsScore = actualCalculation(clsValue,0.1,0.25,0.05);
   
-  const fcpValue = parseFloat((data.lighthouseResult.audits['first-contentful-paint'].numericValue || 0).toFixed(0));
+  const fcpValue = parseFloat((data?.lighthouseResult?.audits['first-contentful-paint']?.numericValue || 0).toFixed(0));
   const fcpScore = coreWebVitalsScore(fcpValue,1800);
   const actualfcpScore = actualCalculation(fcpValue,1800,3000,0.10);
 
@@ -96,30 +96,14 @@ export default async function technicalMetrics(url,data,puppeteerData) {
   // Technical Performance (Crawlability & Hygiene)
   // const browser = await puppeteer.launch({headless: true,args: ["--no-sandbox", "--disable-setuid-sandbox"]});
   // const page = await browser.newPage();
-  // if(device == 'Desktop'){
   // await page.setUserAgent(
   //     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
   //     "(KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
   //   );
   // await page.setExtraHTTPHeaders({ "Accept-Language": "en-US,en;q=0.9" });
-  // }
-  // else{
-  //     await page.setUserAgent(
-  //   "Mozilla/5.0 (Linux; Android 10; Mobile) " +
-  //   "AppleWebKit/537.36 (KHTML, like Gecko) " +
-  //   "Chrome/140.0.0.0 Mobile Safari/537.36"
-  // );
-  // await page.setViewport({
-  //   width: 414,
-  //   height: 896,
-  //   isMobile: true,
-  //   hasTouch: true,
-  //   deviceScaleFactor: 2
-  // });
-  // }
 
-  // const response = await page.goto(url, { waitUntil: "networkidle2",timeout: 240000 });
-  const {browser,page,response} = puppeteerData
+  const response = await page.goto(url, { waitUntil: "networkidle2",timeout: 240000 });
+
   const chain = response.request().redirectChain();
   const hops = chain.length; 
   const redirectScore = hops <= 1 ? 1 : 0;
