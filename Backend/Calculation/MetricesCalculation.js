@@ -17,7 +17,7 @@ const seoReport = await seoMetrics(url,page);
 const accessibilityReport = await accessibilityMetrics(url,page);
 const securityReport = await securityCompliance(url,page);
 const uxReport = await uxContentStructure(url, page);
-const conversionReport = await conversionLeadFlow(page);
+const conversionReport = await conversionLeadFlow(url,page);
 const aioReport = await aioReadiness(url, robotsText,page);
 browser.close();
 

@@ -110,6 +110,7 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data,tim
       },
       Percentage: MetricesCalculation_Data.technicalReport.actualPercentage,
       Warning: MetricesCalculation_Data.technicalReport.warning,
+      Passed: MetricesCalculation_Data.technicalReport.passed,
       Total: MetricesCalculation_Data.technicalReport.Total,
       Improvements: MetricesCalculation_Data.technicalReport.improvements,
     },
@@ -214,6 +215,7 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data,tim
       },
       Percentage: MetricesCalculation_Data.seoReport.actualPercentage,
       Warning: MetricesCalculation_Data.seoReport.warning,
+      Passed: MetricesCalculation_Data.seoReport.passed,
       Total: MetricesCalculation_Data.seoReport.Total,
       Improvements: MetricesCalculation_Data.seoReport.improvements
     },
@@ -268,31 +270,124 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data,tim
       },
       Percentage: MetricesCalculation_Data.accessibilityReport.actualPercentage,
       Warning: MetricesCalculation_Data.accessibilityReport.warning,
+      Passed: MetricesCalculation_Data.accessibilityReport.passed,
       Total: MetricesCalculation_Data.accessibilityReport.Total
     },
     Security_or_Compliance: {
-      HTTPS:{
-        Score:MetricesCalculation_Data.securityReport.D.httpsMixedContent,
-        Parameter:'Check for presence of HTTPS in provided URL',
-      },
-      HSTS:{
-        Score:MetricesCalculation_Data.securityReport.D.hsts,
-        Parameter:'Check for Strict transport security is available or not',
-      },
-      Security_Headers:{
-        Score:MetricesCalculation_Data.securityReport.D.securityHeaders,
-        Parameter:'Check for all security headers are present or not ("content-security-policy","x-content-type-options","referrer-policy","x-frame-options","cross-origin-opener-policy")',
-      },
-      Cookie_Banner_and_Consent_Mode:{
-        Score:MetricesCalculation_Data.securityReport.D.cookieConsent,
-        Parameter:'Check for banner found or not ("cookie","consent","privacy","policy","accept","gdpr","tracking")',
-      },
-      Error_Pages:{
-        Score:MetricesCalculation_Data.securityReport.D.errorPages,
-        Parameter:'Check for Site have proper custom error page or not',
-      },
-      Security_or_Compliance_Score_Total: MetricesCalculation_Data.securityReport.D.totalDScore,
+    HTTPS: {
+      Score: MetricesCalculation_Data.securityReport.checkHTTPSScore,
+      Parameter: '1 if HTTPS is implemented, else 0'
     },
+    SSL: {
+      Score: MetricesCalculation_Data.securityReport.checkSSLScore,
+      Parameter: '1 if SSL/TLS certificate is valid, else 0'
+    },
+    SSL_Expiry: {
+      Score: MetricesCalculation_Data.securityReport.checkSSLCertificateExpiryScore,
+      Parameter: '1 if SSL certificate is not expired, else 0'
+    },
+    HSTS: {
+      Score: MetricesCalculation_Data.securityReport.checkHSTSScore,
+      Parameter: '1 if HSTS header is present, else 0'
+    },
+    TLS_Version: {
+      Score: MetricesCalculation_Data.securityReport.checkTLSVersionScore,
+      Parameter: '1 if secure TLS version is used, else 0'
+    },
+    X_Frame_Options: {
+      Score: MetricesCalculation_Data.securityReport.checkXFrameOptionsScore,
+      Parameter: '1 if X-Frame-Options header is set, else 0'
+    },
+    CSP: {
+      Score: MetricesCalculation_Data.securityReport.checkCSPScore,
+      Parameter: '1 if Content Security Policy (CSP) is set, else 0'
+    },
+    X_Content_Type_Options: {
+      Score: MetricesCalculation_Data.securityReport.checkXContentTypeOptionsScore,
+      Parameter: '1 if X-Content-Type-Options header is set, else 0'
+    },
+    Cookies_Secure: {
+      Score: MetricesCalculation_Data.securityReport.checkCookiesSecureScore,
+      Parameter: '1 if cookies are set with Secure flag, else 0'
+    },
+    Cookies_HttpOnly: {
+      Score: MetricesCalculation_Data.securityReport.checkCookiesHttpOnlyScore,
+      Parameter: '1 if cookies are HttpOnly, else 0'
+    },
+    Google_Safe_Browsing: {
+      Score: MetricesCalculation_Data.securityReport.safeBrowsingScore,
+      Parameter: '1 if site is safe according to Google Safe Browsing, else 0'
+    },
+    Blacklist: {
+      Score: MetricesCalculation_Data.securityReport.blacklistScore,
+      Parameter: '1 if site is not blacklisted, else 0'
+    },
+    Malware_Scan: {
+      Score: MetricesCalculation_Data.securityReport.malwareScanScore,
+      Parameter: '1 if no malware detected, else 0'
+    },
+    SQLi_Exposure: {
+      Score: MetricesCalculation_Data.securityReport.sqliExposureScore,
+      Parameter: '1 if site is not vulnerable to SQL injection, else 0'
+    },
+    XSS: {
+      Score: MetricesCalculation_Data.securityReport.xssVulnerabilityScore,
+      Parameter: '1 if site is not vulnerable to XSS, else 0'
+    },
+    Cookie_Consent: {
+      Score: MetricesCalculation_Data.securityReport.cookieConsentScore,
+      Parameter: '1 if cookie consent banner is implemented, else 0'
+    },
+    Privacy_Policy: {
+      Score: MetricesCalculation_Data.securityReport.privacyPolicyScore,
+      Parameter: '1 if privacy policy exists, else 0'
+    },
+    Forms_Use_HTTPS: {
+      Score: MetricesCalculation_Data.securityReport.formsUseHTTPSScore,
+      Parameter: '1 if forms submit over HTTPS, else 0'
+    },
+    GDPR_CCPA: {
+      Score: MetricesCalculation_Data.securityReport.checkGDPRCCPAScore,
+      Parameter: '1 if GDPR/CCPA compliance implemented, else 0'
+    },
+    Data_Collection: {
+      Score: MetricesCalculation_Data.securityReport.checkDataCollectionScore,
+      Parameter: '1 if data collection practices are compliant, else 0'
+    },
+    Weak_Default_Credentials: {
+      Score: MetricesCalculation_Data.securityReport.weakDefaultCredsScore,
+      Parameter: '1 if no weak default credentials exist, else 0'
+    },
+    MFA_Enabled: {
+      Score: MetricesCalculation_Data.securityReport.mfaEnabledScore,
+      Parameter: '1 if multi-factor authentication is enabled, else 0'
+    },
+    Admin_Panel_Public: {
+      Score: MetricesCalculation_Data.securityReport.checkAdminPanelPublicScore,
+      Parameter: '1 if admin panel is not publicly accessible, else 0'
+    },
+    Mixed_Content: {
+      Score: MetricesCalculation_Data.securityReport.mixedContentScore,
+      Parameter: '1 if no mixed content (HTTP resources) exists, else 0'
+    },
+    Vulnerable_JS: {
+      Score: MetricesCalculation_Data.securityReport.vulnerableJSScore,
+      Parameter: '1 if no vulnerable JS libraries detected, else 0'
+    },
+    Noopener: {
+      Score: MetricesCalculation_Data.securityReport.noopenerScore,
+      Parameter: '1 if links with target=_blank use rel=noopener, else 0'
+    },
+    Console_Errors: {
+      Score: MetricesCalculation_Data.securityReport.consoleErrorsScore,
+      Parameter: '1 if no console errors found, else 0'
+    },
+    Actual_Percentage: MetricesCalculation_Data.securityReport.actualPercentage,
+    Warning: MetricesCalculation_Data.securityReport.warning,
+    Passed:MetricesCalculation_Data.securityReport. passed,
+    Total: MetricesCalculation_Data.securityReport.Total,
+    Improvements: MetricesCalculation_Data.securityReport.improvements
+  },
     UX_and_Content_Structure: {
       Mobile_Friendliness:{
         Score: MetricesCalculation_Data.uxReport.E.mobileFriendliness,

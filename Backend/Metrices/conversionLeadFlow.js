@@ -1,6 +1,6 @@
 import * as cheerio from "cheerio";
 
-export default async function conversionLeadFlow(page) {
+export default async function conversionLeadFlow(url,page) {
 
       await page.goto(url, {waitUntil: "networkidle2",timeout: 240000});
       await page.waitForSelector("body", { timeout: 240000 });

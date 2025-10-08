@@ -4,7 +4,7 @@ export default async function accessibilityMetrics(url,page) {
 
   await page.setRequestInterception(true);
   page.on("request", (request) => {
-    const blockedResources = ["image", "stylesheet", "font"];
+    const blockedResources = ["image","font"];
     if (blockedResources.includes(request.resourceType())) {
       request.abort();
     } else {
@@ -12,16 +12,7 @@ export default async function accessibilityMetrics(url,page) {
     }
   });
 
-  try {
-    await page.goto(url, {
-      waitUntil: "networkidle2", 
-      timeout: 240000,         
-    });
-  } catch (err) {
-    console.error("Page navigation failed:", err.message);
-    await browser.close();
-    return { error: "Page failed to load" };
-  }
+  await page.goto(url, {waitUntil: "networkidle2", timeout: 300000});
 
   let results;
   try {
@@ -68,6 +59,9 @@ function calculatePassRate(results, ruleIds) {
 
   const Total = colorContrast+focusOrder+focusableContent+tabindex+interactiveElementAffordance+label+ariaAllowedAttr+ariaRoles+ariaHiddenFocus+imageAlt+skipLinks+landMarks
 
+  // Passed
+  const passed = [];
+
   // Warning
   const warning = [];
 
@@ -79,6 +73,14 @@ if (colorContrast === 0) {
     severity: "High 🔴",
     suggestion: "Adjust text and background colors to improve readability for all users."
   });
+} else {
+  passed.push({
+    metric: "Color Contrast",
+    current: "Sufficient contrast",
+    recommended: "Ensure sufficient contrast between text and background (WCAG AA standard)",
+    severity: "✅ Passed",
+    suggestion: "Text and background contrast meet accessibility standards."
+  });
 }
 
 if (focusOrder === 0) {
@@ -88,6 +90,14 @@ if (focusOrder === 0) {
     recommended: "Logical focus sequence following the DOM order",
     severity: "Medium 🟡",
     suggestion: "Ensure that keyboard navigation follows a logical and intuitive order."
+  });
+} else {
+  passed.push({
+    metric: "Focus Order",
+    current: "Logical focus order",
+    recommended: "Logical focus sequence following the DOM order",
+    severity: "✅ Passed",
+    suggestion: "Focus order is correct."
   });
 }
 
@@ -99,6 +109,14 @@ if (focusableContent === 0) {
     severity: "Medium 🟡",
     suggestion: "Add proper focus handling to all interactive elements."
   });
+} else {
+  passed.push({
+    metric: "Focusable Content",
+    current: "All interactive elements focusable",
+    recommended: "All interactive elements must be focusable",
+    severity: "✅ Passed",
+    suggestion: "Interactive elements are properly focusable."
+  });
 }
 
 if (tabindex === 0) {
@@ -108,6 +126,14 @@ if (tabindex === 0) {
     recommended: "Use tabindex correctly (avoid >0 values unless necessary)",
     severity: "Medium 🟡",
     suggestion: "Correct tabindex attributes to maintain proper navigation order."
+  });
+} else {
+  passed.push({
+    metric: "Tabindex",
+    current: "Tabindex used correctly",
+    recommended: "Use tabindex correctly (avoid >0 values unless necessary)",
+    severity: "✅ Passed",
+    suggestion: "Tabindex implementation is correct."
   });
 }
 
@@ -119,6 +145,14 @@ if (interactiveElementAffordance === 0) {
     severity: "Medium 🟡",
     suggestion: "Ensure clickable elements look interactive (e.g., hover, focus styles)."
   });
+} else {
+  passed.push({
+    metric: "Interactive Element Affordance",
+    current: "Interactive elements visually clear",
+    recommended: "Provide clear affordance (buttons, links visually distinct)",
+    severity: "✅ Passed",
+    suggestion: "Interactive elements provide clear visual cues."
+  });
 }
 
 if (label === 0) {
@@ -128,6 +162,14 @@ if (label === 0) {
     recommended: "All form elements must have descriptive labels",
     severity: "High 🔴",
     suggestion: "Add <label> or aria-label attributes to improve accessibility."
+  });
+} else {
+  passed.push({
+    metric: "Form Labels",
+    current: "All form inputs labeled",
+    recommended: "All form elements must have descriptive labels",
+    severity: "✅ Passed",
+    suggestion: "Form labels are implemented correctly."
   });
 }
 
@@ -139,6 +181,14 @@ if (ariaAllowedAttr === 0) {
     severity: "Medium 🟡",
     suggestion: "Remove or correct invalid ARIA attributes for compliance."
   });
+} else {
+  passed.push({
+    metric: "ARIA Allowed Attributes",
+    current: "Valid ARIA attributes",
+    recommended: "Use only valid ARIA attributes",
+    severity: "✅ Passed",
+    suggestion: "ARIA attributes are valid."
+  });
 }
 
 if (ariaRoles === 0) {
@@ -148,6 +198,14 @@ if (ariaRoles === 0) {
     recommended: "Use valid ARIA roles for elements",
     severity: "Medium 🟡",
     suggestion: "Assign correct ARIA roles according to element purpose."
+  });
+} else {
+  passed.push({
+    metric: "ARIA Roles",
+    current: "Correct ARIA roles",
+    recommended: "Use valid ARIA roles for elements",
+    severity: "✅ Passed",
+    suggestion: "ARIA roles are implemented correctly."
   });
 }
 
@@ -159,6 +217,14 @@ if (ariaHiddenFocus === 0) {
     severity: "Medium 🟡",
     suggestion: "Ensure elements with aria-hidden=true are removed from focus order."
   });
+} else {
+  passed.push({
+    metric: "Hidden Focusable Elements",
+    current: "Hidden elements not focusable",
+    recommended: "Hidden elements should not be focusable",
+    severity: "✅ Passed",
+    suggestion: "Hidden elements correctly excluded from focus."
+  });
 }
 
 if (imageAlt === 0) {
@@ -168,6 +234,14 @@ if (imageAlt === 0) {
     recommended: "All images should have meaningful alt attributes",
     severity: "High 🔴",
     suggestion: "Add descriptive alt text to all meaningful images for accessibility and SEO."
+  });
+} else {
+  passed.push({
+    metric: "Image Alt Text",
+    current: "All images have alt text",
+    recommended: "All images should have meaningful alt attributes",
+    severity: "✅ Passed",
+    suggestion: "Alt text is correctly implemented for all images."
   });
 }
 
@@ -179,6 +253,14 @@ if (skipLinks === 0) {
     severity: "Low 🟢",
     suggestion: "Add a skip-to-content link for keyboard users to improve navigation."
   });
+} else {
+  passed.push({
+    metric: "Skip Links",
+    current: "Skip links present",
+    recommended: "Provide skip navigation links",
+    severity: "✅ Passed",
+    suggestion: "Skip links implemented correctly."
+  });
 }
 
 if (landMarks === 0) {
@@ -189,12 +271,21 @@ if (landMarks === 0) {
     severity: "Medium 🟡",
     suggestion: "Add ARIA landmark roles to improve screen reader navigation."
   });
+} else {
+  passed.push({
+    metric: "Landmark Roles",
+    current: "Landmark roles present",
+    recommended: "Include banner, main, contentinfo, navigation, complementary roles",
+    severity: "✅ Passed",
+    suggestion: "Landmark roles are correctly implemented."
+  });
 }
 
   const actualPercentage = parseFloat((((Total)/12)*100).toFixed(0));
 
   // console.log(actualPercentage);
   // console.log(warning);
+  // console.log(passed);
   // console.log(Total);
 
   return {
@@ -211,6 +302,7 @@ if (landMarks === 0) {
     skipLinks,
     landMarks,
     actualPercentage,warning,
+    passed,
     Total
   };
 }
