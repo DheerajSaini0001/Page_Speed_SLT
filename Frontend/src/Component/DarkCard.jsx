@@ -197,7 +197,7 @@ export default function DarkCard() {
 
             {/* Dashboard */}
             <div className="flex-1 lg:ml-64 pb-0 flex-col justify-center pr-4 pt-2 space-y-8">
-              {/* <section id="deshboard" className="scroll-mt-20"><Dashboard2 data={result} /></section> */}
+              <section id="deshboard" className="scroll-mt-20"><Dashboard2 data={result} /></section>
               <section id="technical-performance" className="scroll-mt-20"><Technical_Performance data={result} /></section>
               {/* <section id="on-page-seo" className="scroll-mt-20"><On_Page_SEO data={result} /></section>
               <section id="accessibility"><Accessibility data={result} /></section>
