@@ -94,14 +94,6 @@ export default async function technicalMetrics(url,data,page) {
   }
 
   // Technical Performance (Crawlability & Hygiene)
-  // const browser = await puppeteer.launch({headless: true,args: ["--no-sandbox", "--disable-setuid-sandbox"]});
-  // const page = await browser.newPage();
-  // await page.setUserAgent(
-  //     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
-  //     "(KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
-  //   );
-  // await page.setExtraHTTPHeaders({ "Accept-Language": "en-US,en;q=0.9" });
-
   const response = await page.goto(url, { waitUntil: "networkidle2",timeout: 240000 });
 
   const chain = response.request().redirectChain();
@@ -181,159 +173,343 @@ export default async function technicalMetrics(url,data,page) {
   }
   
   const Total = parseFloat((((coreWebVitalsTotal + deliveryAndRenderTotal + crawlabilityAndHygieneTotal)/18)*100).toFixed(0))
-
+  
+  // Passed
+  const passed = [];
+  
   // Improvements
   const improvements = [];
 
 // Technical Performance (Core Web Vitals)
-if (fidScore === 0) improvements.push({
-  metric: "First Input Delay (FID)",
-  current: fidValue + "ms",
-  recommended: "< 100ms",
-  severity: "High 🟠",
-  suggestion: "Reduce JavaScript execution time and break up long tasks to improve interactivity."
-});
+if (fidScore === 0) {
+  improvements.push({
+    metric: "First Input Delay (FID)",
+    current: fidValue + "ms",
+    recommended: "< 100ms",
+    severity: "High 🟠",
+    suggestion: "Reduce JavaScript execution time and break up long tasks to improve interactivity."
+  });
+} else {
+  passed.push({
+    metric: "First Input Delay (FID)",
+    current: fidValue + "ms",
+    recommended: "< 100ms",
+    severity: "✅ Passed",
+    suggestion: "FID is within optimal range."
+  });
+}
 
 // Technical Performance (Delivery & Render)
-if (compressionScore === 0) improvements.push({
-  metric: "Text Compression",
-  current: "Disabled",
-  recommended: "Enabled (gzip/brotli)",
-  severity: "Medium 🟡",
-  suggestion: "Enable text compression to reduce payload size and speed up page load."
-});
+if (compressionScore === 0) {
+  improvements.push({
+    metric: "Text Compression",
+    current: "Disabled",
+    recommended: "Enabled (gzip/brotli)",
+    severity: "Medium 🟡",
+    suggestion: "Enable text compression to reduce payload size and speed up page load."
+  });
+} else {
+  passed.push({
+    metric: "Text Compression",
+    current: "Enabled",
+    recommended: "Enabled (gzip/brotli)",
+    severity: "✅ Passed",
+    suggestion: "Text compression is enabled."
+  });
+}
 
-if (cachingScore === 0) improvements.push({
-  metric: "Caching",
-  current: cachingValue + "s",
-  recommended: "≥ 7 days",
-  severity: "Medium 🟡",
-  suggestion: "Set long cache TTL for static resources to improve repeat visit speed."
-});
+if (cachingScore === 0) {
+  improvements.push({
+    metric: "Caching",
+    current: cachingValue + "s",
+    recommended: "≥ 7 days",
+    severity: "Medium 🟡",
+    suggestion: "Set long cache TTL for static resources to improve repeat visit speed."
+  });
+} else {
+  passed.push({
+    metric: "Caching",
+    current: cachingValue + "s",
+    recommended: "≥ 7 days",
+    severity: "✅ Passed",
+    suggestion: "Caching is properly set."
+  });
+}
 
-if (resourceOptimizationScore === 0) improvements.push({
-  metric: "Resource Optimization",
-  current: "Not fully optimized",
-  recommended: "Images optimized, CSS/JS minified, offscreen images deferred",
-  severity: "High 🟠",
-  suggestion: "Compress images, minify CSS/JS, and lazy-load offscreen images to improve load times."
-});
+if (resourceOptimizationScore === 0) {
+  improvements.push({
+    metric: "Resource Optimization",
+    current: "Not fully optimized",
+    recommended: "Images optimized, CSS/JS minified, offscreen images deferred",
+    severity: "High 🟠",
+    suggestion: "Compress images, minify CSS/JS, and lazy-load offscreen images to improve load times."
+  });
+} else {
+  passed.push({
+    metric: "Resource Optimization",
+    current: "Optimized",
+    recommended: "Images optimized, CSS/JS minified, offscreen images deferred",
+    severity: "✅ Passed",
+    suggestion: "Resources are optimized."
+  });
+}
 
-if (renderBlockingScore === 0) improvements.push({
-  metric: "Render-Blocking Resources",
-  current: "Present",
-  recommended: "None",
-  severity: "High 🟠",
-  suggestion: "Defer or async non-critical CSS/JS to improve first render speed."
-});
+if (renderBlockingScore === 0) {
+  improvements.push({
+    metric: "Render-Blocking Resources",
+    current: "Present",
+    recommended: "None",
+    severity: "High 🟠",
+    suggestion: "Defer or async non-critical CSS/JS to improve first render speed."
+  });
+} else {
+  passed.push({
+    metric: "Render-Blocking Resources",
+    current: "None",
+    recommended: "None",
+    severity: "✅ Passed",
+    suggestion: "No render-blocking resources found."
+  });
+}
 
-if (httpsScore === 0) improvements.push({
-  metric: "HTTP/2 Protocol",
-  current: "Not enabled",
-  recommended: "Enabled",
-  severity: "Medium 🟡",
-  suggestion: "Enable HTTP/2 to allow multiplexing and faster delivery of resources."
-});
+if (httpsScore === 0) {
+  improvements.push({
+    metric: "HTTP/2 Protocol",
+    current: "Not enabled",
+    recommended: "Enabled",
+    severity: "Medium 🟡",
+    suggestion: "Enable HTTP/2 to allow multiplexing and faster delivery of resources."
+  });
+} else {
+  passed.push({
+    metric: "HTTP/2 Protocol",
+    current: "Enabled",
+    recommended: "Enabled",
+    severity: "✅ Passed",
+    suggestion: "HTTP/2 is enabled."
+  });
+}
 
 // Technical Performance (Crawlability & Hygiene)
-if (sitemapScore === 0) improvements.push({
-  metric: "Sitemap",
-  current: "Missing",
-  recommended: "Available",
-  severity: "Medium 🟡",
-  suggestion: "Add sitemap.xml and submit it to search engines for better indexing."
-});
+if (sitemapScore === 0) {
+  improvements.push({
+    metric: "Sitemap",
+    current: "Missing",
+    recommended: "Available",
+    severity: "Medium 🟡",
+    suggestion: "Add sitemap.xml and submit it to search engines for better indexing."
+  });
+} else {
+  passed.push({
+    metric: "Sitemap",
+    current: "Available",
+    recommended: "Available",
+    severity: "✅ Passed",
+    suggestion: "Sitemap is present."
+  });
+}
 
-if (robotsScore === 0) improvements.push({
-  metric: "Robots.txt",
-  current: "Missing",
-  recommended: "Available",
-  severity: "Medium 🟡",
-  suggestion: "Ensure robots.txt exists and allows proper crawling."
-});
+if (robotsScore === 0) {
+  improvements.push({
+    metric: "Robots.txt",
+    current: "Missing",
+    recommended: "Available",
+    severity: "Medium 🟡",
+    suggestion: "Ensure robots.txt exists and allows proper crawling."
+  });
+} else {
+  passed.push({
+    metric: "Robots.txt",
+    current: "Available",
+    recommended: "Available",
+    severity: "✅ Passed",
+    suggestion: "Robots.txt is properly configured."
+  });
+}
 
-if (structuredDataScore === 0) improvements.push({
-  metric: "Structured Data",
-  current: "Not present",
-  recommended: "JSON-LD structured data present",
-  severity: "Low 🟢",
-  suggestion: "Add structured data to improve search results display."
-});
+if (structuredDataScore === 0) {
+  improvements.push({
+    metric: "Structured Data",
+    current: "Not present",
+    recommended: "JSON-LD structured data present",
+    severity: "Low 🟢",
+    suggestion: "Add structured data to improve search results display."
+  });
+} else {
+  passed.push({
+    metric: "Structured Data",
+    current: "Present",
+    recommended: "JSON-LD structured data present",
+    severity: "✅ Passed",
+    suggestion: "Structured data is implemented."
+  });
+}
 
-if (brokenScore === 0) improvements.push({
-  metric: "Broken Links",
-  current: `${brokenPercent}% broken`,
-  recommended: "0%",
-  severity: "High 🟠",
-  suggestion: "Fix all broken links to improve user experience and SEO."
-});
+if (brokenScore === 0) {
+  improvements.push({
+    metric: "Broken Links",
+    current: `${brokenPercent}% broken`,
+    recommended: "0%",
+    severity: "High 🟠",
+    suggestion: "Fix all broken links to improve user experience and SEO."
+  });
+} else {
+  passed.push({
+    metric: "Broken Links",
+    current: "0% broken",
+    recommended: "0%",
+    severity: "✅ Passed",
+    suggestion: "No broken links found."
+  });
+}
 
-if (redirectScore === 0) improvements.push({
-  metric: "Redirect Chains",
-  current: `${hops} hops`,
-  recommended: "≤ 1 hop",
-  severity: "Medium 🟡",
-  suggestion: "Reduce redirect chains to speed up page load and improve crawlability."
-});
+if (redirectScore === 0) {
+  improvements.push({
+    metric: "Redirect Chains",
+    current: `${hops} hops`,
+    recommended: "≤ 1 hop",
+    severity: "Medium 🟡",
+    suggestion: "Reduce redirect chains to speed up page load and improve crawlability."
+  });
+} else {
+  passed.push({
+    metric: "Redirect Chains",
+    current: `${hops} hops`,
+    recommended: "≤ 1 hop",
+    severity: "✅ Passed",
+    suggestion: "Redirect chains are within acceptable limits."
+  });
+}
 
 // Warning
 const warning = [];
 
-if (lcpScore === 0) warning.push({
-  metric: "Largest Contentful Paint (LCP)",
-  current: lcpValue + "ms",
-  recommended: "< 2500ms",
-  severity: "Critical 🔴",
-  suggestion: "Optimize hero images, defer non-critical CSS, and improve server response for faster page loading."
-});
+// Technical Performance (Core Web Vitals)
+if (lcpScore === 0) {
+  warning.push({
+    metric: "Largest Contentful Paint (LCP)",
+    current: lcpValue + "ms",
+    recommended: "< 2500ms",
+    severity: "Critical 🔴",
+    suggestion: "Optimize hero images, defer non-critical CSS, and improve server response for faster page loading."
+  });
+} else {
+  passed.push({
+    metric: "Largest Contentful Paint (LCP)",
+    current: lcpValue + "ms",
+    recommended: "< 2500ms",
+    severity: "✅ Passed",
+    suggestion: "LCP is within optimal range."
+  });
+}
 
-if (tbtScore === 0) warning.push({
-  metric: "Total Blocking Time (TBT)",
-  current: tbtValue + "ms",
-  recommended: "< 300ms",
-  severity: "High 🟠",
-  suggestion: "Split heavy JS tasks, defer non-essential scripts to unblock main thread."
-});
+if (tbtScore === 0) {
+  warning.push({
+    metric: "Total Blocking Time (TBT)",
+    current: tbtValue + "ms",
+    recommended: "< 300ms",
+    severity: "High 🟠",
+    suggestion: "Split heavy JS tasks, defer non-essential scripts to unblock main thread."
+  });
+} else {
+  passed.push({
+    metric: "Total Blocking Time (TBT)",
+    current: tbtValue + "ms",
+    recommended: "< 300ms",
+    severity: "✅ Passed",
+    suggestion: "TBT is within optimal range."
+  });
+}
 
-if (clsScore === 0) warning.push({
-  metric: "Cumulative Layout Shift (CLS)",
-  current: clsValue,
-  recommended: "< 0.1",
-  severity: "High 🟠",
-  suggestion: "Set size attributes for images, videos, and ads to prevent layout shifts."
-});
+if (clsScore === 0) {
+  warning.push({
+    metric: "Cumulative Layout Shift (CLS)",
+    current: clsValue,
+    recommended: "< 0.1",
+    severity: "High 🟠",
+    suggestion: "Set size attributes for images, videos, and ads to prevent layout shifts."
+  });
+} else {
+  passed.push({
+    metric: "Cumulative Layout Shift (CLS)",
+    current: clsValue,
+    recommended: "< 0.1",
+    severity: "✅ Passed",
+    suggestion: "CLS is within optimal range."
+  });
+}
 
-if (fcpScore === 0) warning.push({
-  metric: "First Contentful Paint (FCP)",
-  current: fcpValue + "ms",
-  recommended: "< 1800ms",
-  severity: "Medium 🟡",
-  suggestion: "Prioritize above-the-fold content and optimize critical rendering paths."
-});
+if (fcpScore === 0) {
+  warning.push({
+    metric: "First Contentful Paint (FCP)",
+    current: fcpValue + "ms",
+    recommended: "< 1800ms",
+    severity: "Medium 🟡",
+    suggestion: "Prioritize above-the-fold content and optimize critical rendering paths."
+  });
+} else {
+  passed.push({
+    metric: "First Contentful Paint (FCP)",
+    current: fcpValue + "ms",
+    recommended: "< 1800ms",
+    severity: "✅ Passed",
+    suggestion: "FCP is within optimal range."
+  });
+}
 
-if (siScore === 0) warning.push({
-  metric: "Speed Index (SI)",
-  current: siValue + "ms",
-  recommended: "< 3000ms",
-  severity: "Medium 🟡",
-  suggestion: "Improve above-the-fold content loading for faster perceived speed."
-});
+if (siScore === 0) {
+  warning.push({
+    metric: "Speed Index (SI)",
+    current: siValue + "ms",
+    recommended: "< 3000ms",
+    severity: "Medium 🟡",
+    suggestion: "Improve above-the-fold content loading for faster perceived speed."
+  });
+} else {
+  passed.push({
+    metric: "Speed Index (SI)",
+    current: siValue + "ms",
+    recommended: "< 3000ms",
+    severity: "✅ Passed",
+    suggestion: "Speed Index is within optimal range."
+  });
+}
 
-if (ttfbScore === 0) warning.push({
-  metric: "Time To First Byte (TTFB)",
-  current: ttfbValue + "ms",
-  recommended: "< 200ms",
-  severity: "Critical 🔴",
-  suggestion: "Use a CDN, optimize server performance, or enable caching to reduce server response time."
-});
+if (ttfbScore === 0) {
+  warning.push({
+    metric: "Time To First Byte (TTFB)",
+    current: ttfbValue + "ms",
+    recommended: "< 200ms",
+    severity: "Critical 🔴",
+    suggestion: "Use a CDN, optimize server performance, or enable caching to reduce server response time."
+  });
+} else {
+  passed.push({
+    metric: "Time To First Byte (TTFB)",
+    current: ttfbValue + "ms",
+    recommended: "< 200ms",
+    severity: "✅ Passed",
+    suggestion: "TTFB is within optimal range."
+  });
+}
 
-if (inpScore === 0) warning.push({
-  metric: "Time to Interactive (TTI)",
-  current: inpValue + "ms",
-  recommended: "< 3800ms",
-  severity: "High 🟠",
-  suggestion: "Reduce main-thread work and optimize JS execution for faster interactivity."
-});
+if (inpScore === 0) {
+  warning.push({
+    metric: "Time to Interactive (TTI)",
+    current: inpValue + "ms",
+    recommended: "< 3800ms",
+    severity: "High 🟠",
+    suggestion: "Reduce main-thread work and optimize JS execution for faster interactivity."
+  });
+} else {
+  passed.push({
+    metric: "Time to Interactive (TTI)",
+    current: inpValue + "ms",
+    recommended: "< 3800ms",
+    severity: "✅ Passed",
+    suggestion: "TTI is within optimal range."
+  });
+}
 
 const actualPercentage = actuallcpScore + actualtbtScore + actualclsScore + actualfcpScore + actualsiScore + actualttfbScore + actualinpScore
 
@@ -344,19 +520,21 @@ const actualPercentage = actuallcpScore + actualtbtScore + actualclsScore + actu
 // console.log(actualsiScore);
 // console.log(actualttfbScore);
 // console.log(actualinpScore);
-  // console.log(coreWebVitals);
-  // console.log(deliveryAndRender);
-  // console.log(crawlabilityAndHygiene);
-  // console.log(actualPercentage);
-  // console.log(warning);
-  // console.log(Total);
-  // console.log(improvements);
+  console.log(coreWebVitals);
+  console.log(deliveryAndRender);
+  console.log(crawlabilityAndHygiene);
+  console.log(actualPercentage);
+  console.log(warning);
+  console.log(passed);
+  console.log(Total);
+  console.log(improvements);
   
   return {
     coreWebVitals,
     deliveryAndRender,
     crawlabilityAndHygiene,
     actualPercentage,warning,
+    passed,
     Total,improvements
   };
 }

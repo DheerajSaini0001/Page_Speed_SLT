@@ -475,6 +475,9 @@ const structureAndUniqueness = {
 
 const Total = parseFloat((((essentialsTotal + mediaAndSemanticsTotal + structureAndUniquenessTotal) / 20) * 100).toFixed(0));
 
+// Passed
+const passed = [];
+
 // Improvements
 const improvements = [];
 
@@ -486,7 +489,16 @@ if (URLStructureScore === 0){
     recommended: "≤ 5 segments, lowercase, hyphen-separated",
     severity: "Medium 🟡",
     suggestion: "Use clean, SEO-friendly URLs with hyphens instead of underscores or symbols."
-  })};
+  });
+} else {
+  passed.push({
+    metric: "URL Structure",
+    current: "Clean URL",
+    recommended: "≤ 5 segments, lowercase, hyphen-separated",
+    severity: "✅ Passed",
+    suggestion: "URL structure is SEO-friendly."
+  });
+}
 
 // On-Page SEO (Media & Semantics) 
 if (h1Count === 0) {
@@ -504,6 +516,14 @@ if (h1Count === 0) {
     recommended: "Exactly 1 H1 per page",
     severity: "Medium 🟡",
     suggestion: "Keep only one H1 tag and use H2–H6 for subheadings."
+  });
+} else {
+  passed.push({
+    metric: "H1 Tag",
+    current: "1 H1 tag",
+    recommended: "Exactly 1 H1 per page",
+    severity: "✅ Passed",
+    suggestion: "H1 tag is correctly implemented."
   });
 }
 
@@ -523,6 +543,14 @@ if (imagePresenceScore === 0) {
     severity: "Medium 🟡",
     suggestion: "Add descriptive, meaningful alt text for images to improve accessibility and SEO."
   });
+} else {
+  passed.push({
+    metric: "Image Alt Text",
+    current: "Images optimized with proper alt text",
+    recommended: "> 90% images should have descriptive alt text",
+    severity: "✅ Passed",
+    suggestion: "Images and alt texts are optimized."
+  });
 }
 
 if (videoExistanceScore === 0) {
@@ -541,6 +569,14 @@ if (videoExistanceScore === 0) {
     severity: "Medium 🟡",
     suggestion: "Ensure videos are embedded correctly, use lazy loading, and add JSON-LD metadata."
   });
+} else {
+  passed.push({
+    metric: "Video SEO",
+    current: "Videos optimized",
+    recommended: "Proper embedding, lazy-loading, structured data",
+    severity: "✅ Passed",
+    suggestion: "Video SEO is implemented correctly."
+  });
 }
 
 if (hierarchy === 0) {
@@ -550,6 +586,14 @@ if (hierarchy === 0) {
     recommended: "Logical H1 → H2 → H3 structure",
     severity: "Medium 🟡",
     suggestion: "Ensure headings follow a proper nested hierarchy for better crawlability."
+  });
+} else {
+  passed.push({
+    metric: "Heading Hierarchy",
+    current: "Proper hierarchy",
+    recommended: "Logical H1 → H2 → H3 structure",
+    severity: "✅ Passed",
+    suggestion: "Headings follow proper hierarchical structure."
   });
 }
 
@@ -562,6 +606,14 @@ if (hierarchy === 0) {
       severity: "Low 🟢",
       suggestion: `Add <${tag}> tag to improve semantic HTML and accessibility.`
     });
+  } else {
+    passed.push({
+      metric: `${tag.charAt(0).toUpperCase() + tag.slice(1)} Tag`,
+      current: "Present",
+      recommended: `Use <${tag}> for semantic structure`,
+      severity: "✅ Passed",
+      suggestion: `${tag} tag implemented correctly.`
+    });
   }
 });
 
@@ -572,7 +624,15 @@ if (dupScore === 0) {
     current: "Duplicate or thin content detected",
     recommended: "Unique content per page",
     severity: "High 🔴",
-    suggestion: "Rewrite or merge duplicate pages and use canonical tags to consolidate authority."
+    suggestion: "Rewrite or merge duplicate pages and use canonical tags."
+  });
+} else {
+  passed.push({
+    metric: "Duplicate Content",
+    current: "Unique content",
+    recommended: "Unique content per page",
+    severity: "✅ Passed",
+    suggestion: "Content is unique."
   });
 }
 
@@ -582,98 +642,136 @@ if (slugCheckScore === 0 || slugScore === 0) {
     current: slug || "Missing or invalid slug",
     recommended: "Lowercase, hyphen-separated, ≤ 25 characters",
     severity: "Medium 🟡",
-    suggestion: "Simplify slugs and include target keywords (e.g., /best-laptops-2025)."
+    suggestion: "Simplify slugs and include target keywords."
+  });
+} else {
+  passed.push({
+    metric: "Slug Structure",
+    current: slug,
+    recommended: "Lowercase, hyphen-separated, ≤ 25 characters",
+    severity: "✅ Passed",
+    suggestion: "Slug structure is correct."
   });
 }
 
 // Warning
 const warning = [];
 
+// On-Page SEO (Essentials) 
 if (!title || titleExistanceScore === 0) {
-  warning.push ( {
+  warning.push({
     metric: "Title Tag",
     current: "Missing",
     recommended: "30–60 characters, unique per page",
     severity: "High 🔴",
     suggestion: "Add a unique, keyword-rich title within 30–60 characters."
   });
+} else {
+  if (titleLength < 30) {
+    warning.push({
+      metric: "Title Tag",
+      current: `Too short (${titleLength} characters)`,
+      recommended: "30–60 characters, unique per page",
+      severity: "High 🔴",
+      suggestion: "Lengthen the title to at least 30 characters, include main keywords."
+    });
+  } else if (titleLength > 60) {
+    warning.push({
+      metric: "Title Tag",
+      current: `Too long (${titleLength} characters)`,
+      recommended: "30–60 characters, unique per page",
+      severity: "High 🔴",
+      suggestion: "Shorten the title to under 60 characters and keep it concise."
+    });
+  } else {
+    passed.push({
+      metric: "Title Tag",
+      current: `${titleLength} characters`,
+      recommended: "30–60 characters, unique per page",
+      severity: "✅ Passed",
+      suggestion: "Title length is optimal."
+    });
+  }
 }
-else{
-if (titleLength < 30) {
-  warning.push ( {
-    metric: "Title Tag",
-    current: `Too short (${titleLength} characters)`,
-    recommended: "30–60 characters, unique per page",
-    severity: "High 🔴",
-    suggestion: "Lengthen the title to at least 30 characters, include main keywords."
-  });
-} 
-if (titleLength > 60) {
-  warning.push ( {
-    metric: "Title Tag",
-    current: `Too long (${titleLength} characters)`,
-    recommended: "30–60 characters, unique per page",
-    severity: "High 🔴",
-    suggestion: "Shorten the title to under 60 characters and keep it concise."
-  });
-}}
 
 if (!metaDesc || metaDescExistanceScore === 0) {
-  warning.push ( {
+  warning.push({
     metric: "Meta Description",
     current: "Missing",
     recommended: "≤ 160 characters, unique per page",
     severity: "High 🔴",
-    suggestion: "Add a concise meta description that summarizes the page content and includes relevant keywords."
+    suggestion: "Add a concise meta description including keywords."
   });
+} else {
+  if (metaDescLength < 50) {
+    warning.push({
+      metric: "Meta Description",
+      current: `Too short (${metaDescLength} characters)`,
+      recommended: "50–160 characters, unique per page",
+      severity: "Medium 🟡",
+      suggestion: "Lengthen the meta description to at least 50 characters."
+    });
+  } else if (metaDescLength > 165) {
+    warning.push({
+      metric: "Meta Description",
+      current: `Too long (${metaDescLength} characters)`,
+      recommended: "50–160 characters, unique per page",
+      severity: "Medium 🟡",
+      suggestion: "Shorten the meta description to under 165 characters."
+    });
+  } else {
+    passed.push({
+      metric: "Meta Description",
+      current: `${metaDescLength} characters`,
+      recommended: "50–160 characters, unique per page",
+      severity: "✅ Passed",
+      suggestion: "Meta description length is optimal."
+    });
+  }
 }
-else{
-if (metaDescLength < 50) {
-  warning.push ( {
-    metric: "Meta Description",
-    current: `Too short (${metaDescLength} characters)`,
-    recommended: "50–160 characters, unique per page",
-    severity: "Medium 🟡",
-    suggestion: "Lengthen the meta description to at least 50 characters to better summarize content."
-  });
-} 
-if (metaDescLength > 165) {
-  warning.push ( {
-    metric: "Meta Description",
-    current: `Too long (${metaDescLength} characters)`,
-    recommended: "50–160 characters, unique per page",
-    severity: "Medium 🟡",
-    suggestion: "Shorten the meta description to under 165 characters for optimal display in search results."
-  });
-}}
 
 if (!canonical || canonicalExistanceScore === 0) {
-  warning.push ( {
+  warning.push({
     metric: "Canonical Tag",
     current: "Missing",
     recommended: "Self-referencing canonical tag",
     severity: "High 🔴",
-    suggestion: "Add a canonical tag pointing to the same page to prevent duplicate content issues."
+    suggestion: "Add a canonical tag pointing to the same page."
   });
-} 
-else{
-if (canonicalScore === 0) {
-  warning.push ( {
+} else if (canonicalScore === 0) {
+  warning.push({
     metric: "Canonical Tag",
     current: "Incorrect or not self-referencing",
     recommended: "Self-referencing canonical tag",
     severity: "High 🔴",
-    suggestion: "Update the canonical tag so it matches the current page URL exactly."
+    suggestion: "Update canonical tag to match current URL."
   });
-}}
+} else {
+  passed.push({
+    metric: "Canonical Tag",
+    current: "Correct",
+    recommended: "Self-referencing canonical tag",
+    severity: "✅ Passed",
+    suggestion: "Canonical tag is correct."
+  });
+}
 
+// On-Page SEO (Media & Semantics) 
 if (checkHTTPSScore === 0) {
   warning.push({
     metric: "HTTPS Implementation",
     current: "Not using HTTPS",
     recommended: "All pages should use HTTPS",
     severity: "High 🔴",
-    suggestion: "Secure all pages using HTTPS and fix mixed-content issues to improve trust and ranking."
+    suggestion: "Secure all pages using HTTPS and fix mixed-content issues."
+  });
+} else {
+  passed.push({
+    metric: "HTTPS Implementation",
+    current: "HTTPS enabled",
+    recommended: "All pages should use HTTPS",
+    severity: "✅ Passed",
+    suggestion: "HTTPS is correctly implemented."
   });
 }
 
@@ -683,7 +781,15 @@ if (internalLinksDescriptiveScore === 0) {
     current: `${internalLinksDescriptiveScore} descriptive`,
     recommended: "≥ 75% descriptive anchors",
     severity: "Medium 🟡",
-    suggestion: "Use keyword-rich descriptive text for internal links instead of generic phrases like 'click here'."
+    suggestion: "Use keyword-rich descriptive anchors for internal links."
+  });
+} else {
+  passed.push({
+    metric: "Internal Links",
+    current: "≥ 75% descriptive",
+    recommended: "≥ 75% descriptive anchors",
+    severity: "✅ Passed",
+    suggestion: "Internal links are descriptive."
   });
 }
 
@@ -693,10 +799,19 @@ if (alttextScore === 0) {
     current: "ALT text not descriptive enough or missing keywords",
     recommended: "Include relevant keywords in alt attributes",
     severity: "Medium 🟡",
-    suggestion: "Ensure ALT attributes are meaningful and, where possible, include target keywords."
+    suggestion: "Ensure ALT attributes are meaningful and include target keywords."
+  });
+} else {
+  passed.push({
+    metric: "ALT Text Relevance",
+    current: "Descriptive ALT text",
+    recommended: "Include relevant keywords in alt attributes",
+    severity: "✅ Passed",
+    suggestion: "ALT text is descriptive and keyword-optimized."
   });
 }
 
+// On-Page SEO (Structure & Uniqueness) 
 if (paginationScore === 0) {
   warning.push({
     metric: "Pagination",
@@ -704,6 +819,14 @@ if (paginationScore === 0) {
     recommended: "Use rel=next/prev or logical pagination links",
     severity: "Low 🟢",
     suggestion: "Add pagination links or structured markup for multi-page content."
+  });
+} else {
+  passed.push({
+    metric: "Pagination",
+    current: "Pagination present",
+    recommended: "Use rel=next/prev or logical pagination links",
+    severity: "✅ Passed",
+    suggestion: "Pagination is implemented correctly."
   });
 }
 
@@ -714,6 +837,7 @@ const actualPercentage = parseFloat((((paginationScore+titleExistanceScore+metaD
 // console.log(structureAndUniqueness);
 // console.log(actualPercentage);
 // console.log(warning);
+// console.log(passed);
 // console.log(Total);
 // console.log(improvements);
 
@@ -722,6 +846,7 @@ return {
   mediaAndSemantics,
   structureAndUniqueness,
   actualPercentage,warning,
+  passed,
   Total,improvements
 }
 }

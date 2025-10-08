@@ -26,49 +26,49 @@ export default function Technical_Performance({ data }) {
   const textColor = darkMode ? "text-white" : "text-black";
 
   // Check if any metric failed
-  const hasError1 =
-    data.Technical_Performance.Core_Web_Vitals.LCP.Score === 0 ||
-    data.Technical_Performance.Core_Web_Vitals.CLS.Score === 0 ||
-    data.Technical_Performance.Core_Web_Vitals.INP.Score === 0 ;
-    const hasError2=
-    data.Technical_Performance.Delivery_and_Render.TTFB.Score === 0 ||
-    data.Technical_Performance.Delivery_and_Render.Compression.Score === 0 ||
-    data.Technical_Performance.Delivery_and_Render.Caching.Score === 0 ||
-    data.Technical_Performance.Delivery_and_Render.HTTP.Score === 0 ;
-    const hasError3=
-    data.Technical_Performance.Crawlability_and_Hygiene.Sitemap.Score === 0 ||
-    data.Technical_Performance.Crawlability_and_Hygiene.Robots.Score === 0 ||
-    data.Technical_Performance.Crawlability_and_Hygiene.Broken_Links.Score === 0 ||
-    data.Technical_Performance.Crawlability_and_Hygiene.Redirect_Chains.Score === 0;
+  // const hasError1 =
+  //   data.Technical_Performance.Core_Web_Vitals.LCP.Score === 0 ||
+  //   data.Technical_Performance.Core_Web_Vitals.CLS.Score === 0 ||
+  //   data.Technical_Performance.Core_Web_Vitals.INP.Score === 0 ;
+  //   const hasError2=
+  //   data.Technical_Performance.Delivery_and_Render.TTFB.Score === 0 ||
+  //   data.Technical_Performance.Delivery_and_Render.Compression.Score === 0 ||
+  //   data.Technical_Performance.Delivery_and_Render.Caching.Score === 0 ||
+  //   data.Technical_Performance.Delivery_and_Render.HTTP.Score === 0 ;
+  //   const hasError3=
+  //   data.Technical_Performance.Crawlability_and_Hygiene.Sitemap.Score === 0 ||
+  //   data.Technical_Performance.Crawlability_and_Hygiene.Robots.Score === 0 ||
+  //   data.Technical_Performance.Crawlability_and_Hygiene.Broken_Links.Score === 0 ||
+  //   data.Technical_Performance.Crawlability_and_Hygiene.Redirect_Chains.Score === 0;
 
   return (
     <div
       id="TechnicalPerformance"
       className={`min-h-fit pt-20 pb-16 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 m-4 flex flex-col items-center justify-start p-6 space-y-6 ${containerBg}`}
     >
-      <h1 className={`responsive text-heading-25 flex items-center justify-center sm:gap-10 text-3xl font-extrabold mb-6 ${textColor}`}>
+      {/* <h1 className={`responsive text-heading-25 flex items-center justify-center sm:gap-10 text-3xl font-extrabold mb-6 ${textColor}`}>
         Technical Performance
         <CircularProgress
           value={data.Technical_Performance.Technical_Performance_Score_Total}
           size={70}
           stroke={5}
         />
-      </h1>
+      </h1> */}
 
       {/* Core Web Vitals */}
-      <div className={`w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-indigo-500 hover:scale-105 transition-transform duration-300 ${cardBg}`}>
-        <h2 className={`text-xl font-bold mb-4 ${textColor}`}>Core Web Vitals</h2>
+   
+     
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div className="flex justify-between items-center">
             <span className={textColor}>Largest Contentful Paint (LCP)</span>
             <ScoreBadge
               score={data.Technical_Performance.Core_Web_Vitals.LCP.Score}
-              out={data.Technical_Performance.Core_Web_Vitals.LCP.Time}
-              unit={"Sec"}
-              des={data.Technical_Performance.Core_Web_Vitals.LCP.Score ? "Good" : "Poor"}
+              // out={data.Technical_Performance.Core_Web_Vitals.LCP.Time}
+              // unit={"Sec"}
+              // des={data.Technical_Performance.Core_Web_Vitals.LCP.Score ? "Good" : "Poor"}
             />
           </div>
-          <div className="flex justify-between items-center">
+          {/* <div className="flex justify-between items-center">
             <span className={textColor}>Cumulative Layout Shift (CLS)</span>
             <ScoreBadge
               score={data.Technical_Performance.Core_Web_Vitals.CLS.Score}
@@ -84,10 +84,10 @@ export default function Technical_Performance({ data }) {
               unit={"Sec"}
               des={data.Technical_Performance.Core_Web_Vitals.INP.Score ? "Good" : "Poor"}
             />
-          </div>
+          </div> */}
         </div>
 
-        {/* Warnings */}
+        {/* Warnings
         {hasError1 && <hr className="text-black mt-3" />}
         <div className="p-1 mt-2">
           {data.Technical_Performance.Core_Web_Vitals.LCP.Score === 0 && (
@@ -100,11 +100,10 @@ export default function Technical_Performance({ data }) {
             <h1 className="flex gap-2 warn"><AlertTriangle size={20} className="text-red-700" /> INP is greater than 2 sec</h1>
           )}
         </div>
-      </div>
+     */}
 
-      {/* Delivery & Render */}
-      <div className={`w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-purple-500 hover:scale-105 transition-transform duration-300 ${cardBg}`}>
-        <h2 className={`text-xl font-bold mb-4 ${textColor}`}>Delivery & Render</h2>
+      {/* Delivery & Render
+     
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div className="flex justify-between items-center">
             <span className={textColor}>Time to First Byte (TTFB)</span>
@@ -152,11 +151,9 @@ export default function Technical_Performance({ data }) {
             <h1 className="flex gap-2 warn"><AlertTriangle size={20} className="text-red-700" /> HTTP2/HTTP3 is not Enable </h1>
           )}
         </div>
-      </div>
+    
 
-      {/* Crawlability & Hygiene */}
-      <div className={`w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-pink-500 hover:scale-105 transition-transform duration-300 ${cardBg}`}>
-        <h2 className={`text-xl font-bold mb-4 ${textColor}`}>Crawlability & Hygiene</h2>
+     
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div className="flex justify-between items-center">
             <span className={textColor}>Sitemap</span>
@@ -202,8 +199,8 @@ export default function Technical_Performance({ data }) {
           {!data.Technical_Performance.Crawlability_and_Hygiene.Redirect_Chains.Score && (
             <h1 className="flex gap-2 warn"><AlertTriangle size={20} className="text-red-700" /> Redirect issues</h1>
           )}
-        </div>
+        </div> */}
       </div>
-    </div>
+   
   );
 }

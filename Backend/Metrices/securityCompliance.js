@@ -2,7 +2,6 @@
 import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import https from "follow-redirects";
-import axios from "axios";
 import dotenv from "dotenv";
 import fetch from "node-fetch";
 import { URL } from "url";
@@ -13,9 +12,8 @@ puppeteer.use(StealthPlugin());
 const safeBrowsingAPI = process.env.SafeBrowsing;
 const VT_KEY = process.env.vt_key;
 
-// ------------------ Helpers ----------------------
-
-async function checkHTTPS(url) {
+// Security/Compliance (HTTPS / SSL)
+function checkHTTPS(url) {
   try {
     const parsedUrl = new URL(url);
     return parsedUrl.protocol === "https:" ? 1 : 0;
@@ -24,227 +22,96 @@ async function checkHTTPS(url) {
   }
 }
 
-async function checkSSL(url) {
-  return new Promise((resolve) => {
-    try {
-      const req = https.get(url, () => resolve(1));
-      req.on("error", () => resolve(0));
-      req.end();
-    } catch {
-      resolve(0);
-    }
-  });
-}
-
-async function checkSSLCertificateExpiry(url) {
-  return new Promise((resolve) => {
-    try {
-      const req = https.get(url, { rejectUnauthorized: true }, (res) => {
-        const cert = res.socket.getPeerCertificate();
-        if (!cert || !cert.valid_to) return resolve(0);
-        const expiryDate = new Date(cert.valid_to);
-        resolve(expiryDate > new Date() ? 1 : 0);
-      });
-      req.on("error", () => resolve(0));
-      req.end();
-    } catch {
-      resolve(0);
-    }
-  });
-}
-
-async function checkHSTS(url) {
-  return new Promise((resolve) => {
-    try {
-      https.get(url, (res) => {
-        resolve(res.headers["strict-transport-security"] ? 1 : 0);
-      }).on("error", () => resolve(0));
-    } catch {
-      resolve(0);
-    }
-  });
-}
-
-async function checkTLSVersion(url) {
-  return new Promise((resolve) => {
-    try {
-      const req = https.get(url, { rejectUnauthorized: true }, (res) => {
-        const tlsVersion = res.socket.getProtocol();
-        resolve(
-          tlsVersion === "TLSv1.2" || tlsVersion === "TLSv1.3" ? 1 : 0
-        );
-      });
-      req.on("error", () => resolve(0));
-      req.end();
-    } catch {
-      resolve(0);
-    }
-  });
-}
-
-async function checkXFrameOptions(url) {
-  return new Promise((resolve) => {
-    try {
-      https.get(url, (res) => {
-        resolve(res.headers["x-frame-options"] ? 1 : 0);
-      }).on("error", () => resolve(0));
-    } catch {
-      resolve(0);
-    }
-  });
-}
-
-async function checkCSP(url) {
-  return new Promise((resolve) => {
-    try {
-      https.get(url, (res) => {
-        resolve(res.headers["content-security-policy"] ? 1 : 0);
-      }).on("error", () => resolve(0));
-    } catch {
-      resolve(0);
-    }
-  });
-}
-
-async function checkXContentTypeOptions(url) {
+async function checkSSLDetails(url) {
   return new Promise((resolve) => {
     try {
       const options = {
+        rejectUnauthorized: true,
         headers: {
           "User-Agent":
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36",
         },
       };
-      https.get(url, options, (res) => {
-        resolve(res.headers["x-content-type-options"] ? 1 : 0);
-      }).on("error", () => resolve(0));
+      const req = https.get(url,options,(res) =>{
+
+          const result = {
+            sslReachable: 1,
+            certificateValid: 0,
+            hstsEnabled: 0,
+            tlsVersion: 0,
+            xFrameOptions: 0,
+            contentSecurityPolicy: 0,
+            xContentTypeOptions: 0,
+          };
+
+          const cert = res.socket.getPeerCertificate();
+          if (cert && cert.valid_to) {
+            const expiryDate = new Date(cert.valid_to);
+            result.certificateValid = expiryDate > new Date() ? 1 : 0;
+          }
+
+          const headers = res.headers;
+          result.hstsEnabled = headers["strict-transport-security"] ? 1 : 0;
+          result.xFrameOptions = headers["x-frame-options"] ? 1 : 0;
+          result.contentSecurityPolicy = headers["content-security-policy"] ? 1 : 0;
+          result.xContentTypeOptions = headers["x-content-type-options"] ? 1 : 0;
+
+          const tlsVersion = res.socket.getProtocol();
+          result.tlsVersion =
+          tlsVersion === "TLSv1.2" || tlsVersion === "TLSv1.3" ? 1 : 0;
+
+          resolve(result);
+        })
+        req.on("error", () => {
+        resolve({
+          sslReachable: 0,
+          certificateValid: 0,
+          hstsEnabled: 0,
+          tlsVersion: 0,
+          xFrameOptions: 0,
+          contentSecurityPolicy: 0,
+          xContentTypeOptions: 0,
+        });
+      });
+      req.end();
     } catch {
-      resolve(0);
+        resolve({
+        sslReachable: 0,
+        certificateValid: 0,
+        hstsEnabled: 0,
+        tlsVersion: 0,
+        xFrameOptions: 0,
+        contentSecurityPolicy: 0,
+        xContentTypeOptions: 0,
+      });
     }
   });
 }
 
-// ------------------ Puppeteer-based cookie check ----------------------
-
-async function checkCookiesSecure(url) {
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
-  });
+// Security/Compliance (Security Headers)
+async function checkCookiesSecure(page) {
 
   try {
-    const page = await browser.newPage();
-    await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
-
     const cookies = await page.cookies();
-
     if (!cookies.length) {
-      await browser.close();
       return { cookies: [], hasSecure: false, hasHttpOnly: false };
     }
-
     const hasSecure = cookies.some((c) => c.secure);
     const hasHttpOnly = cookies.some((c) => c.httpOnly);
 
-    await browser.close();
     return { cookies, hasSecure, hasHttpOnly };
   } catch (err) {
-    try { await browser.close(); } catch {}
     return { cookies: [], hasSecure: false, hasHttpOnly: false };
   }
 }
 
-// legacy header-based check
-async function checkCookiesHttpOnlyHeader(url) {
-  return new Promise((resolve) => {
-    try {
-      https.get(url, (res) => {
-        const cookies = res.headers["set-cookie"];
-        if (!cookies?.length) return resolve(0);
-        const hasHttpOnly = cookies.some((c) =>
-          c.toLowerCase().includes("httponly")
-        );
-        resolve(hasHttpOnly ? 1 : 0);
-      }).on("error", () => resolve(0));
-    } catch {
-      resolve(0);
-    }
-  });
+// Security/Compliance (Vulnerability / Malware Check)
+function Domain(urlString) {
+  const u = new URL(urlString);
+  let host = u.hostname;
+  if (host.startsWith("www.")) host = host.slice(4);
+  return host;
 }
-
-// ---------------- Cookie Consent Check (Puppeteer) ----------------
-
-export async function checkCookieConsent(url) {
-  let browser;
-  try {
-    browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
-
-    const page = await browser.newPage();
-    await page.setViewport({ width: 1200, height: 800 });
-    await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
-
-    const consentSelectors = [
-      "[id*=cookie]",
-      "[class*=cookie]",
-      "[id*=consent]",
-      "[class*=consent]",
-      "[aria-label*=cookie]",
-      "[data-cookie-banner]",
-    ];
-
-    for (const selector of consentSelectors) {
-      const exists = await page.$(selector);
-      if (exists) {
-        await browser.close();
-        return 1;
-      }
-    }
-
-    await browser.close();
-    return 0;
-  } catch (err) {
-    if (browser) await browser.close();
-    return 0;
-  }
-}
-
-// ---------------- Privacy Policy Check (Puppeteer) ----------------
-
-export async function checkPrivacyPolicy(url) {
-  let browser;
-  try {
-    browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
-
-    const page = await browser.newPage();
-    await page.setViewport({ width: 1200, height: 800 });
-    await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
-
-    const links = await page.$$eval("a", (anchors) =>
-      anchors.map((a) => (a.href || "").toLowerCase())
-    );
-
-    const privacyPatterns = ["privacy", "privacy-policy", "privacy_policy"];
-
-    const found = links.some((link) =>
-      privacyPatterns.some((pattern) => link.includes(pattern))
-    );
-
-    await browser.close();
-    return found ? 1 : 0;
-  } catch (err) {
-    if (browser) await browser.close();
-    return 0;
-  }
-}
-
-// ---------------- Google Safe Browsing & VirusTotal ----------------
-
 async function checkGoogleSafeBrowsing(url) {
   if (!safeBrowsingAPI) return false;
   try {
@@ -292,31 +159,7 @@ async function checkDomainBlacklist(domain, url) {
   return g || v ? 1 : 0;
 }
 
-// ---------------- XSS Vulnerability Check ----------------
-async function checkXSS(url) {
-  try {
-    const payload = `<script>alert(1)</script>`;
-    const testUrl = url.includes("?")
-      ? `${url}&xss=${encodeURIComponent(payload)}`
-      : `${url}?xss=${encodeURIComponent(payload)}`;
-
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
-    const page = await browser.newPage();
-    await page.goto(testUrl, { waitUntil: "networkidle2", timeout: 60000 });
-    const html = await page.content();
-    await browser.close();
-
-    return html.toLowerCase().includes(payload.toLowerCase()) ? 0 : 1;
-  } catch {
-    return 0;
-  }
-}
-
-// ---------------- SQL Injection Exposure Check ----------------
-export async function checkSQLiExposure(urlString, options = {}) {
+async function checkSQLiExposure(urlString, options = {}) {
   const { timeout = 15000, lengthDiffThreshold = 0.25 } = options;
 
   const payloads = [
@@ -396,22 +239,65 @@ export async function checkSQLiExposure(urlString, options = {}) {
   return 1;
 }
 
-// ---------------- Forms Use HTTPS Check ----------------
-export async function checkFormsUseHTTPS(url) {
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
-  });
-
+async function checkXSS(url,page) {
   try {
-    const page = await browser.newPage();
-    await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
+    const payload = `<script>alert(1)</script>`;
+    const testUrl = url.includes("?")
+      ? `${url}&xss=${encodeURIComponent(payload)}`
+      : `${url}?xss=${encodeURIComponent(payload)}`;
 
+    await page.goto(testUrl, { waitUntil: "networkidle2", timeout: 60000 });
+    const html = await page.content();
+    return html.toLowerCase().includes(payload.toLowerCase()) ? 0 : 1;
+  } catch {
+    return 0;
+  }
+}
+
+// Security/Compliance (Privacy & Compliance)
+async function checkCookieConsent(page) {
+  try {
+    const consentSelectors = [
+      "[id*=cookie]",
+      "[class*=cookie]",
+      "[id*=consent]",
+      "[class*=consent]",
+      "[aria-label*=cookie]",
+      "[data-cookie-banner]",
+    ];
+
+    for (const selector of consentSelectors) {
+      const exists = await page.$(selector);
+      if (exists) {
+        return 1;
+      }
+    }
+    return 0;
+  } catch (err) {
+    return 0;
+  }
+}
+
+async function checkPrivacyPolicy(page) {
+  try {
+    const links = await page.$$eval("a", (anchors) =>
+      anchors.map((a) => (a.href || "").toLowerCase())
+    );
+    const privacyPatterns = ["privacy", "privacy-policy", "privacy_policy"];
+    const found = links.some((link) =>
+      privacyPatterns.some((pattern) => link.includes(pattern))
+    );
+    return found ? 1 : 0;
+  } catch (err) {
+    return 0;
+  }
+}
+
+async function checkFormsUseHTTPS(page) {
+  try {
     const forms = await page.$$eval("form", (forms) =>
       forms.map((f) => f.getAttribute("action") || "")
     );
-
-    await browser.close();
 
     if (!forms.length) return 1;
 
@@ -426,24 +312,12 @@ export async function checkFormsUseHTTPS(url) {
 
     return allHttps ? 1 : 0;
   } catch (err) {
-    await browser.close();
     return 0;
   }
 }
 
-// ---------------- GDPR / CCPA Compliance Check ----------------
-export async function checkGDPRCCPA(url) {
-  let browser;
+async function checkGDPRCCPA(page) {
   try {
-    browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
-
-    const page = await browser.newPage();
-    await page.setViewport({ width: 1200, height: 800 });
-    await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
-
     // Common selectors for GDPR/CCPA consent banners
     const consentSelectors = [
       "[id*=gdpr]",
@@ -462,33 +336,18 @@ export async function checkGDPRCCPA(url) {
     for (const selector of consentSelectors) {
       const exists = await page.$(selector);
       if (exists) {
-        await browser.close();
         return 1; // GDPR/CCPA notice present
       }
     }
 
-    await browser.close();
     return 0; // Not present
   } catch (err) {
-    if (browser) await browser.close();
     return 0; // On error, treat as not present
   }
 }
 
-
-// ---------------- Data Collection Disclosure Check ----------------
-export async function checkDataCollection(url) {
-  let browser;
+async function checkDataCollection(page) {
   try {
-    browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
-
-    const page = await browser.newPage();
-    await page.setViewport({ width: 1200, height: 800 });
-    await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
-
     // Get all anchor hrefs
     const links = await page.$$eval("a", (anchors) =>
       anchors.map((a) => (a.href || "").toLowerCase())
@@ -511,21 +370,14 @@ export async function checkDataCollection(url) {
     const found = links.some((link) =>
       dataKeywords.some((keyword) => link.includes(keyword))
     );
-
-    await browser.close();
     return found ? 1 : 0; // 1 if disclosure found, else 0
   } catch (err) {
-    if (browser) await browser.close();
     return 0; // Treat errors as not disclosed
   }
 }
-/**
- * Check whether common admin panels are publicly accessible.
- * Returns 0 if an admin endpoint appears publicly reachable (bad), 1 otherwise (good).
- *
- * Non-destructive: only performs GET requests.
- */
-export async function checkAdminPanelPublic(baseUrl, options = {}) {
+
+// Security/Compliance ( Authentication & Access Control)
+async function checkAdminPanelPublic(baseUrl, options = {}) {
   const {
     timeout = 10000, // ms per request
     maxBodyChars = 20000, // only read first N chars for detection
@@ -660,27 +512,8 @@ export async function checkAdminPanelPublic(baseUrl, options = {}) {
   return 1;
 }
 
-// ---------------- Weak / Default Credentials Heuristic Check ----------------
-/**
- * Non-destructive heuristic that returns:
- *   0 => possible weak/default credentials (suspicious)
- *   1 => no obvious signs
- *
- * IMPORTANT: this function never attempts to log in or submit credentials.
- */
-export async function checkWeakDefaultCredentials(url) {
-  let browser;
+async function checkWeakDefaultCredentials(page) {
   try {
-    browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
-
-    const page = await browser.newPage();
-    await page.setViewport({ width: 1200, height: 800 });
-    // load page
-    await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
-
     // 1) quick page text scan for explicit "default credentials" mentions
     const pageText = await page.evaluate(() => document.documentElement.innerText || "");
     const lowText = (pageText || "").toLowerCase();
@@ -696,7 +529,6 @@ export async function checkWeakDefaultCredentials(url) {
       "use admin",
     ];
     if (explicitIndicators.some((kw) => lowText.includes(kw))) {
-      await browser.close();
       return 0;
     }
 
@@ -753,19 +585,16 @@ export async function checkWeakDefaultCredentials(url) {
       //  - no CSRF token AND no captcha (makes brute forcing/default creds easier) OR
       //  - action looks like common admin endpoint
       if (usernamePreset) {
-        await browser.close();
         return 0;
       }
 
       if (!hasCsrf && !captchaPresent) {
         // no CSRF and no captcha — higher chance weak/default creds could be exploited
-        await browser.close();
         return 0;
       }
 
       if (actionLooksAdmin) {
         // exposed admin login endpoint present
-        await browser.close();
         return 0;
       }
     }
@@ -778,7 +607,6 @@ export async function checkWeakDefaultCredentials(url) {
       const wwwAuth = headRes.headers.get("www-authenticate") || "";
       if (wwwAuth) {
         // presence of Basic auth does not mean weak creds, but we flag for review
-        await browser.close();
         return 0;
       }
     } catch (e) {
@@ -786,25 +614,15 @@ export async function checkWeakDefaultCredentials(url) {
     }
 
     // 4) If we reached here, no obvious passive indicators found
-    await browser.close();
     return 1;
   } catch (err) {
-    try { if (browser) await browser.close(); } catch {}
     // on error treat as safe (1) — or you may choose to return 0 to be conservative
     return 1;
   }
 }
 
-export async function checkMFAEnabled(url) {
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
-  });
-
+async function checkMFAEnabled(page) {
   try {
-    const page = await browser.newPage();
-    await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
-
     // Find all login forms
     const forms = await page.$$eval("form", (forms) =>
       forms.map((f) => ({
@@ -827,69 +645,626 @@ export async function checkMFAEnabled(url) {
 
       const mfaKeywords = ["otp", "two-factor", "2fa", "authenticator", "verification code", "mfa"];
       if (mfaKeywords.some(k => text.includes(k) || inputsText.includes(k))) {
-        await browser.close();
         return 1; // MFA enabled
       }
     }
-
-    await browser.close();
     return 0; // MFA not detected
   } catch (err) {
-    try { await browser.close(); } catch {}
     return 0; // on error, assume not detected
   }
 }
 
+// Security/Compliance (LightHouse)
+async function checkMixedContent(page) {
+  try {
+    // Get all resources loaded by the page
+    const requests = await page.evaluate(() =>
+      Array.from(document.querySelectorAll('img, script, link'))
+        .map(el => el.src || el.href)
+        .filter(Boolean)
+    );
 
-
-// ---------------- Utility ----------------
-function Domain(urlString) {
-  const u = new URL(urlString);
-  let host = u.hostname;
-  if (host.startsWith("www.")) host = host.slice(4);
-  return host;
+    const mixed = requests.some(u => u.startsWith('http:'));
+    return mixed ? 0 : 1; // 0 = unsafe, 1 = safe
+  } catch {
+    return 0; // treat errors as unsafe
+  }
 }
 
-// ------------------ Main Export ----------------------
-export default async function securityCompliance(url) {
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
-  });
-  const page = await browser.newPage();
-  await page.setExtraHTTPHeaders({ "Accept-Language": "en-GB,en;q=0.9" });
-  await page.setViewport({ width: 1200, height: 800 });
+async function checkVulnerableJS(page) {
+  try {
+    const scripts = await page.$$eval("script[src]", scripts =>
+      scripts.map(s => s.src)
+    );
+
+    // Example: check if old jQuery is used (just demo)
+    const vulnerable = scripts.some(src =>
+      /jquery(-\d+\.\d+\.\d+)?\.js/i.test(src) &&
+      /jquery-1\./i.test(src) // version 1.x is old/vulnerable
+    );
+
+    return vulnerable ? 0 : 1;
+  } catch {
+    return 0;
+  }
+}
+
+async function checkNoopenerLinks(page) {
+  try {
+    const unsafeLinks = await page.$$eval('a[target="_blank"]', links =>
+      links.filter(link => !link.rel.includes("noopener"))
+    );
+
+    return unsafeLinks.length > 0 ? 0 : 1; // 0 = unsafe, 1 = safe
+  } catch {
+    return 0;
+  }
+}
+
+async function checkConsoleErrors(page) {
+  try {
+    let errorFound = false;
+
+    page.on("console", msg => {
+      if (msg.type() === "error") errorFound = true;
+    });
+
+    await page.reload({ waitUntil: "networkidle2" });
+
+    return errorFound ? 0 : 1; // 0 = error found, 1 = safe
+  } catch {
+    return 0;
+  }
+}
+
+export default async function securityCompliance(url,page) {
 
   await page.goto(url, { waitUntil: "networkidle2", timeout: 240000 });
 
-  const checkHTTPSScore = await checkHTTPS(url);
-  const checkSSLScore = await checkSSL(url);
-  const checkSSLCertificateExpiryScore = await checkSSLCertificateExpiry(url);
-  const checkHSTSScore = await checkHSTS(url);
-  const checkTLSVersionScore = await checkTLSVersion(url);
-  const checkXFrameOptionsScore = await checkXFrameOptions(url);
-  const checkCSPScore = await checkCSP(url);
-  const checkXContentTypeOptionsScore = await checkXContentTypeOptions(url);
+  // Security/Compliance (HTTPS / SSL)
+  const checkHTTPSScore = checkHTTPS(url);
+  const checkSSLDetail = await checkSSLDetails(url);
+  const checkSSLScore = checkSSLDetail.sslReachable;
+  const checkSSLCertificateExpiryScore = checkSSLDetail.certificateValid;
+  const checkHSTSScore = checkSSLDetail.hstsEnabled;
+  const checkTLSVersionScore = checkSSLDetail.tlsVersion;
 
-  const cookieResult = await checkCookiesSecure(url);
+  // Security/Compliance (Security Headers)
+  const checkXFrameOptionsScore = checkSSLDetail.xFrameOptions;
+  const checkCSPScore = checkSSLDetail.contentSecurityPolicy;
+  const checkXContentTypeOptionsScore = checkSSLDetail.xContentTypeOptions;
+  const cookieResult = await checkCookiesSecure(page);
   const checkCookiesSecureScore = cookieResult.hasSecure ? 1 : 0;
   const checkCookiesHttpOnlyScore = cookieResult.hasHttpOnly ? 1 : 0;
-  const cookieConsentScore = await checkCookieConsent(url);
-  const privacyPolicyScore = await checkPrivacyPolicy(url);
-
+  
+  // Security/Compliance (Vulnerability / Malware Check)
   const domain = Domain(url);
   const safeBrowsingScore = (await checkGoogleSafeBrowsing(url)) ? 1 : 0;
   const blacklistScore = await checkDomainBlacklist(domain, url);
   const malwareScanScore = await checkVirusTotal(domain);
-  const xssVulnerabilityScore = await checkXSS(url);
   const sqliExposureScore = await checkSQLiExposure(url);
-  const formsUseHTTPSScore = await checkFormsUseHTTPS(url);
-  const checkGDPRCCPAScore = await checkGDPRCCPA(url);
-const checkDataCollectionScore = await checkDataCollection(url);
 
-const checkAdminPanelPublicScore = await checkAdminPanelPublic(url);
-const weakDefaultCredsScore = await checkWeakDefaultCredentials(url);
-const mfaEnabledScore = await checkMFAEnabled(url);
+  // Security/Compliance (Privacy & Compliance)
+  const cookieConsentScore = await checkCookieConsent(page);
+  const privacyPolicyScore = await checkPrivacyPolicy(page);
+  const formsUseHTTPSScore = await checkFormsUseHTTPS(page);
+  const checkGDPRCCPAScore = await checkGDPRCCPA(page);
+  const checkDataCollectionScore = await checkDataCollection(page);
+
+  // Security/Compliance ( Authentication & Access Control)
+  const weakDefaultCredsScore = await checkWeakDefaultCredentials(page);
+  const mfaEnabledScore = await checkMFAEnabled(page);
+  const checkAdminPanelPublicScore = await checkAdminPanelPublic(url);
+
+  // Security/Compliance (LightHouse)
+  const mixedContentScore = await checkMixedContent(page);
+  const vulnerableJSScore = await checkVulnerableJS(page);
+  const noopenerScore = await checkNoopenerLinks(page);
+  const consoleErrorsScore = await checkConsoleErrors(page);
+
+  // Security/Compliance (Vulnerability / Malware Check)
+  const xssVulnerabilityScore = await checkXSS(url,page);
+
+const Total = parseFloat((((checkHTTPSScore+checkSSLScore+checkSSLCertificateExpiryScore+checkHSTSScore+checkTLSVersionScore+checkXFrameOptionsScore+checkCSPScore+checkXContentTypeOptionsScore+checkCookiesSecureScore+checkCookiesHttpOnlyScore+cookieConsentScore+privacyPolicyScore+safeBrowsingScore+blacklistScore+malwareScanScore+xssVulnerabilityScore+sqliExposureScore+formsUseHTTPSScore+checkGDPRCCPAScore+checkDataCollectionScore+checkAdminPanelPublicScore+weakDefaultCredsScore+mfaEnabledScore) / 23) * 100).toFixed(0));
+
+// Passed
+const passed = [];
+
+// Improvements
+const improvements = [];
+
+
+if (checkSSLScore === 0) {
+  improvements.push({
+    metric: "SSL Reachable",
+    current: "SSL connection failed",
+    recommended: "Ensure SSL certificate is valid and reachable",
+    severity: "High 🔴",
+    suggestion: "Check server SSL configuration."
+  });
+} else {
+  passed.push({
+    metric: "SSL Reachable",
+    current: "SSL reachable",
+    recommended: "Ensure SSL certificate is valid and reachable",
+    severity: "Pass 🟢",
+    suggestion: "SSL connection is properly established."
+  });
+}
+
+if (checkSSLCertificateExpiryScore === 0) {
+  improvements.push({
+    metric: "SSL Certificate",
+    current: "Expired or invalid",
+    recommended: "Valid SSL certificate",
+    severity: "High 🔴",
+    suggestion: "Renew or configure a valid SSL certificate."
+  });
+} else {
+  passed.push({
+    metric: "SSL Certificate",
+    current: "Valid",
+    recommended: "Valid SSL certificate",
+    severity: "Pass 🟢",
+    suggestion: "Certificate is valid."
+  });
+}
+
+if (checkHSTSScore === 0) {
+  improvements.push({
+    metric: "HSTS",
+    current: "Missing",
+    recommended: "Enable HSTS",
+    severity: "Medium 🟡",
+    suggestion: "Add 'Strict-Transport-Security' header."
+  });
+} else {
+  passed.push({
+    metric: "HSTS",
+    current: "Enabled",
+    recommended: "Enable HSTS",
+    severity: "Pass 🟢",
+    suggestion: "HSTS header is correctly set."
+  });
+}
+
+if (checkTLSVersionScore === 0) {
+  improvements.push({
+    metric: "TLS Version",
+    current: "Weak TLS",
+    recommended: "TLS 1.2 or higher",
+    severity: "High 🔴",
+    suggestion: "Update server to support TLS 1.2/1.3."
+  });
+} else {
+  passed.push({
+    metric: "TLS Version",
+    current: "Strong TLS",
+    recommended: "TLS 1.2 or higher",
+    severity: "Pass 🟢",
+    suggestion: "TLS version is up-to-date."
+  });
+}
+
+if (checkCookiesSecureScore === 0) {
+  improvements.push({
+    metric: "Cookies Secure Flag",
+    current: "Not set",
+    recommended: "Set 'Secure' flag",
+    severity: "Medium 🟡",
+    suggestion: "Ensure cookies are sent only over HTTPS."
+  });
+} else {
+  passed.push({
+    metric: "Cookies Secure Flag",
+    current: "Set",
+    recommended: "Set 'Secure' flag",
+    severity: "Pass 🟢",
+    suggestion: "Cookies are secure."
+  });
+}
+
+if (checkCookiesHttpOnlyScore === 0) {
+  improvements.push({
+    metric: "Cookies HttpOnly Flag",
+    current: "Not set",
+    recommended: "Set 'HttpOnly' flag",
+    severity: "Medium 🟡",
+    suggestion: "Prevent client-side scripts from reading cookies."
+  });
+} else {
+  passed.push({
+    metric: "Cookies HttpOnly Flag",
+    current: "Set",
+    recommended: "Set 'HttpOnly' flag",
+    severity: "Pass 🟢",
+    suggestion: "Cookies HttpOnly flag is set."
+  });
+}
+
+if (safeBrowsingScore === 0) {
+  improvements.push({
+    metric: "Google Safe Browsing",
+    current: "Unsafe URL detected",
+    recommended: "No malware or phishing",
+    severity: "High 🔴",
+    suggestion: "Clean site and request Google Safe Browsing review."
+  });
+} else {
+  passed.push({
+    metric: "Google Safe Browsing",
+    current: "Safe",
+    recommended: "No malware or phishing",
+    severity: "Pass 🟢",
+    suggestion: "No threats detected."
+  });
+}
+
+if (blacklistScore === 0 || malwareScanScore === 0) {
+  improvements.push({
+    metric: "Domain Blacklist / Malware Scan",
+    current: "Flagged or malicious",
+    recommended: "Clean domain",
+    severity: "High 🔴",
+    suggestion: "Remove malware or request delisting from blacklists."
+  });
+} else {
+  passed.push({
+    metric: "Domain Blacklist / Malware Scan",
+    current: "Safe",
+    recommended: "Clean domain",
+    severity: "Pass 🟢",
+    suggestion: "Domain is not blacklisted and clean."
+  });
+}
+
+if (sqliExposureScore === 0) {
+  improvements.push({
+    metric: "SQL Injection Exposure",
+    current: "Vulnerable",
+    recommended: "Use prepared statements",
+    severity: "High 🔴",
+    suggestion: "Sanitize inputs and use parameterized queries."
+  });
+} else {
+  passed.push({
+    metric: "SQL Injection Exposure",
+    current: "Safe",
+    recommended: "Use prepared statements",
+    severity: "Pass 🟢",
+    suggestion: "No SQL injection vulnerability detected."
+  });
+}
+
+if (xssVulnerabilityScore === 0) {
+  improvements.push({
+    metric: "Cross-Site Scripting (XSS)",
+    current: "Vulnerable",
+    recommended: "Sanitize inputs & implement CSP",
+    severity: "High 🔴",
+    suggestion: "Use proper output encoding and CSP headers."
+  });
+} else {
+  passed.push({
+    metric: "Cross-Site Scripting (XSS)",
+    current: "Safe",
+    recommended: "Sanitize inputs & implement CSP",
+    severity: "Pass 🟢",
+    suggestion: "No XSS vulnerability detected."
+  });
+}
+
+if (cookieConsentScore === 0) {
+  improvements.push({
+    metric: "Cookie Consent",
+    current: "Not implemented",
+    recommended: "Add cookie consent banner",
+    severity: "Low 🟡",
+    suggestion: "Implement cookie consent to comply with privacy regulations."
+  });
+} else {
+  passed.push({
+    metric: "Cookie Consent",
+    current: "Implemented",
+    recommended: "Add cookie consent banner",
+    severity: "Pass 🟢",
+    suggestion: "Cookie consent is present."
+  });
+}
+
+if (privacyPolicyScore === 0) {
+  improvements.push({
+    metric: "Privacy Policy",
+    current: "Not found",
+    recommended: "Provide privacy policy page",
+    severity: "Low 🟡",
+    suggestion: "Add a privacy policy accessible from site footer."
+  });
+} else {
+  passed.push({
+    metric: "Privacy Policy",
+    current: "Found",
+    recommended: "Provide privacy policy page",
+    severity: "Pass 🟢",
+    suggestion: "Privacy policy is present."
+  });
+}
+
+if (formsUseHTTPSScore === 0) {
+  improvements.push({
+    metric: "Forms Using HTTPS",
+    current: "Form actions not secure",
+    recommended: "Submit all forms over HTTPS",
+    severity: "High 🔴",
+    suggestion: "Update form action URLs to use HTTPS to protect data in transit."
+  });
+} else {
+  passed.push({
+    metric: "Forms Using HTTPS",
+    current: "All forms use HTTPS",
+    recommended: "Submit all forms over HTTPS",
+    severity: "Pass 🟢",
+    suggestion: "Forms are correctly submitted over HTTPS."
+  });
+}
+
+if (checkGDPRCCPAScore === 0) {
+  improvements.push({
+    metric: "GDPR/CCPA Notice",
+    current: "Not present",
+    recommended: "Display GDPR/CCPA consent notice",
+    severity: "Medium 🟡",
+    suggestion: "Add GDPR/CCPA consent banner for compliance."
+  });
+} else {
+  passed.push({
+    metric: "GDPR/CCPA Notice",
+    current: "Present",
+    recommended: "Display GDPR/CCPA consent notice",
+    severity: "Pass 🟢",
+    suggestion: "GDPR/CCPA notice is present."
+  });
+}
+
+if (checkDataCollectionScore === 0) {
+  improvements.push({
+    metric: "Data Collection Disclosure",
+    current: "Not found",
+    recommended: "Provide information on data collection",
+    severity: "Medium 🟡",
+    suggestion: "Add a page detailing what data is collected and how it is used."
+  });
+} else {
+  passed.push({
+    metric: "Data Collection Disclosure",
+    current: "Found",
+    recommended: "Provide information on data collection",
+    severity: "Pass 🟢",
+    suggestion: "Data collection information is present."
+  });
+}
+
+if (checkAdminPanelPublicScore === 0) {
+  improvements.push({
+    metric: "Admin Panel Accessibility",
+    current: "Publicly reachable",
+    recommended: "Restrict access to admin panels",
+    severity: "High 🔴",
+    suggestion: "Protect admin pages with authentication and IP restrictions."
+  });
+} else {
+  passed.push({
+    metric: "Admin Panel Accessibility",
+    current: "Not publicly accessible",
+    recommended: "Restrict access to admin panels",
+    severity: "Pass 🟢",
+    suggestion: "Admin pages are not exposed to the public."
+  });
+}
+
+if (weakDefaultCredsScore === 0) {
+  improvements.push({
+    metric: "Weak/Default Credentials",
+    current: "Default or weak credentials detected",
+    recommended: "Use strong unique passwords",
+    severity: "High 🔴",
+    suggestion: "Change default passwords and enforce strong password policy."
+  });
+} else {
+  passed.push({
+    metric: "Weak/Default Credentials",
+    current: "No weak/default credentials detected",
+    recommended: "Use strong unique passwords",
+    severity: "Pass 🟢",
+    suggestion: "Credentials are safe."
+  });
+}
+
+if (mfaEnabledScore === 0) {
+  improvements.push({
+    metric: "Multi-Factor Authentication (MFA)",
+    current: "Not detected",
+    recommended: "Enable MFA for all accounts",
+    severity: "Medium 🟡",
+    suggestion: "Implement MFA to strengthen authentication security."
+  });
+} else {
+  passed.push({
+    metric: "Multi-Factor Authentication (MFA)",
+    current: "Detected",
+    recommended: "Enable MFA for all accounts",
+    severity: "Pass 🟢",
+    suggestion: "MFA is enabled."
+  });
+}
+
+if (xssVulnerabilityScore === 0) {
+  improvements.push({
+    metric: "XSS Vulnerability",
+    current: "Vulnerable",
+    recommended: "Sanitize all user inputs",
+    severity: "High 🔴",
+    suggestion: "Implement input validation and output encoding to prevent XSS attacks."
+  });
+} else {
+  passed.push({
+    metric: "XSS Vulnerability",
+    current: "Safe",
+    recommended: "Sanitize all user inputs",
+    severity: "Pass 🟢",
+    suggestion: "No XSS vulnerability detected."
+  });
+}
+
+// Warning
+const warning = [];
+
+if (checkHTTPSScore === 0) {
+  warning.push({
+    metric: "HTTPS",
+    current: "Not served over HTTPS",
+    recommended: "Serve all pages over HTTPS",
+    severity: "High 🔴",
+    suggestion: "Configure an SSL certificate and redirect HTTP traffic to HTTPS."
+  });
+} else {
+  passed.push({
+    metric: "HTTPS",
+    current: "Served over HTTPS",
+    recommended: "Serve all pages over HTTPS",
+    severity: "Pass 🟢",
+    suggestion: "HTTPS is correctly configured."
+  });
+}
+
+if (checkXContentTypeOptionsScore === 0) {
+  warning.push({
+    metric: "X-Content-Type-Options",
+    current: "Missing",
+    recommended: "Use 'nosniff'",
+    severity: "Medium 🟡",
+    suggestion: "Add X-Content-Type-Options header to prevent MIME sniffing."
+  });
+} else {
+  passed.push({
+    metric: "X-Content-Type-Options",
+    current: "Set",
+    recommended: "Use 'nosniff'",
+    severity: "Pass 🟢",
+    suggestion: "Header is correctly set."
+  });
+}
+
+if (checkCSPScore === 0) {
+  warning.push({
+    metric: "Content Security Policy (CSP)",
+    current: "Not set",
+    recommended: "Implement CSP header",
+    severity: "High 🔴",
+    suggestion: "Define a CSP to restrict scripts and resources."
+  });
+} else {
+  passed.push({
+    metric: "Content Security Policy (CSP)",
+    current: "Set",
+    recommended: "Implement CSP header",
+    severity: "Pass 🟢",
+    suggestion: "CSP header is correctly configured."
+  });
+}
+
+if (checkXFrameOptionsScore === 0) {
+  warning.push({
+    metric: "X-Frame-Options",
+    current: "Missing",
+    recommended: "Use 'DENY' or 'SAMEORIGIN'",
+    severity: "Medium 🟡",
+    suggestion: "Add X-Frame-Options header to prevent clickjacking."
+  });
+} else {
+  passed.push({
+    metric: "X-Frame-Options",
+    current: "Set",
+    recommended: "Use 'DENY' or 'SAMEORIGIN'",
+    severity: "Pass 🟢",
+    suggestion: "X-Frame-Options header is correctly set."
+  });
+}
+
+if (mixedContentScore === 0) {
+  warning.push({
+    metric: "Mixed Content",
+    current: "Page loads insecure HTTP resources",
+    recommended: "Load all resources over HTTPS",
+    severity: "High 🔴",
+    suggestion: "Update all scripts, images, and links to use HTTPS."
+  });
+} else {
+  passed.push({
+    metric: "Mixed Content",
+    current: "No mixed content detected",
+    recommended: "Load all resources over HTTPS",
+    severity: "Pass 🟢",
+    suggestion: "All resources are loaded securely."
+  });
+}
+
+if (vulnerableJSScore === 0) {
+  warning.push({
+    metric: "Vulnerable JavaScript",
+    current: "Old/known-vulnerable JS libraries detected",
+    recommended: "Use up-to-date JS libraries",
+    severity: "High 🔴",
+    suggestion: "Update scripts like jQuery to the latest secure versions."
+  });
+} else {
+  passed.push({
+    metric: "Vulnerable JavaScript",
+    current: "No vulnerable JS detected",
+    recommended: "Use up-to-date JS libraries",
+    severity: "Pass 🟢",
+    suggestion: "JS libraries are secure."
+  });
+}
+
+if (noopenerScore === 0) {
+  warning.push({
+    metric: "Links with target=_blank",
+    current: "Missing 'noopener' on some links",
+    recommended: "Add rel='noopener' to all target=_blank links",
+    severity: "Medium 🟡",
+    suggestion: "Prevent potential tabnabbing attacks."
+  });
+} else {
+  passed.push({
+    metric: "Links with target=_blank",
+    current: "All target=_blank links use 'noopener'",
+    recommended: "Add rel='noopener' to all target=_blank links",
+    severity: "Pass 🟢",
+    suggestion: "Links are safe from tabnabbing."
+  });
+}
+
+if (consoleErrorsScore === 0) {
+  warning.push({
+    metric: "Console Errors",
+    current: "JavaScript errors detected in console",
+    recommended: "Fix all JS errors",
+    severity: "Medium 🟡",
+    suggestion: "Review console logs and resolve errors."
+  });
+} else {
+  passed.push({
+    metric: "Console Errors",
+    current: "No console errors detected",
+    recommended: "Fix all JS errors",
+    severity: "Pass 🟢",
+    suggestion: "Frontend scripts are error-free."
+  });
+}
+
+const actualPercentage = parseFloat((((checkHTTPSScore+checkXContentTypeOptionsScore+checkCSPScore+checkXFrameOptionsScore+mixedContentScore+vulnerableJSScore+noopenerScore+consoleErrorsScore)/8)*100).toFixed(0))
+
 
   console.log("======== SECURITY SCORES ========");
   console.log("HTTPS:", checkHTTPSScore);
@@ -915,67 +1290,46 @@ const mfaEnabledScore = await checkMFAEnabled(url);
   console.log("Admin Panel Publicly Accessible (1=no,0=yes):", checkAdminPanelPublicScore);
   console.log("Weak/Default Credentials Indicators (1=no,0=yes):", weakDefaultCredsScore);
   console.log("MFA Enabled (1=yes,0=no):", mfaEnabledScore);
-  
-  
-  
-  
-  
-  console.log("=================================");
-  const allScores = [
-  checkHTTPSScore,
-  checkSSLScore,
-  checkSSLCertificateExpiryScore,
-  checkHSTSScore,
-  checkTLSVersionScore,
-  checkXFrameOptionsScore,
-  checkCSPScore,
-  checkXContentTypeOptionsScore,
-  checkCookiesSecureScore,
-  checkCookiesHttpOnlyScore,
-  cookieConsentScore,
-  privacyPolicyScore,
-  safeBrowsingScore,
-  blacklistScore,
-  malwareScanScore,
-  xssVulnerabilityScore,
-  sqliExposureScore,
-  formsUseHTTPSScore,
-  checkGDPRCCPAScore,
-  checkDataCollectionScore,
-  checkAdminPanelPublicScore,
-  weakDefaultCredsScore,
-  mfaEnabledScore
-];
+  console.log("mixedContentScore:", mixedContentScore);
+  console.log("vulnerableJSScore:", vulnerableJSScore);
+  console.log("noopenerScore:", noopenerScore);
+  console.log("consoleErrorsScore:", consoleErrorsScore);
+  console.log(actualPercentage);
+  console.log(warning);
+  console.log(passed);
+  console.log(Total);
+  console.log(improvements);
 
-// Calculate total and percentage
-const totalChecks = allScores.length;
-const totalScore = allScores.reduce((sum, val) => sum + (val || 0), 0);
-const percentage = ((totalScore / totalChecks) * 100).toFixed(2);
-
-console.log("=================================");
-console.log(`✅ SECURITY COMPLIANCE SCORE: ${percentage}%`);
-console.log("=================================");
-
-  await browser.close();
-
-  return {
-    https: checkHTTPSScore,
-    ssl: checkSSLScore,
-    sslExpiry: checkSSLCertificateExpiryScore,
-    hsts: checkHSTSScore,
-    tls: checkTLSVersionScore,
-    xFrameOptions: checkXFrameOptionsScore,
-    csp: checkCSPScore,
-    xContentTypeOptions: checkXContentTypeOptionsScore,
-    cookiesHttpOnly: checkCookiesHttpOnlyScore,
-    cookiesSecure: checkCookiesSecureScore,
-    cookieConsent: cookieConsentScore,
-    privacyPolicy: privacyPolicyScore,
-    googleSafeBrowsing: safeBrowsingScore,
-    sqliExposure: sqliExposureScore,
-    formsUseHTTPS: formsUseHTTPSScore,
-    blacklist: blacklistScore,
-    malwareScan: malwareScanScore,
-    xss: xssVulnerabilityScore,
+return {
+    checkHTTPSScore,
+    checkSSLScore,
+    checkSSLCertificateExpiryScore,
+    checkHSTSScore,
+    checkTLSVersionScore,
+    checkXFrameOptionsScore,
+    checkCSPScore,
+    checkXContentTypeOptionsScore,
+    checkCookiesSecureScore,
+    checkCookiesHttpOnlyScore,
+    safeBrowsingScore,
+    blacklistScore,
+    malwareScanScore,
+    sqliExposureScore,
+    xssVulnerabilityScore,
+    cookieConsentScore,
+    privacyPolicyScore,
+    formsUseHTTPSScore,
+    checkGDPRCCPAScore,
+    checkDataCollectionScore,
+    weakDefaultCredsScore,
+    mfaEnabledScore,
+    checkAdminPanelPublicScore,
+    mixedContentScore,
+    vulnerableJSScore,
+    noopenerScore,
+    consoleErrorsScore,
+    actualPercentage,warning,
+    passed,
+    Total,improvements
   };
 }
