@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { ThemeContext } from '../ThemeContext';
 import { Check, X, AlertTriangle } from "lucide-react"; // Added AlertTriangle
 import CircularProgress from "../Component/CircularProgress"; // Imported CircularProgress
-
+import AuditDropdown from "../Component/AuditDropdown";
 export default function Security_Compilance({ data }) {
   const { darkMode } = useContext(ThemeContext);
 
@@ -23,13 +23,6 @@ export default function Security_Compilance({ data }) {
   const cardBg = darkMode ? "bg-gradient-to-br from-blue-900 via-gray-900 to-black" : "bg-gradient-to-br from-blue-200 via-gray-200 to-white";
   const textColor = darkMode ? "text-white" : "text-black";
 
-  // Check if any metric failed
-  const hasError = 
-    data.Security_or_Compliance.HTTPS.Score === 0 ||
-    data.Security_or_Compliance.HSTS.Score === 0 ||
-    data.Security_or_Compliance.Security_Headers.Score === 0 ||
-    data.Security_or_Compliance.Cookie_Banner_and_Consent_Mode.Score === 0 ||
-    data.Security_or_Compliance.Error_Pages.Score === 0;
 
   return (
     <div
@@ -39,7 +32,7 @@ export default function Security_Compilance({ data }) {
       <h1 className={`responsive text-heading-25 flex sm:gap-10 justify-center items-center text-3xl font-extrabold mb-6 text-center ${textColor}`}>
         Security/Compliance 
          <CircularProgress
-                  value={data.Security_or_Compliance.Security_or_Compliance_Score_Total}
+                  value={data.Security_or_Compliance.Percentage}
                   size={70}
                   stroke={5}
                 />
@@ -59,62 +52,200 @@ export default function Security_Compilance({ data }) {
             />
           </div>
           <div className="flex justify-between items-center">
-            <span className={textColor}>HTTP Strict Transport Security (HSTS)</span>
+            <span className={textColor}>Secure Socket Layer (SSL)</span>
             <ScoreBadge 
-              score={data.Security_or_Compliance.HSTS.Score} 
-              textGood="HSTS enabled" 
-              textBad="HSTS missing"
+              score={data.Security_or_Compliance.SSL.Score} 
+              textGood="SSL enabled" 
+              textBad="SSL missing"
             />
 
           </div>
           <div className="flex justify-between items-center">
-            <span className={textColor}>Security Headers</span>
+            <span className={textColor}>SSL Expiry</span>
             <ScoreBadge 
-              score={data.Security_or_Compliance.Security_Headers.Score} 
+              score={data.Security_or_Compliance.SSL_Expiry.Score} 
               textGood="Headers present" 
               textBad="Headers missing"
             />
           </div>
           <div className="flex justify-between items-center">
-            <span className={textColor}>Cookie Banner & Consent Mode</span>
+            <span className={textColor}>HSTS</span>
             <ScoreBadge 
-              score={data.Security_or_Compliance.Cookie_Banner_and_Consent_Mode.Score} 
+              score={data.Security_or_Compliance.HSTS.Score} 
               textGood="Banner found" 
               textBad="Banner missing"
             />
           </div>
 
           <div className="flex justify-between items-center">
-            <span className={textColor}>404/500 Handling</span>
+            <span className={textColor}>TLS Version</span>
             <ScoreBadge 
-              score={data.Security_or_Compliance.Error_Pages.Score} 
-              textGood="Custom error page" 
-              textBad="No error page"
+              score={data.Security_or_Compliance.TLS_Version.Score} 
+              textGood="TLS 1.2 or higher" 
+              textBad="Lower than TLS 1.2"
+            />
+
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={textColor}>X-Frame-Options</span>
+            <ScoreBadge 
+              score={data.Security_or_Compliance.X_Frame_Options.Score} 
+              textGood="Enabled" 
+              textBad="Missing"
+            />
+
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={textColor}>CSP</span>
+            <ScoreBadge 
+              score={data.Security_or_Compliance.CSP.Score} 
+              textGood="Enabled" 
+              textBad="Missing"
+            />
+
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={textColor}>X Content Type Options</span>
+            <ScoreBadge 
+              score={data.Security_or_Compliance.X_Content_Type_Options.Score} 
+              textGood="Enabled" 
+              textBad="Missing"
+            />
+
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={textColor}>Cookies Secure</span>
+            <ScoreBadge 
+              score={data.Security_or_Compliance.Cookies_Secure.Score} 
+              textGood="Enabled" 
+              textBad="Missing"
+            />
+
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={textColor}>Cookies_HttpOnly</span>
+            <ScoreBadge 
+              score={data.Security_or_Compliance.Cookies_HttpOnly.Score} 
+              textGood="Enabled" 
+              textBad="Missing"
+            />
+
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={textColor}>Google Safe Browsing</span>
+            <ScoreBadge 
+              score={data.Security_or_Compliance.Google_Safe_Browsing.Score} 
+              textGood="Enabled" 
+              textBad="Missing"
+            />
+
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={textColor}>Blacklist</span>
+            <ScoreBadge 
+              score={data.Security_or_Compliance.Blacklist.Score} 
+              textGood="Enabled" 
+              textBad="Missing"
+            />
+
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={textColor}>Malware Scan</span>
+            <ScoreBadge 
+              score={data.Security_or_Compliance.Malware_Scan.Score} 
+              textGood="Enabled" 
+              textBad="Missing"
+            />
+
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={textColor}>SQLi_Exposure</span>
+            <ScoreBadge 
+              score={data.Security_or_Compliance.SQLi_Exposure.Score} 
+              textGood="Enabled" 
+              textBad="Missing"
+            />
+
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={textColor}>XSS</span>
+            <ScoreBadge 
+              score={data.Security_or_Compliance.XSS.Score} 
+              textGood="Enabled" 
+              textBad="Missing"
+            />
+
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={textColor}>Cookie Consent</span>
+            <ScoreBadge 
+              score={data.Security_or_Compliance.Cookie_Consent.Score} 
+              textGood="Enabled" 
+              textBad="Missing"
+            />
+
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={textColor}>Forms Use HTTPS</span>
+            <ScoreBadge 
+              score={data.Security_or_Compliance.Forms_Use_HTTPS.Score} 
+              textGood="Enabled" 
+              textBad="Missing"
+            />
+
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={textColor}>GDPR CCPA</span>
+            <ScoreBadge 
+              score={data.Security_or_Compliance.GDPR_CCPA.Score} 
+              textGood="Enabled" 
+              textBad="Missing"
+            />
+
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={textColor}>Data_Collection</span>
+            <ScoreBadge 
+              score={data.Security_or_Compliance.Data_Collection.Score} 
+              textGood="Enabled" 
+              textBad="Missing"
+            />
+
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={textColor}>Weak Default Credentials</span>
+            <ScoreBadge 
+              score={data.Security_or_Compliance.Weak_Default_Credentials.Score} 
+              textGood="Enabled" 
+              textBad="Missing"
+            />
+
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={textColor}>Multi-Factor Authentication Enabled</span>
+            <ScoreBadge 
+              score={data.Security_or_Compliance.MFA_Enabled.Score} 
+              textGood="Enabled" 
+              textBad="Missing"
+            />
+
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={textColor}>Admin Panel Public</span>
+            <ScoreBadge 
+              score={data.Security_or_Compliance.Admin_Panel_Public.Score} 
+              textGood="Enabled" 
+              textBad="Missing"
             />
 
           </div>
         </div>
 
-        {/* Conditionally show error messages */}
-        {hasError && <hr className="text-black mt-3" />}
-        <div className="p-1 mt-2">
-          {data.Security_or_Compliance.HTTPS.Score === 0 && (
-            <h1 className={`warn flex gap-2 items-center ${textColor}`}><AlertTriangle className='text-red-600' size={20} /> HTTPS not enabled</h1>
-          )}
-          {data.Security_or_Compliance.HSTS.Score === 0 && (
-            <h1 className={`warn flex gap-2 items-center ${textColor}`}><AlertTriangle className='text-red-600' size={20} /> HSTS missing</h1>
-          )}
-          {data.Security_or_Compliance.Security_Headers.Score === 0 && (
-            <h1 className={`warn flex gap-2 items-center ${textColor}`}><AlertTriangle className='text-red-600' size={20} /> Security headers missing</h1>
-          )}
-          {data.Security_or_Compliance.Cookie_Banner_and_Consent_Mode.Score === 0 && (
-            <h1 className={`warn flex gap-2 items-center ${textColor}`}><AlertTriangle className='text-red-600' size={20} /> Cookie banner / consent missing</h1>
-          )}
-          {data.Security_or_Compliance.Error_Pages.Score === 0 && (
-            <h1 className={`warn flex gap-2 items-center ${textColor}`}><AlertTriangle className='text-red-600' size={20} /> Custom error pages not found</h1>
-          )}
-        </div>
+
       </div>
+<AuditDropdown items={data.Security_or_Compliance.Passed} title="Passed Audits" darkMode={darkMode} />
+<AuditDropdown items={data.Security_or_Compliance.Warning} title="Warning" darkMode={darkMode} />
+<AuditDropdown items={data.Security_or_Compliance.Improvements} title="Failed Audits" darkMode={darkMode} />
     </div>
   );
 }

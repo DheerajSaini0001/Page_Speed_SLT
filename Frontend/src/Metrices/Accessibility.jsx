@@ -85,7 +85,7 @@ export default function Accessibility({ data }) {
             <span className={`${textColor}`}>Interactive Element Affordance</span>
             <ScoreBadge
               score={data.Accessibility.Interactive_Element_Affordance.Score}
-              out={data.Accessibility.Interactive_Element_Affordance.Score?"Good":"Needs Improvement"}
+              out={data.Accessibility.Interactive_Element_Affordance.Score?"well designed":"Needs Improvement"}
             />
           </div>
           <div className="flex justify-between items-center">
@@ -140,8 +140,8 @@ export default function Accessibility({ data }) {
          
         </div>
       </div>
-    <AuditDropdown items={data.Accessibility.Passed} title="Passed Audit" />
-    <AuditDropdown items={data.Accessibility.Warning} title="Warnings" />
+    <AuditDropdown items={data.Accessibility.Passed} title="Passed Audit" darkMode={darkMode} />
+    <AuditDropdown items={data.Accessibility.Warning} title="Warnings" darkMode={darkMode} />
     </div>
   );
 }
