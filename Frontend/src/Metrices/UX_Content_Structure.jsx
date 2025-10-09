@@ -220,9 +220,9 @@ export default function UX_Content_Structure({ data }) {
         </div>
         
       </div>
-        <AuditDropdown items={data.UX_or_Content_Structure.Passed} title="Passed Audits" />
-        <AuditDropdown items={data.UX_or_Content_Structure.Warning} title="Warning" />
-        <AuditDropdown items={data.UX_or_Content_Structure.Improvements} title="Failed Audits" />
+        <AuditDropdown items={data.UX_or_Content_Structure.Passed} title="Passed Audits" darkMode={darkMode} />
+        <AuditDropdown items={data.UX_or_Content_Structure.Warning} title="Warning" darkMode={darkMode} />
+        <AuditDropdown items={data.UX_or_Content_Structure.Improvements} title="Failed Audits" darkMode={darkMode} />
     </div>
   );
 }
