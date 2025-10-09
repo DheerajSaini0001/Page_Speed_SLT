@@ -654,69 +654,6 @@ async function checkMFAEnabled(page) {
   }
 }
 
-// Security/Compliance (LightHouse)
-async function checkMixedContent(page) {
-  try {
-    // Get all resources loaded by the page
-    const requests = await page.evaluate(() =>
-      Array.from(document.querySelectorAll('img, script, link'))
-        .map(el => el.src || el.href)
-        .filter(Boolean)
-    );
-
-    const mixed = requests.some(u => u.startsWith('http:'));
-    return mixed ? 0 : 1; // 0 = unsafe, 1 = safe
-  } catch {
-    return 0; // treat errors as unsafe
-  }
-}
-
-async function checkVulnerableJS(page) {
-  try {
-    const scripts = await page.$$eval("script[src]", scripts =>
-      scripts.map(s => s.src)
-    );
-
-    // Example: check if old jQuery is used (just demo)
-    const vulnerable = scripts.some(src =>
-      /jquery(-\d+\.\d+\.\d+)?\.js/i.test(src) &&
-      /jquery-1\./i.test(src) // version 1.x is old/vulnerable
-    );
-
-    return vulnerable ? 0 : 1;
-  } catch {
-    return 0;
-  }
-}
-
-async function checkNoopenerLinks(page) {
-  try {
-    const unsafeLinks = await page.$$eval('a[target="_blank"]', links =>
-      links.filter(link => !link.rel.includes("noopener"))
-    );
-
-    return unsafeLinks.length > 0 ? 0 : 1; // 0 = unsafe, 1 = safe
-  } catch {
-    return 0;
-  }
-}
-
-async function checkConsoleErrors(page) {
-  try {
-    let errorFound = false;
-
-    page.on("console", msg => {
-      if (msg.type() === "error") errorFound = true;
-    });
-
-    await page.reload({ waitUntil: "networkidle2" });
-
-    return errorFound ? 0 : 1; // 0 = error found, 1 = safe
-  } catch {
-    return 0;
-  }
-}
-
 export default async function securityCompliance(url,page) {
 
   await page.goto(url, { waitUntil: "networkidle2", timeout: 240000 });
@@ -755,12 +692,6 @@ export default async function securityCompliance(url,page) {
   const weakDefaultCredsScore = await checkWeakDefaultCredentials(page);
   const mfaEnabledScore = await checkMFAEnabled(page);
   const checkAdminPanelPublicScore = await checkAdminPanelPublic(url);
-
-  // Security/Compliance (LightHouse)
-  const mixedContentScore = await checkMixedContent(page);
-  const vulnerableJSScore = await checkVulnerableJS(page);
-  const noopenerScore = await checkNoopenerLinks(page);
-  const consoleErrorsScore = await checkConsoleErrors(page);
 
   // Security/Compliance (Vulnerability / Malware Check)
   const xssVulnerabilityScore = await checkXSS(url,page);
@@ -1191,82 +1122,9 @@ if (checkXFrameOptionsScore === 0) {
   });
 }
 
-if (mixedContentScore === 0) {
-  warning.push({
-    metric: "Mixed Content",
-    current: "Page loads insecure HTTP resources",
-    recommended: "Load all resources over HTTPS",
-    severity: "High 🔴",
-    suggestion: "Update all scripts, images, and links to use HTTPS."
-  });
-} else {
-  passed.push({
-    metric: "Mixed Content",
-    current: "No mixed content detected",
-    recommended: "Load all resources over HTTPS",
-    severity: "Pass 🟢",
-    suggestion: "All resources are loaded securely."
-  });
-}
 
-if (vulnerableJSScore === 0) {
-  warning.push({
-    metric: "Vulnerable JavaScript",
-    current: "Old/known-vulnerable JS libraries detected",
-    recommended: "Use up-to-date JS libraries",
-    severity: "High 🔴",
-    suggestion: "Update scripts like jQuery to the latest secure versions."
-  });
-} else {
-  passed.push({
-    metric: "Vulnerable JavaScript",
-    current: "No vulnerable JS detected",
-    recommended: "Use up-to-date JS libraries",
-    severity: "Pass 🟢",
-    suggestion: "JS libraries are secure."
-  });
-}
+const actualPercentage =  parseFloat((((checkHTTPSScore+checkSSLScore+checkSSLCertificateExpiryScore+checkHSTSScore+checkTLSVersionScore+checkXFrameOptionsScore+checkCSPScore+checkXContentTypeOptionsScore+checkCookiesSecureScore+checkCookiesHttpOnlyScore+cookieConsentScore+privacyPolicyScore+safeBrowsingScore+blacklistScore+malwareScanScore+xssVulnerabilityScore+sqliExposureScore+formsUseHTTPSScore+checkGDPRCCPAScore+checkDataCollectionScore+checkAdminPanelPublicScore+weakDefaultCredsScore+mfaEnabledScore) / 23) * 100).toFixed(0));
 
-if (noopenerScore === 0) {
-  warning.push({
-    metric: "Links with target=_blank",
-    current: "Missing 'noopener' on some links",
-    recommended: "Add rel='noopener' to all target=_blank links",
-    severity: "Medium 🟡",
-    suggestion: "Prevent potential tabnabbing attacks."
-  });
-} else {
-  passed.push({
-    metric: "Links with target=_blank",
-    current: "All target=_blank links use 'noopener'",
-    recommended: "Add rel='noopener' to all target=_blank links",
-    severity: "Pass 🟢",
-    suggestion: "Links are safe from tabnabbing."
-  });
-}
-
-if (consoleErrorsScore === 0) {
-  warning.push({
-    metric: "Console Errors",
-    current: "JavaScript errors detected in console",
-    recommended: "Fix all JS errors",
-    severity: "Medium 🟡",
-    suggestion: "Review console logs and resolve errors."
-  });
-} else {
-  passed.push({
-    metric: "Console Errors",
-    current: "No console errors detected",
-    recommended: "Fix all JS errors",
-    severity: "Pass 🟢",
-    suggestion: "Frontend scripts are error-free."
-  });
-}
-
-const actualPercentage = parseFloat((((checkHTTPSScore+checkXContentTypeOptionsScore+checkCSPScore+checkXFrameOptionsScore+mixedContentScore+vulnerableJSScore+noopenerScore+consoleErrorsScore)/8)*100).toFixed(0))
-
-
-  console.log("======== SECURITY SCORES ========");
   console.log("HTTPS:", checkHTTPSScore);
   console.log("SSL:", checkSSLScore);
   console.log("SSL Expiry:", checkSSLCertificateExpiryScore);
@@ -1290,10 +1148,6 @@ const actualPercentage = parseFloat((((checkHTTPSScore+checkXContentTypeOptionsS
   console.log("Admin Panel Publicly Accessible (1=no,0=yes):", checkAdminPanelPublicScore);
   console.log("Weak/Default Credentials Indicators (1=no,0=yes):", weakDefaultCredsScore);
   console.log("MFA Enabled (1=yes,0=no):", mfaEnabledScore);
-  console.log("mixedContentScore:", mixedContentScore);
-  console.log("vulnerableJSScore:", vulnerableJSScore);
-  console.log("noopenerScore:", noopenerScore);
-  console.log("consoleErrorsScore:", consoleErrorsScore);
   console.log(actualPercentage);
   console.log(warning);
   console.log(passed);
@@ -1324,10 +1178,6 @@ return {
     weakDefaultCredsScore,
     mfaEnabledScore,
     checkAdminPanelPublicScore,
-    mixedContentScore,
-    vulnerableJSScore,
-    noopenerScore,
-    consoleErrorsScore,
     actualPercentage,warning,
     passed,
     Total,improvements

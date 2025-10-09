@@ -22,10 +22,10 @@ export default function Dashboard2({ data }) {
 
   if (!data) return <div />;
   const barData = [
-    { name: "Technical Performance", value: data.Technical_Performance.Technical_Performance_Score_Total},
-    { name: "On-Page SEO", value: data.On_Page_SEO.On_Page_SEO_Score_Total },
-    { name: "Accessibility", value: data.Accessibility.Accessibility_Score_Total },
-    { name: "Security/Compliance", value: data.Security_or_Compliance.Security_or_Compliance_Score_Total },
+    { name: "Technical Performance", value: data.Technical_Performance.Percentage},
+    { name: "On-Page SEO", value: data.On_Page_SEO.Percentage },
+    { name: "Accessibility", value: data.Accessibility.Percentage },
+    { name: "Security/Compliance", value: data.Security_or_Compliance.Percentage },
     { name: "UX & Content", value: data.UX_and_Content_Structure.UX_and_Content_Structure_Score_Total },
     { name: "Conversion & Lead Flow", value: data.Conversion_and_Lead_Flow.Conversion_and_Lead_Flow_Score_Total },
     { name: "AIO Readiness", value: data.AIO_Readiness.AIO_Readiness_Score_Total },
@@ -139,56 +139,9 @@ export default function Dashboard2({ data }) {
       </ResponsiveContainer>
   </div>
 </div>
-<div className={`rounded-xl p-4 shadow-lg border ${cardBorder} ${cardBg}`}>
-  <h3 className="text-base sm:text-lg font-semibold mb-4">Top Fixes Needed</h3>
-  <div className="w-full h-64 sm:h-72 lg:h-96">
-    <ResponsiveContainer width="100%" height="100%">
-      <PieChart>
-        <Pie
-          data={data.Top_Fixes}   // ✅ use your array directly
-          dataKey="score"
-          nameKey="name"
-          cx="50%"
-          cy="50%"
-          outerRadius="70%"
-          label={({ name }) =>
-            name.length > 14 ? name.slice(0, 14) + "..." : name
-          }
-        >
-          {data.Top_Fixes.map((item, index) => (
-            <Cell
-              key={`cell-${index}`}
-              fill={COLORS[index % COLORS.length]}
-            />
-          ))}
-        </Pie>
-        <Tooltip />
-        <Legend
-          layout="horizontal"
-          verticalAlign="bottom"
-          align="center"
-          wrapperStyle={{
-            fontSize: "12px",
-            color: darkMode ? "white" : "black", // ✅ legend text color
-          }}
-        />
-      </PieChart>
-    </ResponsiveContainer>
-  </div>
-</div>
 
 
-      {/* Recommendations */}
-      {/* <div className={`rounded-xl p-4 shadow-lg border ${cardBorder} ${cardBg}`}>
-        <h3 className="sm:text-2xl font-semibold text-green-500 mb-4">
-          👉 Recommendations to improve Website Performance -
-        </h3>
-        {data.recommendations.map((val, index) => (
-          <div key={index} className="text-base sm:text-lg p-2 pl-6 font-semibold mb-4">
-            {index + 1} - {val}
-          </div>
-        ))}
-      </div> */}
+
     </div>
   );
 }

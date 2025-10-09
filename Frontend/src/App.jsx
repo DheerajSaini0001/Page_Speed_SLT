@@ -10,6 +10,7 @@ function App() {
   return (
     <ThemeProvider> {/* ✅ Wrap the app with ThemeProvider */}
       <Routes>
+        
         <Route path="/" element={<Homepage />} />
         <Route path="/about" element={<AboutPage />} />
       </Routes>
