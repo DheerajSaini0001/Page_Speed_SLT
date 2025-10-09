@@ -271,126 +271,182 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data,tim
       Total: MetricesCalculation_Data.accessibilityReport.Total
     },
     Security_or_Compliance: {
-    HTTPS: {
-      Score: MetricesCalculation_Data.securityReport.checkHTTPSScore,
-      Parameter: '1 if HTTPS is implemented, else 0'
-    },
-    SSL: {
-      Score: MetricesCalculation_Data.securityReport.checkSSLScore,
-      Parameter: '1 if SSL/TLS certificate is valid, else 0'
-    },
-    SSL_Expiry: {
-      Score: MetricesCalculation_Data.securityReport.checkSSLCertificateExpiryScore,
-      Parameter: '1 if SSL certificate is not expired, else 0'
-    },
-    HSTS: {
-      Score: MetricesCalculation_Data.securityReport.checkHSTSScore,
-      Parameter: '1 if HSTS header is present, else 0'
-    },
-    TLS_Version: {
-      Score: MetricesCalculation_Data.securityReport.checkTLSVersionScore,
-      Parameter: '1 if secure TLS version is used, else 0'
-    },
-    X_Frame_Options: {
-      Score: MetricesCalculation_Data.securityReport.checkXFrameOptionsScore,
-      Parameter: '1 if X-Frame-Options header is set, else 0'
-    },
-    CSP: {
-      Score: MetricesCalculation_Data.securityReport.checkCSPScore,
-      Parameter: '1 if Content Security Policy (CSP) is set, else 0'
-    },
-    X_Content_Type_Options: {
-      Score: MetricesCalculation_Data.securityReport.checkXContentTypeOptionsScore,
-      Parameter: '1 if X-Content-Type-Options header is set, else 0'
-    },
-    Cookies_Secure: {
-      Score: MetricesCalculation_Data.securityReport.checkCookiesSecureScore,
-      Parameter: '1 if cookies are set with Secure flag, else 0'
-    },
-    Cookies_HttpOnly: {
-      Score: MetricesCalculation_Data.securityReport.checkCookiesHttpOnlyScore,
-      Parameter: '1 if cookies are HttpOnly, else 0'
-    },
-    Google_Safe_Browsing: {
-      Score: MetricesCalculation_Data.securityReport.safeBrowsingScore,
-      Parameter: '1 if site is safe according to Google Safe Browsing, else 0'
-    },
-    Blacklist: {
-      Score: MetricesCalculation_Data.securityReport.blacklistScore,
-      Parameter: '1 if site is not blacklisted, else 0'
-    },
-    Malware_Scan: {
-      Score: MetricesCalculation_Data.securityReport.malwareScanScore,
-      Parameter: '1 if no malware detected, else 0'
-    },
-    SQLi_Exposure: {
-      Score: MetricesCalculation_Data.securityReport.sqliExposureScore,
-      Parameter: '1 if site is not vulnerable to SQL injection, else 0'
-    },
-    XSS: {
-      Score: MetricesCalculation_Data.securityReport.xssVulnerabilityScore,
-      Parameter: '1 if site is not vulnerable to XSS, else 0'
-    },
-    Cookie_Consent: {
-      Score: MetricesCalculation_Data.securityReport.cookieConsentScore,
-      Parameter: '1 if cookie consent banner is implemented, else 0'
-    },
-    Privacy_Policy: {
-      Score: MetricesCalculation_Data.securityReport.privacyPolicyScore,
-      Parameter: '1 if privacy policy exists, else 0'
-    },
-    Forms_Use_HTTPS: {
-      Score: MetricesCalculation_Data.securityReport.formsUseHTTPSScore,
-      Parameter: '1 if forms submit over HTTPS, else 0'
-    },
-    GDPR_CCPA: {
-      Score: MetricesCalculation_Data.securityReport.checkGDPRCCPAScore,
-      Parameter: '1 if GDPR/CCPA compliance implemented, else 0'
-    },
-    Data_Collection: {
-      Score: MetricesCalculation_Data.securityReport.checkDataCollectionScore,
-      Parameter: '1 if data collection practices are compliant, else 0'
-    },
-    Weak_Default_Credentials: {
-      Score: MetricesCalculation_Data.securityReport.weakDefaultCredsScore,
-      Parameter: '1 if no weak default credentials exist, else 0'
-    },
-    MFA_Enabled: {
-      Score: MetricesCalculation_Data.securityReport.mfaEnabledScore,
-      Parameter: '1 if multi-factor authentication is enabled, else 0'
-    },
-    Admin_Panel_Public: {
-      Score: MetricesCalculation_Data.securityReport.checkAdminPanelPublicScore,
-      Parameter: '1 if admin panel is not publicly accessible, else 0'
-    },
-    Percentage: MetricesCalculation_Data.securityReport.actualPercentage,
-    Warning: MetricesCalculation_Data.securityReport.warning,
-    Passed:MetricesCalculation_Data.securityReport. passed,
-    Total: MetricesCalculation_Data.securityReport.Total,
-    Improvements: MetricesCalculation_Data.securityReport.improvements
-  },
-    UX_and_Content_Structure: {
-      Mobile_Friendliness:{
-        Score: MetricesCalculation_Data.uxReport.E.mobileFriendliness,
-        Parameter:'Check for Viewport length > 0 ,fontsize >= 16 & button width & height >= 32',
+      HTTPS: {
+        Score: MetricesCalculation_Data.securityReport.checkHTTPSScore,
+        Parameter: '1 if HTTPS is implemented, else 0'
       },
-      Navigation_Depth:{
-        Score: MetricesCalculation_Data.uxReport.E.navigationDepth,
-        Parameter:'Check from anchor tag Navigation link is present or not',
+      SSL: {
+        Score: MetricesCalculation_Data.securityReport.checkSSLScore,
+        Parameter: '1 if SSL/TLS certificate is valid, else 0'
       },
-      Layout_Shift_On_interactions:{
-        Score: MetricesCalculation_Data.uxReport.E.layoutShift,
-        Parameter:'Check for (Cumulative Layout Shift too high ≥ 0.1)',
+      SSL_Expiry: {
+        Score: MetricesCalculation_Data.securityReport.checkSSLCertificateExpiryScore,
+        Parameter: '1 if SSL certificate is not expired, else 0'
       },
-      Readability:{
-        Score: MetricesCalculation_Data.uxReport.E.readability,
-        Parameter:'Check for Content readability is poor or not (textsize 40–60 px)',
+      HSTS: {
+        Score: MetricesCalculation_Data.securityReport.checkHSTSScore,
+        Parameter: '1 if HSTS header is present, else 0'
       },
-      Intrusive_Interstitials:{
-        Score: MetricesCalculation_Data.uxReport.E.intrusiveInterstitials,
-        Parameter:'Is there a visible, fixed-position element that covers a significant portion of the viewport',
+      TLS_Version: {
+        Score: MetricesCalculation_Data.securityReport.checkTLSVersionScore,
+        Parameter: '1 if secure TLS version is used, else 0'
       },
-      UX_and_Content_Structure_Score_Total: MetricesCalculation_Data.uxReport.E.totalEScore,
+      X_Frame_Options: {
+        Score: MetricesCalculation_Data.securityReport.checkXFrameOptionsScore,
+        Parameter: '1 if X-Frame-Options header is set, else 0'
+      },
+      CSP: {
+        Score: MetricesCalculation_Data.securityReport.checkCSPScore,
+        Parameter: '1 if Content Security Policy (CSP) is set, else 0'
+      },
+      X_Content_Type_Options: {
+        Score: MetricesCalculation_Data.securityReport.checkXContentTypeOptionsScore,
+        Parameter: '1 if X-Content-Type-Options header is set, else 0'
+      },
+      Cookies_Secure: {
+        Score: MetricesCalculation_Data.securityReport.checkCookiesSecureScore,
+        Parameter: '1 if cookies are set with Secure flag, else 0'
+      },
+      Cookies_HttpOnly: {
+        Score: MetricesCalculation_Data.securityReport.checkCookiesHttpOnlyScore,
+        Parameter: '1 if cookies are HttpOnly, else 0'
+      },
+      Google_Safe_Browsing: {
+        Score: MetricesCalculation_Data.securityReport.safeBrowsingScore,
+        Parameter: '1 if site is safe according to Google Safe Browsing, else 0'
+      },
+      Blacklist: {
+        Score: MetricesCalculation_Data.securityReport.blacklistScore,
+        Parameter: '1 if site is not blacklisted, else 0'
+      },
+      Malware_Scan: {
+        Score: MetricesCalculation_Data.securityReport.malwareScanScore,
+        Parameter: '1 if no malware detected, else 0'
+      },
+      SQLi_Exposure: {
+        Score: MetricesCalculation_Data.securityReport.sqliExposureScore,
+        Parameter: '1 if site is not vulnerable to SQL injection, else 0'
+      },
+      XSS: {
+        Score: MetricesCalculation_Data.securityReport.xssVulnerabilityScore,
+        Parameter: '1 if site is not vulnerable to XSS, else 0'
+      },
+      Cookie_Consent: {
+        Score: MetricesCalculation_Data.securityReport.cookieConsentScore,
+        Parameter: '1 if cookie consent banner is implemented, else 0'
+      },
+      Privacy_Policy: {
+        Score: MetricesCalculation_Data.securityReport.privacyPolicyScore,
+        Parameter: '1 if privacy policy exists, else 0'
+      },
+      Forms_Use_HTTPS: {
+        Score: MetricesCalculation_Data.securityReport.formsUseHTTPSScore,
+        Parameter: '1 if forms submit over HTTPS, else 0'
+      },
+      GDPR_CCPA: {
+        Score: MetricesCalculation_Data.securityReport.checkGDPRCCPAScore,
+        Parameter: '1 if GDPR/CCPA compliance implemented, else 0'
+      },
+      Data_Collection: {
+        Score: MetricesCalculation_Data.securityReport.checkDataCollectionScore,
+        Parameter: '1 if data collection practices are compliant, else 0'
+      },
+      Weak_Default_Credentials: {
+        Score: MetricesCalculation_Data.securityReport.weakDefaultCredsScore,
+        Parameter: '1 if no weak default credentials exist, else 0'
+      },
+      MFA_Enabled: {
+        Score: MetricesCalculation_Data.securityReport.mfaEnabledScore,
+        Parameter: '1 if multi-factor authentication is enabled, else 0'
+      },
+      Admin_Panel_Public: {
+        Score: MetricesCalculation_Data.securityReport.checkAdminPanelPublicScore,
+        Parameter: '1 if admin panel is not publicly accessible, else 0'
+      },
+      Percentage: MetricesCalculation_Data.securityReport.actualPercentage,
+      Warning: MetricesCalculation_Data.securityReport.warning,
+      Passed:MetricesCalculation_Data.securityReport. passed,
+      Total: MetricesCalculation_Data.securityReport.Total,
+      Improvements: MetricesCalculation_Data.securityReport.improvements
+    },
+    UX_or_Content_Structure: {
+      Navigation_Clarity: {
+        Score: MetricesCalculation_Data.uxReport.checkNavigationClarityScore,
+        Parameter: '1 if navigation menus are visible, labeled, and unique, else 0'
+      },
+      Breadcrumbs: {
+        Score: MetricesCalculation_Data.uxReport.checkBreadcrumbsScore,
+        Parameter: '1 if breadcrumbs are present with at least one text item, else 0'
+      },
+      Clickable_Logo: {
+        Score: MetricesCalculation_Data.uxReport.checkClickableLogoScore,
+        Parameter: '1 if logo links to homepage, else 0'
+      },
+      Mobile_Responsiveness: {
+        Score: MetricesCalculation_Data.uxReport.checkMobileResponsivenessScore,
+        Parameter: '1 if viewport meta is set and responsive CSS exists, else 0'
+      },
+      Font_Style_and_Size_Consistency: {
+        Score: MetricesCalculation_Data.uxReport.checkFontStyleAndSizeConsistencyScore,
+        Parameter: '1 if font-family and font-size are consistent, else 0'
+      },
+      Whitespace_Usage: {
+        Score: MetricesCalculation_Data.uxReport.checkWhitespaceUsageScore,
+        Parameter: '1 if sufficient padding/margins exist in most blocks, else 0'
+      },
+      Paragraph_Length_and_Spacing: {
+        Score: MetricesCalculation_Data.uxReport.checkParagraphLengthAndSpacingScore,
+        Parameter: '1 if paragraphs are 40–120 words and spacing is adequate, else 0'
+      },
+      Contrast_and_Color_Harmony: {
+        Score: MetricesCalculation_Data.uxReport.checkContrastAndColorHarmonyScore,
+        Parameter: '1 if text-background contrast ratio ≥ 4.5, else 0'
+      },
+      Content_Relevance: {
+        Score: MetricesCalculation_Data.uxReport.checkContentRelevanceScore,
+        Parameter: '1 if ≥50% of title keywords appear in content, else 0'
+      },
+      Call_to_Action_Clarity: {
+        Score: MetricesCalculation_Data.uxReport.checkCallToActionClarityScore,
+        Parameter: '1 if at least 1 meaningful CTA exists, else 0'
+      },
+      Multimedia_Balance: {
+        Score: MetricesCalculation_Data.uxReport.checkMultimediaBalanceScore,
+        Parameter: '1 if text and media are balanced (≥1 text per media element), else 0'
+      },
+      Error_and_Empty_State_Handling: {
+        Score: MetricesCalculation_Data.uxReport.checkErrorEmptyStateScore,
+        Parameter: '1 if empty/error states provide guidance, else 0'
+      },
+      Interactive_Feedback: {
+        Score: MetricesCalculation_Data.uxReport.checkInteractiveFeedbackScore,
+        Parameter: '1 if buttons/links/forms provide visual or textual feedback, else 0'
+      },
+      Sticky_Navigation: {
+        Score: MetricesCalculation_Data.uxReport.checkStickyNavigationScore,
+        Parameter: '1 if navigation remains visible when scrolling, else 0'
+      },
+      Scroll_Depth_Logic: {
+        Score: MetricesCalculation_Data.uxReport.checkScrollDepthLogicScore,
+        Parameter: '1 if TOC or back-to-top exists for long pages, else 0'
+      },
+      Loading_Indicators: {
+        Score: MetricesCalculation_Data.uxReport.checkLoadingIndicatorsScore,
+        Parameter: '1 if visible loading indicators exist, else 0'
+      },
+      Internal_Linking_Quality: {
+        Score: MetricesCalculation_Data.uxReport.checkInternalLinkingQualityScore,
+        Parameter: '1 if internal links exist and are relevant, else 0'
+      },
+      User_Journey_Continuity: {
+        Score: MetricesCalculation_Data.uxReport.checkUserJourneyContinuityScore,
+        Parameter: '1 if at least one meaningful CTA exists for next steps, else 0'
+      },
+      Percentage: MetricesCalculation_Data.uxReport.actualPercentage,
+      Warning: MetricesCalculation_Data.uxReport.warning,
+      Passed:MetricesCalculation_Data.uxReport.passed,
+      Total: MetricesCalculation_Data.uxReport.Total,
+      Improvements: MetricesCalculation_Data.uxReport.improvements
     },
     Conversion_and_Lead_Flow: {
       Primary_CTAs:{

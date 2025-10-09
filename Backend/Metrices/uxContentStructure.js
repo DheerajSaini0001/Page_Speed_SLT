@@ -1,6 +1,6 @@
 import * as cheerio from "cheerio";
 
-// Navigation clarity – Menus clear & logically grouped (0/1)
+// UX & Content Structure (Navigation & Layout)
 function checkNavigationClarity($) {
     const nav = $('nav'); // select main nav
     if (nav.length === 0) return 0; // no navigation → 0
@@ -48,6 +48,13 @@ function checkBreadcrumbs($) {
     }
 
     return breadcrumbFound ? 1 : 0;
+}
+
+function Domain(urlString) {
+  const u = new URL(urlString);
+  let host = u.hostname;
+  if (host.startsWith("www.")) host = host.slice(4);
+  return host;
 }
 
 function checkClickableLogo($, baseDomain) {
@@ -110,34 +117,7 @@ function checkMobileResponsiveness($) {
     return hasViewport && hasMediaQueries ? 1 : 0;
 }
 
-// readability
-function checkParagraphLengthAndSpacing($) {
-    const paragraphs = $('p');
-    if (paragraphs.length === 0) return 0; // no paragraphs → 0
-
-    let totalWords = 0;
-    let tooLongCount = 0;
-
-    paragraphs.each((i, el) => {
-        const text = $(el).text().trim();
-        const wordCount = text.split(/\s+/).length;
-
-        totalWords += wordCount;
-        if (wordCount > 120) tooLongCount++; // paragraph too long
-    });
-
-    const avgWords = totalWords / paragraphs.length;
-
-    // Rule of thumb:
-    // ✅ Ideal paragraph length: 40–120 words
-    // ❌ If avg > 120 or >30% of paragraphs too long → 0
-    if (avgWords <= 120 && tooLongCount / paragraphs.length <= 0.3) {
-        return 1; // good readability
-    } else {
-        return 0; // too long paragraphs
-    }
-}
-
+// UX & Content Structure (Readability & Visual Layout)
 function checkFontStyleAndSizeConsistency($) {
     // Collect all inline font styles (for <p>, <h1>-<h6>, <span>, <div>)
     const elements = $('p, h1, h2, h3, h4, h5, h6, span, div');
@@ -175,6 +155,59 @@ function checkFontStyleAndSizeConsistency($) {
     return consistentFamily && consistentSize ? 1 : 0;
 }
 
+function checkWhitespaceUsage($) {
+  const elements = $('div, section, article, p, h1, h2, h3, h4, h5, h6');
+  if (elements.length === 0) return 0;
+
+  let spacedCount = 0;
+  let totalChecked = 0;
+
+  elements.each((i, el) => {
+    const style = ($(el).attr('style') || '').toLowerCase();
+
+    // Extract inline margin/padding if available
+    const marginMatch = style.match(/margin\s*:\s*([0-9]+)px/);
+    const paddingMatch = style.match(/padding\s*:\s*([0-9]+)px/);
+
+    const margin = marginMatch ? parseInt(marginMatch[1]) : 0;
+    const padding = paddingMatch ? parseInt(paddingMatch[1]) : 0;
+
+    // if either margin or padding ≥ 8px, consider it well spaced
+    if (margin >= 8 || padding >= 8) spacedCount++;
+    totalChecked++;
+  });
+
+  const ratio = spacedCount / totalChecked;
+  return ratio >= 0.6 ? 1 : 0; // Pass if 60% of blocks have enough space
+}
+
+function checkParagraphLengthAndSpacing($) {
+    const paragraphs = $('p');
+    if (paragraphs.length === 0) return 0; // no paragraphs → 0
+
+    let totalWords = 0;
+    let tooLongCount = 0;
+
+    paragraphs.each((i, el) => {
+        const text = $(el).text().trim();
+        const wordCount = text.split(/\s+/).length;
+
+        totalWords += wordCount;
+        if (wordCount > 120) tooLongCount++; // paragraph too long
+    });
+
+    const avgWords = totalWords / paragraphs.length;
+
+    // Rule of thumb:
+    // ✅ Ideal paragraph length: 40–120 words
+    // ❌ If avg > 120 or >30% of paragraphs too long → 0
+    if (avgWords <= 120 && tooLongCount / paragraphs.length <= 0.3) {
+        return 1; // good readability
+    } else {
+        return 0; // too long paragraphs
+    }
+}
+
 function getLuminance(color) {
     if (!color) return 1; // default white
     let r, g, b;
@@ -205,7 +238,6 @@ function getLuminance(color) {
     return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
 
-// Compute contrast ratio
 function contrastRatio(fg, bg) {
     const L1 = getLuminance(fg);
     const L2 = getLuminance(bg);
@@ -240,34 +272,7 @@ function checkContrastAndColorHarmony($) {
     return acceptable ? 1 : 0;
 }
 
-function checkWhitespaceUsage($) {
-  const elements = $('div, section, article, p, h1, h2, h3, h4, h5, h6');
-  if (elements.length === 0) return 0;
-
-  let spacedCount = 0;
-  let totalChecked = 0;
-
-  elements.each((i, el) => {
-    const style = ($(el).attr('style') || '').toLowerCase();
-
-    // Extract inline margin/padding if available
-    const marginMatch = style.match(/margin\s*:\s*([0-9]+)px/);
-    const paddingMatch = style.match(/padding\s*:\s*([0-9]+)px/);
-
-    const margin = marginMatch ? parseInt(marginMatch[1]) : 0;
-    const padding = paddingMatch ? parseInt(paddingMatch[1]) : 0;
-
-    // if either margin or padding ≥ 8px, consider it well spaced
-    if (margin >= 8 || padding >= 8) spacedCount++;
-    totalChecked++;
-  });
-
-  const ratio = spacedCount / totalChecked;
-  return ratio >= 0.6 ? 1 : 0; // Pass if 60% of blocks have enough space
-}
-
-// Content and Engagement flow
-
+// UX & Content Structure (Content & Engagement Flow)
 function checkContentRelevance($) {
     // 1️⃣ Get page title
     const title = $('title').text().trim().toLowerCase();
@@ -318,8 +323,6 @@ function checkCallToActionClarity($) {
     return validCTA >= 1 ? 1 : 0;
 }
 
-
-
 function checkMultimediaBalance($) {
     const textElements = $('p, h1, h2, h3, h4, h5, h6, li');
     const mediaElements = $('img, video, iframe');
@@ -334,6 +337,117 @@ function checkMultimediaBalance($) {
     // Rule of thumb: at least 1 text element per media element
     return ratio >= 1 ? 1 : 0;
 }
+
+function checkErrorEmptyState($) {
+    // 1️⃣ Extract body text
+    const bodyText = $('body').text().trim().toLowerCase();
+
+    if (!bodyText) return 0; // completely empty → fail
+
+    // 2️⃣ Check for common empty/error state keywords
+    const keywords = ['404', 'not found', 'page not found', 'no results', 'empty', 'nothing here'];
+    const hasKeyword = keywords.some(kw => bodyText.includes(kw));
+
+    if (!hasKeyword) return 0; // no helpful messaging → fail
+
+    // 3️⃣ Check for next-step guidance (button or link)
+    const guidance = $('a, button, input[type="button"], input[type="submit"]').filter((i, el) => {
+        const text = $(el).text().trim().toLowerCase() || $(el).attr('value')?.trim().toLowerCase();
+        return text && text.length >= 3; // some guidance text
+    });
+
+    return guidance.length > 0 ? 1 : 0; // 1 = helpful, 0 = unhelpful
+}
+
+// UX & Content Structure (Accessibility & Usability Extras)
+function checkInteractiveFeedback($) {
+    // 1️⃣ Check for hover/active styles (inline or class)
+    const interactiveElements = $('button, a, input[type="submit"], input[type="button"]');
+
+    let feedbackFound = false;
+
+    interactiveElements.each((i, el) => {
+        const style = ($(el).attr('style') || '').toLowerCase();
+        const classNames = ($(el).attr('class') || '').toLowerCase();
+
+        // Heuristic: if inline hover-like styles exist or class names include common feedback keywords
+        if (style.includes('hover') || style.includes('active') ||
+            classNames.includes('hover') || classNames.includes('active') || 
+            classNames.includes('focus')) {
+            feedbackFound = true;
+        }
+    });
+
+    // 2️⃣ Check forms for submission feedback messages
+    const feedbackMessages = $('form + div, form + span, .error, .success, .message');
+    if (feedbackMessages.length > 0) feedbackFound = true;
+
+    // 3️⃣ Check for onclick attributes (click feedback)
+    if ($('[onclick]').length > 0) feedbackFound = true;
+
+    return feedbackFound ? 1 : 0;
+}
+
+// UX & Content Structure (Optional (Add if tu UX depth badhaana chahe))
+function checkStickyNavigation($) {
+    // Find common navigation elements
+    const navElements = $('nav, .navbar, .menu, .header');
+
+    if (navElements.length === 0) return 0; // no nav → fail
+
+    let stickyFound = false;
+
+    navElements.each((i, el) => {
+        const style = ($(el).attr('style') || '').toLowerCase();
+        const classes = ($(el).attr('class') || '').toLowerCase();
+
+        // 1️⃣ Check inline CSS for sticky/fixed
+        if (style.includes('position: sticky') || style.includes('position: fixed')) {
+            stickyFound = true;
+        }
+
+        // 2️⃣ Check class names indicating sticky (common naming conventions)
+        if (classes.includes('sticky') || classes.includes('fixed')) {
+            stickyFound = true;
+        }
+    });
+
+    return stickyFound ? 1 : 0;
+}
+
+function checkScrollDepthLogic($) {
+    // 1️⃣ Identify long pages
+    const headings = $('h2, h3');
+    const paragraphs = $('p');
+    const isLongPage = headings.length >= 10 || paragraphs.length >= 20;
+    
+    if (!isLongPage) return 1; // short page → automatically pass
+
+    // 2️⃣ Check for Table of Contents (links to internal anchors)
+    const tocLinks = $('a[href^="#"]');
+    const tocExists = tocLinks.length > 0;
+
+    // 3️⃣ Check for Back-to-top button/link
+    const backToTop = $('a[href="#top"], button.back-to-top, .back-to-top');
+    const backToTopExists = backToTop.length > 0;
+
+    // Pass if TOC or Back-to-top exists
+    return (tocExists || backToTopExists) ? 1 : 0;
+}
+
+function checkLoadingIndicators($) {
+    // 1️⃣ Look for common loading classes
+    const loadingClasses = $('.loading, .spinner, .skeleton, .placeholder');
+    if (loadingClasses.length > 0) return 1;
+
+    // 2️⃣ Look for loading text
+    const bodyText = $('body').text().toLowerCase();
+    const loadingTexts = ['loading', 'please wait', 'fetching', 'loading...'];
+    const hasLoadingText = loadingTexts.some(text => bodyText.includes(text));
+
+    return hasLoadingText ? 1 : 0;
+}
+
 
 function checkInternalLinkingQuality($, domain) {
     const links = $('a[href]').map((i, el) => $(el).attr('href')).get();
@@ -389,319 +503,425 @@ function checkUserJourneyContinuity($) {
     return validCTA >= 1 ? 1 : 0;
 }
 
-// Accessability and Usability Extras
-function checkInteractiveFeedback($) {
-    // 1️⃣ Check for hover/active styles (inline or class)
-    const interactiveElements = $('button, a, input[type="submit"], input[type="button"]');
-
-    let feedbackFound = false;
-
-    interactiveElements.each((i, el) => {
-        const style = ($(el).attr('style') || '').toLowerCase();
-        const classNames = ($(el).attr('class') || '').toLowerCase();
-
-        // Heuristic: if inline hover-like styles exist or class names include common feedback keywords
-        if (style.includes('hover') || style.includes('active') ||
-            classNames.includes('hover') || classNames.includes('active') || 
-            classNames.includes('focus')) {
-            feedbackFound = true;
-        }
-    });
-
-    // 2️⃣ Check forms for submission feedback messages
-    const feedbackMessages = $('form + div, form + span, .error, .success, .message');
-    if (feedbackMessages.length > 0) feedbackFound = true;
-
-    // 3️⃣ Check for onclick attributes (click feedback)
-    if ($('[onclick]').length > 0) feedbackFound = true;
-
-    return feedbackFound ? 1 : 0;
-}
-
-
-function checkScrollDepthLogic($) {
-    // 1️⃣ Identify long pages
-    const headings = $('h2, h3');
-    const paragraphs = $('p');
-    const isLongPage = headings.length >= 10 || paragraphs.length >= 20;
-    
-    if (!isLongPage) return 1; // short page → automatically pass
-
-    // 2️⃣ Check for Table of Contents (links to internal anchors)
-    const tocLinks = $('a[href^="#"]');
-    const tocExists = tocLinks.length > 0;
-
-    // 3️⃣ Check for Back-to-top button/link
-    const backToTop = $('a[href="#top"], button.back-to-top, .back-to-top');
-    const backToTopExists = backToTop.length > 0;
-
-    // Pass if TOC or Back-to-top exists
-    return (tocExists || backToTopExists) ? 1 : 0;
-}
-
-function checkErrorEmptyState($) {
-    // 1️⃣ Extract body text
-    const bodyText = $('body').text().trim().toLowerCase();
-
-    if (!bodyText) return 0; // completely empty → fail
-
-    // 2️⃣ Check for common empty/error state keywords
-    const keywords = ['404', 'not found', 'page not found', 'no results', 'empty', 'nothing here'];
-    const hasKeyword = keywords.some(kw => bodyText.includes(kw));
-
-    if (!hasKeyword) return 0; // no helpful messaging → fail
-
-    // 3️⃣ Check for next-step guidance (button or link)
-    const guidance = $('a, button, input[type="button"], input[type="submit"]').filter((i, el) => {
-        const text = $(el).text().trim().toLowerCase() || $(el).attr('value')?.trim().toLowerCase();
-        return text && text.length >= 3; // some guidance text
-    });
-
-    return guidance.length > 0 ? 1 : 0; // 1 = helpful, 0 = unhelpful
-}
-
-function checkStickyNavigation($) {
-    // Find common navigation elements
-    const navElements = $('nav, .navbar, .menu, .header');
-
-    if (navElements.length === 0) return 0; // no nav → fail
-
-    let stickyFound = false;
-
-    navElements.each((i, el) => {
-        const style = ($(el).attr('style') || '').toLowerCase();
-        const classes = ($(el).attr('class') || '').toLowerCase();
-
-        // 1️⃣ Check inline CSS for sticky/fixed
-        if (style.includes('position: sticky') || style.includes('position: fixed')) {
-            stickyFound = true;
-        }
-
-        // 2️⃣ Check class names indicating sticky (common naming conventions)
-        if (classes.includes('sticky') || classes.includes('fixed')) {
-            stickyFound = true;
-        }
-    });
-
-    return stickyFound ? 1 : 0;
-}
-
-function checkLoadingIndicators($) {
-    // 1️⃣ Look for common loading classes
-    const loadingClasses = $('.loading, .spinner, .skeleton, .placeholder');
-    if (loadingClasses.length > 0) return 1;
-
-    // 2️⃣ Look for loading text
-    const bodyText = $('body').text().toLowerCase();
-    const loadingTexts = ['loading', 'please wait', 'fetching', 'loading...'];
-    const hasLoadingText = loadingTexts.some(text => bodyText.includes(text));
-
-    return hasLoadingText ? 1 : 0;
-}
-function Domain(urlString) {
-  const u = new URL(urlString);
-  let host = u.hostname;
-  if (host.startsWith("www.")) host = host.slice(4);
-  return host;
-}
-
-
-
-function estimateReadability(text) {
-  const words = text.split(/\s+/).length || 1;
-  const sentences = text.split(/[.!?]/).length || 1;
-  const syllables = text
-    .toLowerCase()
-    .split(/\s+/)
-    .reduce((sum, word) => {
-      const syl = word.replace(/[^aeiouy]/g, "").length || 1;
-      return sum + syl;
-    }, 0);
-  const flesch =
-    206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words);
-  return flesch;
-}
-
 export default async function evaluateMobileUX(url,page) {
 
     await page.goto(url, {waitUntil: "networkidle2",timeout: 240000});
     await page.waitForSelector("body", { timeout: 240000 });
     const htmlData = await page.content();
     const $ = cheerio.load(htmlData);
-
+    
+    // UX & Content Structure (Navigation & Layout)
     const checkNavigationClarityScore = checkNavigationClarity($);
-    // console.log("Navigation Clarity Score:", checkNavigationClarityScore);
-    console.log("checkNavigationClarity Score:", checkNavigationClarityScore);
     const checkBreadcrumbsScore = checkBreadcrumbs($);
-    // console.log("Breadcrumbs Score:", checkBreadcrumbsScore);
-    console.log("checkBreadcrumbs Score:", checkBreadcrumbsScore);
-
     const domain = Domain(url);
-
     const checkClickableLogoScore = checkClickableLogo($,domain);
-    // console.log("Clickable Logo Score:", checkClickableLogoScore);
-    console.log("checkClickableLogo Score:", checkClickableLogoScore);
-
     const checkMobileResponsivenessScore = checkMobileResponsiveness($);
-    // console.log("Mobile Responsiveness Score:", checkMobileResponsivenessScore);
-    console.log("checkMobileResponsiveness Score:", checkMobileResponsivenessScore);
 
-    const checkParagraphLengthAndSpacingScore = checkParagraphLengthAndSpacing($);
-    console.log("Paragraph Length & Spacing Score:", checkParagraphLengthAndSpacingScore);
-    // console.log("checkParagraphLengthAndSpacing Score:", checkParagraphLengthAndSpacingScore);  
-
+    // UX & Content Structure (Readability & Visual Layout)
     const checkFontStyleAndSizeConsistencyScore = checkFontStyleAndSizeConsistency($);
-    console.log("Font Style & Size Consistency Score:", checkFontStyleAndSizeConsistencyScore);
-    // console.log("checkFontStyleAndSizeConsistency Score:", checkFontStyleAndSizeConsistencyScore);
-
-    const checkContrastAndColorHarmonyScore = checkContrastAndColorHarmony($);
-    console.log("Contrast & Color Harmony Score:", checkContrastAndColorHarmonyScore);
-    // console.log("checkContrastAndColorHarmony Score:", checkContrastAndColorHarmonyScore);
-    
     const checkWhitespaceUsageScore = checkWhitespaceUsage($);
-    console.log("Whitespace Usage Score:", checkWhitespaceUsageScore);
-    // console.log("checkWhitespaceUsage Score:", checkWhitespaceUsageScore);
+    const checkParagraphLengthAndSpacingScore = checkParagraphLengthAndSpacing($);
+    const checkContrastAndColorHarmonyScore = checkContrastAndColorHarmony($);
 
+    // UX & Content Structure (Content & Engagement Flow)
     const checkContentRelevanceScore = checkContentRelevance($);
-    console.log("Content Relevance Score:", checkContentRelevanceScore);
-    // console.log("checkContentRelevance Score:", checkContentRelevanceScore);
-
     const checkCallToActionClarityScore = checkCallToActionClarity($);
-    console.log("Call to Action Clarity Score:", checkCallToActionClarityScore);
-    // console.log("checkCallToActionClarity Score:", checkCallToActionClarityScore);
-
-   
-    
     const checkMultimediaBalanceScore = checkMultimediaBalance($);
-    console.log("Multimedia Balance Score:", checkMultimediaBalanceScore);
-    // console.log("checkMultimediaBalance Score:", checkMultimediaBalanceScore);
-
-    const checkInternalLinkingQualityScore = checkInternalLinkingQuality($,domain);
-    console.log("Internal Linking Quality Score:", checkInternalLinkingQualityScore);
-    // console.log("checkInternalLinkingQuality Score:", checkInternalLinkingQualityScore);
-
-    const checkUserJourneyContinuityScore = checkUserJourneyContinuity($);
-    console.log("User Journey Continuity Score:", checkUserJourneyContinuityScore);
-    // console.log("checkUserJourneyContinuity Score:", checkUserJourneyContinuityScore);
-    
     const checkErrorEmptyStateScore = checkErrorEmptyState($);
-    console.log("Error & Empty State Score:", checkErrorEmptyStateScore);
-    // console.log("checkErrorEmptyState Score:", checkErrorEmptyStateScore);
-
+    
+    // UX & Content Structure (Accessibility & Usability Extras)
     const checkInteractiveFeedbackScore = checkInteractiveFeedback($);
-    console.log("Interactive Feedback Score:", checkInteractiveFeedbackScore);
-    // console.log("checkInteractiveFeedback Score:", checkInteractiveFeedbackScore);
 
-
-    
-  
+    // UX & Content Structure (Optional (Add if tu UX depth badhaana chahe))
     const checkStickyNavigationScore = checkStickyNavigation($);
-    console.log("Sticky Navigation Score:", checkStickyNavigationScore);
-    // console.log("checkStickyNavigation Score:", checkStickyNavigationScore);
-    
     const checkScrollDepthLogicScore=checkScrollDepthLogic($);
-    console.log("checkScrollDepthLogic Score",checkScrollDepthLogicScore);
-    
     const checkLoadingIndicatorsScore = checkLoadingIndicators($);
-    console.log("Loading Indicators Score:", checkLoadingIndicatorsScore);
-    // console.log("checkLoadingIndicators Score:", checkLoadingIndicatorsScore);
+    
+    const checkInternalLinkingQualityScore = checkInternalLinkingQuality($,domain);
+    const checkUserJourneyContinuityScore = checkUserJourneyContinuity($);
 
+    const Total = parseFloat((((checkNavigationClarityScore+checkBreadcrumbsScore+checkClickableLogoScore+checkMobileResponsivenessScore+checkParagraphLengthAndSpacingScore+checkFontStyleAndSizeConsistencyScore+checkContrastAndColorHarmonyScore+checkWhitespaceUsageScore+checkContentRelevanceScore+checkCallToActionClarityScore+checkMultimediaBalanceScore+checkInternalLinkingQualityScore+checkUserJourneyContinuityScore+checkErrorEmptyStateScore+checkInteractiveFeedbackScore+checkStickyNavigationScore+checkScrollDepthLogicScore+checkLoadingIndicatorsScore)/18)*100).toFixed(0));
 
-// 1️⃣ Create an array of all scores
-const allScores = [
+  // Passed
+  const passed = [];
+  
+  // Improvements
+  const improvements = [];
+
+if (checkNavigationClarityScore === 0) {
+  improvements.push({
+    metric: "Navigation Clarity",
+    current: "Unclear",
+    recommended: "Menus should be visible, labeled, and unique",
+    severity: "High 🟠",
+    suggestion: "Ensure all navigation menus have labels and unique items."
+  });
+} else {
+  passed.push({
+    metric: "Navigation Clarity",
+    current: "Clear",
+    recommended: "Menus should be visible, labeled, and unique",
+    severity: "✅ Passed",
+    suggestion: "Navigation menus are clear and properly labeled."
+  });
+}
+
+if (checkBreadcrumbsScore === 0) {
+  improvements.push({
+    metric: "Breadcrumbs",
+    current: "Missing",
+    recommended: "Use breadcrumbs for page hierarchy",
+    severity: "Medium 🟡",
+    suggestion: "Add breadcrumbs for better navigation and context."
+  });
+} else {
+  passed.push({
+    metric: "Breadcrumbs",
+    current: "Present",
+    recommended: "Use breadcrumbs for page hierarchy",
+    severity: "✅ Passed",
+    suggestion: "Breadcrumbs are present."
+  });
+}
+
+if (checkClickableLogoScore === 0) {
+  improvements.push({
+    metric: "Clickable Logo",
+    current: "No clickable logo",
+    recommended: "Logo should link to homepage",
+    severity: "Medium 🟡",
+    suggestion: "Make sure the logo is clickable and returns to the homepage."
+  });
+} else {
+  passed.push({
+    metric: "Clickable Logo",
+    current: "Logo links to homepage",
+    recommended: "Logo should link to homepage",
+    severity: "✅ Passed",
+    suggestion: "Logo is clickable and links to homepage."
+  });
+}
+
+if (checkMobileResponsivenessScore === 0) {
+  improvements.push({
+    metric: "Mobile Responsiveness",
+    current: "Not fully responsive",
+    recommended: "Page should be responsive for mobile devices",
+    severity: "High 🟠",
+    suggestion: "Add viewport meta and responsive styles to improve mobile UX."
+  });
+} else {
+  passed.push({
+    metric: "Mobile Responsiveness",
+    current: "Responsive",
+    recommended: "Page should be responsive for mobile devices",
+    severity: "✅ Passed",
+    suggestion: "Page is mobile-friendly."
+  });
+}
+
+if (checkFontStyleAndSizeConsistencyScore === 0) {
+  improvements.push({
+    metric: "Font Style & Size Consistency",
+    current: "Inconsistent",
+    recommended: "Consistent font styles and sizes",
+    severity: "Medium 🟡",
+    suggestion: "Ensure consistent font-family and font-size across the page."
+  });
+} else {
+  passed.push({
+    metric: "Font Style & Size Consistency",
+    current: "Consistent",
+    recommended: "Consistent font styles and sizes",
+    severity: "✅ Passed",
+    suggestion: "Font styles and sizes are consistent."
+  });
+}
+
+if (checkWhitespaceUsageScore === 0) {
+  improvements.push({
+    metric: "Whitespace Usage",
+    current: "Insufficient",
+    recommended: "Maintain sufficient padding/margins",
+    severity: "Medium 🟡",
+    suggestion: "Add spacing around elements to improve readability."
+  });
+} else {
+  passed.push({
+    metric: "Whitespace Usage",
+    current: "Adequate",
+    recommended: "Maintain sufficient padding/margins",
+    severity: "✅ Passed",
+    suggestion: "Whitespace usage is adequate."
+  });
+}
+
+if (checkParagraphLengthAndSpacingScore === 0) {
+  improvements.push({
+    metric: "Paragraph Length & Spacing",
+    current: "Too long",
+    recommended: "Paragraphs 40–120 words; spacing adequate",
+    severity: "Medium 🟡",
+    suggestion: "Break long paragraphs and add spacing for better readability."
+  });
+} else {
+  passed.push({
+    metric: "Paragraph Length & Spacing",
+    current: "Good",
+    recommended: "Paragraphs 40–120 words; spacing adequate",
+    severity: "✅ Passed",
+    suggestion: "Paragraph length and spacing are good."
+  });
+}
+
+if (checkContrastAndColorHarmonyScore === 0) {
+  improvements.push({
+    metric: "Contrast & Color Harmony",
+    current: "Low contrast",
+    recommended: "Contrast ratio ≥ 4.5 for text",
+    severity: "High 🟠",
+    suggestion: "Adjust text and background colors for better accessibility."
+  });
+} else {
+  passed.push({
+    metric: "Contrast & Color Harmony",
+    current: "Good",
+    recommended: "Contrast ratio ≥ 4.5 for text",
+    severity: "✅ Passed",
+    suggestion: "Contrast and color harmony are good."
+  });
+}
+
+if (checkContentRelevanceScore === 0) {
+  improvements.push({
+    metric: "Content Relevance",
+    current: "Irrelevant",
+    recommended: "Page content should match title/keywords",
+    severity: "High 🟠",
+    suggestion: "Ensure page content aligns with the title and main keywords."
+  });
+} else {
+  passed.push({
+    metric: "Content Relevance",
+    current: "Relevant",
+    recommended: "Page content should match title/keywords",
+    severity: "✅ Passed",
+    suggestion: "Content is relevant to the page title."
+  });
+}
+
+if (checkCallToActionClarityScore === 0) {
+  improvements.push({
+    metric: "Call-to-Action (CTA) Clarity",
+    current: "Unclear",
+    recommended: "CTAs should be visible and descriptive",
+    severity: "High 🟠",
+    suggestion: "Make sure buttons and links have meaningful text for actions."
+  });
+} else {
+  passed.push({
+    metric: "Call-to-Action (CTA) Clarity",
+    current: "Clear",
+    recommended: "CTAs should be visible and descriptive",
+    severity: "✅ Passed",
+    suggestion: "CTAs are clear and actionable."
+  });
+}
+
+if (checkMultimediaBalanceScore === 0) {
+  improvements.push({
+    metric: "Multimedia Balance",
+    current: "Text-heavy or media-heavy",
+    recommended: "At least 1 text element per media element",
+    severity: "Medium 🟡",
+    suggestion: "Balance text and media to improve engagement."
+  });
+} else {
+  passed.push({
+    metric: "Multimedia Balance",
+    current: "Balanced",
+    recommended: "At least 1 text element per media element",
+    severity: "✅ Passed",
+    suggestion: "Multimedia and text are well balanced."
+  });
+}
+
+if (checkErrorEmptyStateScore === 0) {
+  improvements.push({
+    metric: "Error & Empty State Handling",
+    current: "Not handled",
+    recommended: "Provide guidance on error/empty states",
+    severity: "Medium 🟡",
+    suggestion: "Include helpful messages and next-step guidance on empty/error pages."
+  });
+} else {
+  passed.push({
+    metric: "Error & Empty State Handling",
+    current: "Handled",
+    recommended: "Provide guidance on error/empty states",
+    severity: "✅ Passed",
+    suggestion: "Error and empty states provide guidance."
+  });
+}
+
+if (checkInteractiveFeedbackScore === 0) {
+  improvements.push({
+    metric: "Interactive Feedback",
+    current: "Missing",
+    recommended: "Buttons/links/forms should provide feedback",
+    severity: "Medium 🟡",
+    suggestion: "Add hover, focus, active styles and feedback messages."
+  });
+} else {
+  passed.push({
+    metric: "Interactive Feedback",
+    current: "Present",
+    recommended: "Buttons/links/forms should provide feedback",
+    severity: "✅ Passed",
+    suggestion: "Interactive feedback is present."
+  });
+}
+
+if (checkStickyNavigationScore === 0) {
+  improvements.push({
+    metric: "Sticky Navigation",
+    current: "Not implemented",
+    recommended: "Navigation should remain accessible while scrolling",
+    severity: "Low 🟢",
+    suggestion: "Consider adding sticky navigation for easier access."
+  });
+} else {
+  passed.push({
+    metric: "Sticky Navigation",
+    current: "Implemented",
+    recommended: "Navigation should remain accessible while scrolling",
+    severity: "✅ Passed",
+    suggestion: "Sticky navigation is implemented."
+  });
+}
+
+if (checkScrollDepthLogicScore === 0) {
+  improvements.push({
+    metric: "Scroll Depth / TOC Logic",
+    current: "Missing TOC/back-to-top",
+    recommended: "Provide TOC or back-to-top for long pages",
+    severity: "Medium 🟡",
+    suggestion: "Add table of contents or back-to-top buttons for long pages."
+  });
+} else {
+  passed.push({
+    metric: "Scroll Depth / TOC Logic",
+    current: "Good",
+    recommended: "Provide TOC or back-to-top for long pages",
+    severity: "✅ Passed",
+    suggestion: "Scroll depth logic is properly handled."
+  });
+}
+
+if (checkLoadingIndicatorsScore === 0) {
+  improvements.push({
+    metric: "Loading Indicators",
+    current: "Missing",
+    recommended: "Show loading/spinner indicators when content is loading",
+    severity: "Low 🟢",
+    suggestion: "Add visible loading indicators for better UX feedback."
+  });
+} else {
+  passed.push({
+    metric: "Loading Indicators",
+    current: "Present",
+    recommended: "Show loading/spinner indicators when content is loading",
+    severity: "✅ Passed",
+    suggestion: "Loading indicators are present."
+  });
+}
+
+if (checkInternalLinkingQualityScore === 0) {
+  improvements.push({
+    metric: "Internal Linking Quality",
+    current: "Poor",
+    recommended: "Internal links should be relevant and flow logically",
+    severity: "Medium 🟡",
+    suggestion: "Add internal links that match page headings/keywords."
+  });
+} else {
+  passed.push({
+    metric: "Internal Linking Quality",
+    current: "Good",
+    recommended: "Internal links should be relevant and flow logically",
+    severity: "✅ Passed",
+    suggestion: "Internal linking quality is good."
+  });
+}
+
+if (checkUserJourneyContinuityScore === 0) {
+  improvements.push({
+    metric: "User Journey Continuity",
+    current: "Broken",
+    recommended: "Provide clear next-step actions for users",
+    severity: "High 🟠",
+    suggestion: "Ensure at least one meaningful CTA exists for next-step actions."
+  });
+} else {
+  passed.push({
+    metric: "User Journey Continuity",
+    current: "Smooth",
+    recommended: "Provide clear next-step actions for users",
+    severity: "✅ Passed",
+    suggestion: "User journey continuity is smooth."
+  });
+}
+
+// Warning
+const warning = [];
+
+const actualPercentage = parseFloat((((checkNavigationClarityScore+checkBreadcrumbsScore+checkClickableLogoScore+checkMobileResponsivenessScore+checkParagraphLengthAndSpacingScore+checkFontStyleAndSizeConsistencyScore+checkContrastAndColorHarmonyScore+checkWhitespaceUsageScore+checkContentRelevanceScore+checkCallToActionClarityScore+checkMultimediaBalanceScore+checkInternalLinkingQualityScore+checkUserJourneyContinuityScore+checkErrorEmptyStateScore+checkInteractiveFeedbackScore+checkStickyNavigationScore+checkScrollDepthLogicScore+checkLoadingIndicatorsScore)/18)*100).toFixed(0));
+
+    // console.log("Navigation Clarity Score:", checkNavigationClarityScore);
+    // console.log("Breadcrumbs Score:", checkBreadcrumbsScore);
+    // console.log("Clickable Logo Score:", checkClickableLogoScore);
+    // console.log("Mobile Responsiveness Score:", checkMobileResponsivenessScore);
+    // console.log("Font Style & Size Consistency Score:", checkFontStyleAndSizeConsistencyScore);
+    // console.log("Whitespace Usage Score:", checkWhitespaceUsageScore);
+    // console.log("Paragraph Length & Spacing Score:", checkParagraphLengthAndSpacingScore);
+    // console.log("Contrast & Color Harmony Score:", checkContrastAndColorHarmonyScore);
+    // console.log("Content Relevance Score:", checkContentRelevanceScore);
+    // console.log("Call to Action Clarity Score:", checkCallToActionClarityScore);
+    // console.log("Multimedia Balance Score:", checkMultimediaBalanceScore);
+    // console.log("Error & Empty State Score:", checkErrorEmptyStateScore);
+    // console.log("Interactive Feedback Score:", checkInteractiveFeedbackScore);
+    // console.log("Sticky Navigation Score:", checkStickyNavigationScore);
+    // console.log("checkScrollDepthLogic Score",checkScrollDepthLogicScore);
+    // console.log("Loading Indicators Score:", checkLoadingIndicatorsScore);
+    // console.log("Internal Linking Quality Score:", checkInternalLinkingQualityScore);
+    // console.log("User Journey Continuity Score:", checkUserJourneyContinuityScore);
+    // console.log(actualPercentage);
+    // console.log(warning);
+    // console.log(passed);
+    // console.log(Total);
+    // console.log(improvements);
+
+return {
     checkNavigationClarityScore,
     checkBreadcrumbsScore,
     checkClickableLogoScore,
     checkMobileResponsivenessScore,
-    checkParagraphLengthAndSpacingScore,
     checkFontStyleAndSizeConsistencyScore,
-    checkContrastAndColorHarmonyScore,
     checkWhitespaceUsageScore,
+    checkParagraphLengthAndSpacingScore,
+    checkContrastAndColorHarmonyScore,
     checkContentRelevanceScore,
     checkCallToActionClarityScore,
     checkMultimediaBalanceScore,
-    checkInternalLinkingQualityScore,
-    checkUserJourneyContinuityScore,
     checkErrorEmptyStateScore,
     checkInteractiveFeedbackScore,
     checkStickyNavigationScore,
     checkScrollDepthLogicScore,
-    checkLoadingIndicatorsScore
-];
-
-// 2️⃣ Sum all scores
-const totalScore = allScores.reduce((sum, score) => sum + score, 0);
-
-// 3️⃣ Calculate percentage
-const percentage = (totalScore / allScores.length) * 100;
-
-// 4️⃣ Print
-console.log("Overall UX/UI Compliance Percentage:", percentage.toFixed(2) + "%");
-
-
-    const viewport = $("meta[name=viewport]").length > 0;
-
-    const fontSizePass = parseInt($("body").css("font-size")) >= 16 || true;
-
-    const buttons = $("a, button").toArray();
-    const tapTargetsPass = buttons.length === 0 || buttons.filter(b => {
-      const width = parseInt($(b).attr("width")) || 32;
-      const height = parseInt($(b).attr("height")) || 32;
-      return width >= 32 && height >= 32;
-    }).length / buttons.length >= 0.7;
-
-    const passCount = [viewport, fontSizePass, tapTargetsPass].filter(Boolean).length;
-    const mobileFriendliness = passCount == 3 ? 1 : 0;
-
-
-    const navLinks = $("a").length;
-    const navigationDepth = navLinks == 3  ? 1 : 0;
-
-
-    await page.evaluate(() => {
-      window.cumulativeLayoutShiftScore = 0;
-      new PerformanceObserver((list) => {
-        for (const entry of list.getEntries()) {
-          if (!entry.hadRecentInput) {
-            window.cumulativeLayoutShiftScore += entry.value;
-          }
-        }
-      }).observe({ type: "layout-shift", buffered: true });
-    });
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    const cls = await page.evaluate(() => window.cumulativeLayoutShiftScore);
-    const layout_Shift_on_Interactions = cls < 0.1 ? 1 : 0;
-
-    let readability
-    const text = $("body").text() || "";
-    if (text.split(/\s+/).length < 200) {
-      readability = 1;
-    } else {
-      const readabilityScore = estimateReadability(text);
-      readability = readabilityScore >= 40 && readabilityScore <= 60 ? 1 : 0;
-    }
-
-
-    const interstitials = $("div, dialog").toArray().some(o => {
-      const pos = ($(o).attr("style") || "").includes("position:fixed");
-      const width = parseInt($(o).attr("width")) || 0;
-      const height = parseInt($(o).attr("height")) || 0;
-      return pos && width > 0.5 * 375 && height > 0.5 * 667;
-    });
-    const intrusive_Interstitials = interstitials ? 0 : 1;
-
-    const totalEScore = ((mobileFriendliness + navigationDepth + layout_Shift_on_Interactions + readability + intrusive_Interstitials)/5)*100
-
-
-  const report = {};
-  report.E = {
-    mobileFriendliness: mobileFriendliness,
-    navigationDepth: navigationDepth,
-    layoutShift: layout_Shift_on_Interactions,
-    readability: readability,
-    intrusiveInterstitials: intrusive_Interstitials,
-    totalEScore: parseFloat(totalEScore.toFixed(0)),
-  };
-
-  return report;
+    checkLoadingIndicatorsScore,
+    checkInternalLinkingQualityScore,
+    checkUserJourneyContinuityScore,
+    actualPercentage,warning,
+    passed,
+    Total,improvements
+}
 }

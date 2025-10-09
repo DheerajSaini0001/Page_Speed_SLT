@@ -5,7 +5,7 @@ export default function OverAll(MetricesCalculation_Data) {
   const totalB = MetricesCalculation_Data.seoReport.actualPercentage || 0;
   const totalC = MetricesCalculation_Data.accessibilityReport.actualPercentage || 0;
   const totalD = MetricesCalculation_Data.securityReport.actualPercentage || 0;
-  const totalE = MetricesCalculation_Data.uxReport.E.totalEScore || 0;
+  const totalE = MetricesCalculation_Data.uxReport.actualPercentage || 0;
   const totalF = MetricesCalculation_Data.conversionReport.F.totalFScore || 0;
   const totalG = MetricesCalculation_Data.aioReport.G.totalGScore || 0;
 

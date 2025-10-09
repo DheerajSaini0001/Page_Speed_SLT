@@ -1125,34 +1125,34 @@ if (checkXFrameOptionsScore === 0) {
 
 const actualPercentage =  parseFloat((((checkHTTPSScore+checkSSLScore+checkSSLCertificateExpiryScore+checkHSTSScore+checkTLSVersionScore+checkXFrameOptionsScore+checkCSPScore+checkXContentTypeOptionsScore+checkCookiesSecureScore+checkCookiesHttpOnlyScore+cookieConsentScore+privacyPolicyScore+safeBrowsingScore+blacklistScore+malwareScanScore+xssVulnerabilityScore+sqliExposureScore+formsUseHTTPSScore+checkGDPRCCPAScore+checkDataCollectionScore+checkAdminPanelPublicScore+weakDefaultCredsScore+mfaEnabledScore) / 23) * 100).toFixed(0));
 
-  console.log("HTTPS:", checkHTTPSScore);
-  console.log("SSL:", checkSSLScore);
-  console.log("SSL Expiry:", checkSSLCertificateExpiryScore);
-  console.log("HSTS:", checkHSTSScore);
-  console.log("TLS:", checkTLSVersionScore);
-  console.log("X-Frame-Options:", checkXFrameOptionsScore);
-  console.log("CSP:", checkCSPScore);
-  console.log("X-Content-Type-Options:", checkXContentTypeOptionsScore);
-  console.log("Cookies HttpOnly:", checkCookiesHttpOnlyScore);
-  console.log("Cookies Secure:", checkCookiesSecureScore);
-  console.log("Cookie Consent (1=present,0=not):", cookieConsentScore);
-  console.log("Privacy Policy (1=exists,0=not):", privacyPolicyScore);
-  console.log("Google Safe Browsing (1=safe,0=unsafe):", safeBrowsingScore);
-  console.log("SQLi Exposure (0=vulnerable,1=safe):", sqliExposureScore);
-  console.log("Forms Use HTTPS (0=unsafe,1=safe):", formsUseHTTPSScore);
-  console.log("VirusTotal Blacklist Score (1=safe,0=blacklisted):", blacklistScore);
-  console.log("Malware Scan (1=safe,0=malicious):", malwareScanScore);
-  console.log("XSS Vulnerability (0=vulnerable,1=safe):", xssVulnerabilityScore);
-  console.log("GDPR/CCPA Notice (1=present,0=not):", checkGDPRCCPAScore);
-  console.log("Data Collection Disclosure (1=found,0=not):", checkDataCollectionScore);
-  console.log("Admin Panel Publicly Accessible (1=no,0=yes):", checkAdminPanelPublicScore);
-  console.log("Weak/Default Credentials Indicators (1=no,0=yes):", weakDefaultCredsScore);
-  console.log("MFA Enabled (1=yes,0=no):", mfaEnabledScore);
-  console.log(actualPercentage);
-  console.log(warning);
-  console.log(passed);
-  console.log(Total);
-  console.log(improvements);
+  // console.log("HTTPS:", checkHTTPSScore);
+  // console.log("SSL:", checkSSLScore);
+  // console.log("SSL Expiry:", checkSSLCertificateExpiryScore);
+  // console.log("HSTS:", checkHSTSScore);
+  // console.log("TLS:", checkTLSVersionScore);
+  // console.log("X-Frame-Options:", checkXFrameOptionsScore);
+  // console.log("CSP:", checkCSPScore);
+  // console.log("X-Content-Type-Options:", checkXContentTypeOptionsScore);
+  // console.log("Cookies HttpOnly:", checkCookiesHttpOnlyScore);
+  // console.log("Cookies Secure:", checkCookiesSecureScore);
+  // console.log("Cookie Consent (1=present,0=not):", cookieConsentScore);
+  // console.log("Privacy Policy (1=exists,0=not):", privacyPolicyScore);
+  // console.log("Google Safe Browsing (1=safe,0=unsafe):", safeBrowsingScore);
+  // console.log("SQLi Exposure (0=vulnerable,1=safe):", sqliExposureScore);
+  // console.log("Forms Use HTTPS (0=unsafe,1=safe):", formsUseHTTPSScore);
+  // console.log("VirusTotal Blacklist Score (1=safe,0=blacklisted):", blacklistScore);
+  // console.log("Malware Scan (1=safe,0=malicious):", malwareScanScore);
+  // console.log("XSS Vulnerability (0=vulnerable,1=safe):", xssVulnerabilityScore);
+  // console.log("GDPR/CCPA Notice (1=present,0=not):", checkGDPRCCPAScore);
+  // console.log("Data Collection Disclosure (1=found,0=not):", checkDataCollectionScore);
+  // console.log("Admin Panel Publicly Accessible (1=no,0=yes):", checkAdminPanelPublicScore);
+  // console.log("Weak/Default Credentials Indicators (1=no,0=yes):", weakDefaultCredsScore);
+  // console.log("MFA Enabled (1=yes,0=no):", mfaEnabledScore);
+  // console.log(actualPercentage);
+  // console.log(warning);
+  // console.log(passed);
+  // console.log(Total);
+  // console.log(improvements);
 
 return {
     checkHTTPSScore,
