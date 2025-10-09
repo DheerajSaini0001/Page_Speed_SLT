@@ -10,7 +10,7 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data,tim
     Grade: Overall_Data.grade,
     AIO_Compatibility_Badge: MetricesCalculation_Data.aioReport.G.aioCompatibleBadge,
     Section_Score: Overall_Data.sectionScores,
-    Top_Fixes: Overall_Data.topFixes,
+    // Top_Fixes: Overall_Data.topFixes,
     // recommendations: Overall_Data.recommendations,
     Technical_Performance: {
       Core_Web_Vitals: {
@@ -382,7 +382,7 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data,tim
       Score: MetricesCalculation_Data.securityReport.consoleErrorsScore,
       Parameter: '1 if no console errors found, else 0'
     },
-    Actual_Percentage: MetricesCalculation_Data.securityReport.actualPercentage,
+    Percentage: MetricesCalculation_Data.securityReport.actualPercentage,
     Warning: MetricesCalculation_Data.securityReport.warning,
     Passed:MetricesCalculation_Data.securityReport. passed,
     Total: MetricesCalculation_Data.securityReport.Total,

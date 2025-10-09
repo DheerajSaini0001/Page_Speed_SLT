@@ -19,7 +19,7 @@ function actualCalculation(observed,good,poor,weight) {
 export default async function technicalMetrics(url,data,page) {
 
   // Technical Performance (Core Web Vitals)
-  const lcpValue = parseFloat((data?.lighthouseResult?.audits?.["largest-contentful-paint"]?.numericValue || 0).toFixed(0)); 
+  const lcpValue = parseFloat((data?.lighthouseResult?.audits?.["largest-contentful-paint"]?.numericValue || 0).toFixed(1)); 
   const lcpScore = coreWebVitalsScore(lcpValue,2500);
   const actuallcpScore = actualCalculation(lcpValue,2500,4000,0.25);
   
