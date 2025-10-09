@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { ThemeContext } from "../ThemeContext";
 import { Check, X, AlertTriangle } from "lucide-react"; // Imported icons
 import CircularProgress from "../Component/CircularProgress"; // Imported CircularProgress
+import AuditDropdown from "../Component/AuditDropdown";
 
 export default function Accessibility({ data }) {
   const { darkMode } = useContext(ThemeContext);
@@ -33,15 +34,7 @@ export default function Accessibility({ data }) {
     : "bg-gradient-to-br from-blue-200 via-gray-200 to-white";
   const textColor = darkMode ? "text-white" : "text-black";
 
-  // Check if any metric has failed to conditionally show the error section
-  const hasError =
-    data.Accessibility.Color_Contrast.Score === 0 ||
-    data.Accessibility.Focusable.Score === 0 ||
-    data.Accessibility.ARIA.Score === 0 ||
-    data.Accessibility.Alt_or_Text_Equivalents.Score === 0 ||
-    data.Accessibility.Skip_Links.Score === 0 ||
-    data.Accessibility.Landmarks.Score === 0;
-
+  
   return (
     <div
       id="accessibility"
@@ -50,7 +43,7 @@ export default function Accessibility({ data }) {
       <h1 className="responsive text-heading-25 flex items-center justify-center sm:gap-10 text-3xl font-extrabold mb-6">
         Accessibility{" "}
         <CircularProgress
-          value={data.Accessibility.Accessibility_Score_Total}
+          value={data.Accessibility.Percentage}
           size={70}
           stroke={5}
         />
@@ -70,22 +63,64 @@ export default function Accessibility({ data }) {
           <div className="flex justify-between items-center">
             <span className={`${textColor}`}>Focusable/Keyboard Nav</span>
             <ScoreBadge
-              score={data.Accessibility.Focusable.Score}
-              out={data.Accessibility.Focusable.Score?"Keyboard Accessibility good":"Keyboard Accessibility Bad"}
+              score={data.Accessibility.Focus_Order.Score}
+              out={data.Accessibility.Focus_Order.Score?"Keyboard Accessibility good":"Keyboard Accessibility Bad"}
             />
           </div>
           <div className="flex justify-between items-center">
             <span className={`${textColor}`}>ARIA/Labelling</span>
             <ScoreBadge
-              score={data.Accessibility.ARIA.Score}
-              out={data.Accessibility.ARIA.Score?"ARIA Compliance":"ARIA issues found"}
+              score={data.Accessibility.Focusable_Content.Score}
+              out={data.Accessibility.Focusable_Content.Score?"ARIA Compliance":"ARIA issues found"}
             />
           </div>
           <div className="flex justify-between items-center">
             <span className={`${textColor}`}>Alt/Text Equivalents</span>
             <ScoreBadge
-              score={data.Accessibility.Alt_or_Text_Equivalents.Score}
-              out={data.Accessibility.Alt_or_Text_Equivalents.Score?"Alt Attributed Img":"Not all images have alt"}
+              score={data.Accessibility.Tab_Index.Score}
+              out={data.Accessibility.Tab_Index.Score?"Alt Attributed Img":"Not all images have alt"}
+            />
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={`${textColor}`}>Skip Links</span>
+            <ScoreBadge
+              score={data.Accessibility.Interactive_Element_Affordance.Score}
+              out={data.Accessibility.Interactive_Element_Affordance.Score?"Skip link not found":"Skip Link available"}
+            />
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={`${textColor}`}>Skip Links</span>
+            <ScoreBadge
+              score={data.Accessibility.Label.Score}
+              out={data.Accessibility.Label.Score?"Skip link not found":"Skip Link available"}
+            />
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={`${textColor}`}>Skip Links</span>
+            <ScoreBadge
+              score={data.Accessibility.Aria_Allowed_Attr.Score}
+              out={data.Accessibility.Aria_Allowed_Attr.Score?"Skip link not found":"Skip Link available"}
+            />
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={`${textColor}`}>Skip Links</span>
+            <ScoreBadge
+              score={data.Accessibility.Aria_Roles.Score}
+              out={data.Accessibility.Aria_Roles.Score?"Skip link not found":"Skip Link available"}
+            />
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={`${textColor}`}>Skip Links</span>
+            <ScoreBadge
+              score={data.Accessibility.Aria_Hidden_Focus.Score}
+              out={data.Accessibility.Aria_Hidden_Focus.Score?"Skip link not found":"Skip Link available"}
+            />
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={`${textColor}`}>Skip Links</span>
+            <ScoreBadge
+              score={data.Accessibility.Image_Alt.Score}
+              out={data.Accessibility.Image_Alt.Score?"Skip link not found":"Skip Link available"}
             />
           </div>
           <div className="flex justify-between items-center">
@@ -95,51 +130,17 @@ export default function Accessibility({ data }) {
               out={data.Accessibility.Skip_Links.Score?"Skip link not found":"Skip Link available"}
             />
           </div>
-          {/* <div className="flex justify-between items-center">
-            <span className={`${textColor}`}>Landmarks</span>
+          <div className="flex justify-between items-center">
+            <span className={`${textColor}`}>Skip Links</span>
             <ScoreBadge
               score={data.Accessibility.Landmarks.Score}
-              out={data.Accessibility.Landmarks.Score?"All landmark available":"Some Landmark Missing"}
+              out={data.Accessibility.Landmarks.Score?"Skip link not found":"Skip Link available"}
             />
-          </div> */}
+          </div>
+         
         </div>
-
-        {/* Conditionally rendered error section */}
-        {hasError && <hr className="text-black mt-3" />}
-
-        <div className="flex flex-col p-1 mt-2 gap-2">
-  {data.Accessibility.Color_Contrast.Score === 0 && (
-    <h1 className={`warn flex gap-2  ${textColor}`}>
-      <AlertTriangle size={20} className="text-red-700" /> Color-contrast attribute missing
-    </h1>
-  )}
-  {data.Accessibility.Focusable.Score === 0 && (
-    <h1 className={`warn flex gap-2  ${textColor}`}>
-      <AlertTriangle size={20} className="text-red-700" /> There are missing attributes: "focus-order", "focusable-content", "tabindex", "interactive-element-affordance"
-    </h1>
-  )}
-  {data.Accessibility.ARIA.Score === 0 && (
-    <h1 className={`warn flex gap-2  ${textColor}`}>
-      <AlertTriangle size={20} className="text-red-700" /> There are missing ARIA attributes: "label", "aria-allowed-attr", "aria-roles", "aria-hidden-focus"
-    </h1>
-  )}
-  {data.Accessibility.Alt_or_Text_Equivalents.Score === 0 && (
-    <h1 className={`warn flex gap-2  ${textColor}`}>
-      <AlertTriangle size={20} className="text-red-700" /> Image-alt attribute missing
-    </h1>
-  )}
-  {data.Accessibility.Skip_Links.Score === 0 && (
-    <h1 className={`warn flex gap-2  ${textColor}`}>
-      <AlertTriangle size={20} className="text-red-700" /> Skip link missing
-    </h1>
-  )}
-  {/* {data.Accessibility.Landmarks.Score === 0 && (
-    <h1 className={`warn flex gap-2  ${textColor}`}>
-      <AlertTriangle size={20} className="text-red-700" /> Missing landmark roles: "banner", "main", "contentinfo", "navigation", "complementary"
-    </h1>
-  )} */}
-</div>
-
+    <AuditDropdown items={data.Accessibility.Passed} title="Passed Audit" />
+    <AuditDropdown items={data.Accessibility.Warning} title="Warnings" />
       </div>
     </div>
   );
