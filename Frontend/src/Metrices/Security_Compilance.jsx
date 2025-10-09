@@ -243,9 +243,9 @@ export default function Security_Compilance({ data }) {
 
 
       </div>
-<AuditDropdown items={data.Security_or_Compliance.Passed} title="Passed Audits" />
-<AuditDropdown items={data.Security_or_Compliance.Warning} title="Warning" />
-<AuditDropdown items={data.Security_or_Compliance.Improvements} title="Failed Audits" />
+<AuditDropdown items={data.Security_or_Compliance.Passed} title="Passed Audits" darkMode={darkMode} />
+<AuditDropdown items={data.Security_or_Compliance.Warning} title="Warning" darkMode={darkMode} />
+<AuditDropdown items={data.Security_or_Compliance.Improvements} title="Failed Audits" darkMode={darkMode} />
     </div>
   );
 }
