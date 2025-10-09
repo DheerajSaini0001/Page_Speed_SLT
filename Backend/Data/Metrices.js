@@ -10,7 +10,7 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data,tim
     Grade: Overall_Data.grade,
     AIO_Compatibility_Badge: MetricesCalculation_Data.aioReport.G.aioCompatibleBadge,
     Section_Score: Overall_Data.sectionScores,
-    Top_Fixes: Overall_Data.topFixes,
+    // Top_Fixes: Overall_Data.topFixes,
     // recommendations: Overall_Data.recommendations,
     Technical_Performance: {
       Core_Web_Vitals: {
@@ -59,7 +59,6 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data,tim
       Delivery_and_Render: {
         Compression:{
           Score: MetricesCalculation_Data.technicalReport.deliveryAndRender.compressionScore,
-          Value: MetricesCalculation_Data.technicalReport.deliveryAndRender.compressionValue,
           Parameter:'Set 1 if "gzip" or "brotli" compression is enabled, otherwise set 0 if it’s disabled or missing.'
         },
         Caching:{
@@ -73,12 +72,10 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data,tim
         },
         Render_Blocking:{
           Score: MetricesCalculation_Data.technicalReport.deliveryAndRender.renderBlockingScore,
-          Value: MetricesCalculation_Data.technicalReport.deliveryAndRender.renderBlockingValue,
           Parameter:'Set 1 if there are no render-blocking CSS/JS resources, otherwise set 0'
         },
         HTTP:{
           Score: MetricesCalculation_Data.technicalReport.deliveryAndRender.httpScore,
-          Value: MetricesCalculation_Data.technicalReport.deliveryAndRender.httpsValue,
           Parameter:'Set 1 if HTTP/2 is enabled, otherwise set 0 if not enabled'
         },
         Delivery_and_Render_Total_Score: MetricesCalculation_Data.technicalReport.deliveryAndRender.deliveryAndRenderTotal,
@@ -366,23 +363,7 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data,tim
       Score: MetricesCalculation_Data.securityReport.checkAdminPanelPublicScore,
       Parameter: '1 if admin panel is not publicly accessible, else 0'
     },
-    Mixed_Content: {
-      Score: MetricesCalculation_Data.securityReport.mixedContentScore,
-      Parameter: '1 if no mixed content (HTTP resources) exists, else 0'
-    },
-    Vulnerable_JS: {
-      Score: MetricesCalculation_Data.securityReport.vulnerableJSScore,
-      Parameter: '1 if no vulnerable JS libraries detected, else 0'
-    },
-    Noopener: {
-      Score: MetricesCalculation_Data.securityReport.noopenerScore,
-      Parameter: '1 if links with target=_blank use rel=noopener, else 0'
-    },
-    Console_Errors: {
-      Score: MetricesCalculation_Data.securityReport.consoleErrorsScore,
-      Parameter: '1 if no console errors found, else 0'
-    },
-    Actual_Percentage: MetricesCalculation_Data.securityReport.actualPercentage,
+    Percentage: MetricesCalculation_Data.securityReport.actualPercentage,
     Warning: MetricesCalculation_Data.securityReport.warning,
     Passed:MetricesCalculation_Data.securityReport. passed,
     Total: MetricesCalculation_Data.securityReport.Total,

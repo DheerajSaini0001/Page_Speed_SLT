@@ -26,21 +26,6 @@ export default function Technical_Performance({ data }) {
   const cardBg = darkMode ? "bg-gradient-to-br from-blue-900 via-gray-900 to-black" : "bg-gradient-to-br from-blue-200 via-gray-200 to-white";
   const textColor = darkMode ? "text-white" : "text-black";
 
-  // Check if any metric failed
-  // const hasError1 =
-  //   data.Technical_Performance.Core_Web_Vitals.LCP.Score === 0 ||
-  //   data.Technical_Performance.Core_Web_Vitals.CLS.Score === 0 ||
-  //   data.Technical_Performance.Core_Web_Vitals.INP.Score === 0 ;
-  //   const hasError2=
-  //   data.Technical_Performance.Delivery_and_Render.TTFB.Score === 0 ||
-  //   data.Technical_Performance.Delivery_and_Render.Compression.Score === 0 ||
-  //   data.Technical_Performance.Delivery_and_Render.Caching.Score === 0 ||
-  //   data.Technical_Performance.Delivery_and_Render.HTTP.Score === 0 ;
-  //   const hasError3=
-  //   data.Technical_Performance.Crawlability_and_Hygiene.Sitemap.Score === 0 ||
-  //   data.Technical_Performance.Crawlability_and_Hygiene.Robots.Score === 0 ||
-  //   data.Technical_Performance.Crawlability_and_Hygiene.Broken_Links.Score === 0 ||
-  //   data.Technical_Performance.Crawlability_and_Hygiene.Redirect_Chains.Score === 0;
 
   return (
     <div
@@ -90,6 +75,7 @@ export default function Technical_Performance({ data }) {
             <ScoreBadge
               score={data.Technical_Performance.Core_Web_Vitals.FCP.Score}
               out={data.Technical_Performance.Core_Web_Vitals.FCP.Value}
+              unit={"Sec"}
               des={data.Technical_Performance.Core_Web_Vitals.FCP.Score ? "Good" : "Poor"}
             />
           </div>
@@ -98,6 +84,7 @@ export default function Technical_Performance({ data }) {
             <ScoreBadge
               score={data.Technical_Performance.Core_Web_Vitals.TTFB.Score}
               out={data.Technical_Performance.Core_Web_Vitals.TTFB.Value}
+              unit={"Sec"}
               des={data.Technical_Performance.Core_Web_Vitals.TTFB.Score ? "Good" : "Poor"}
             />
           </div>
@@ -106,6 +93,7 @@ export default function Technical_Performance({ data }) {
             <ScoreBadge
               score={data.Technical_Performance.Core_Web_Vitals.TBT.Score}
               out={data.Technical_Performance.Core_Web_Vitals.TBT.Value}
+              unit={"Sec"}
               des={data.Technical_Performance.Core_Web_Vitals.TBT.Score ? "Good" : "Poor"}
             />
           </div>
@@ -114,6 +102,7 @@ export default function Technical_Performance({ data }) {
             <ScoreBadge
               score={data.Technical_Performance.Core_Web_Vitals.SI.Score}
               out={data.Technical_Performance.Core_Web_Vitals.SI.Value}
+              unit={"Sec"}
               des={data.Technical_Performance.Core_Web_Vitals.SI.Score ? "Good" : "Poor"}
             />
           </div>
