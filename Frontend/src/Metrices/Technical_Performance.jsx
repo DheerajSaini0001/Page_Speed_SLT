@@ -209,9 +209,9 @@ export default function Technical_Performance({ data }) {
       {/* Audit Results */}
       
 
-      <AuditDropdown title="Passed Audits" items={data.Technical_Performance.Passed} />
-      <AuditDropdown title="Warning" items={data.Technical_Performance.Warning} />
-      <AuditDropdown title="Failed Audits" items={data.Technical_Performance.Improvements} />
+      <AuditDropdown title="Passed Audits" items={data.Technical_Performance.Passed} darkMode={darkMode} />
+      <AuditDropdown title="Warning" items={data.Technical_Performance.Warning} darkMode={darkMode} />
+      <AuditDropdown title="Failed Audits" items={data.Technical_Performance.Improvements} darkMode={darkMode} />
     </div>
   );
 }
