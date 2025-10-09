@@ -1,5 +1,5 @@
 // securityCompliance.mjs
-import puppeteer from "puppeteer-extra";
+// import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import https from "follow-redirects";
 import dotenv from "dotenv";
@@ -7,7 +7,7 @@ import fetch from "node-fetch";
 import { URL } from "url";
 
 dotenv.config();
-puppeteer.use(StealthPlugin());
+// puppeteer.use(StealthPlugin());
 
 const safeBrowsingAPI = process.env.SafeBrowsing;
 const VT_KEY = process.env.vt_key;
@@ -22,70 +22,25 @@ function checkHTTPS(url) {
   }
 }
 
-async function checkSSLDetails(url) {
-  return new Promise((resolve) => {
-    try {
-      const options = {
-        rejectUnauthorized: true,
-        headers: {
-          "User-Agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36",
-        },
-      };
-      const req = https.get(url,options,(res) =>{
+function checkSSLDetails(response){
 
-          const result = {
-            sslReachable: 1,
-            certificateValid: 0,
-            hstsEnabled: 0,
-            tlsVersion: 0,
-            xFrameOptions: 0,
-            contentSecurityPolicy: 0,
-            xContentTypeOptions: 0,
-          };
+  const securityDetails = response.securityDetails();
 
-          const cert = res.socket.getPeerCertificate();
-          if (cert && cert.valid_to) {
-            const expiryDate = new Date(cert.valid_to);
-            result.certificateValid = expiryDate > new Date() ? 1 : 0;
-          }
+      const expiryDate = new Date(securityDetails.validTo * 1000);
+      const certificateValid = expiryDate > new Date() ? 1 : 0;
+      const tls = securityDetails.protocol(); // e.g., "TLS 1.3"
+      const tlsVersion = tls.includes('1.2') || tls.includes('1.3') ? 1 : 0;
+    
 
-          const headers = res.headers;
-          result.hstsEnabled = headers["strict-transport-security"] ? 1 : 0;
-          result.xFrameOptions = headers["x-frame-options"] ? 1 : 0;
-          result.contentSecurityPolicy = headers["content-security-policy"] ? 1 : 0;
-          result.xContentTypeOptions = headers["x-content-type-options"] ? 1 : 0;
-
-          const tlsVersion = res.socket.getProtocol();
-          result.tlsVersion =
-          tlsVersion === "TLSv1.2" || tlsVersion === "TLSv1.3" ? 1 : 0;
-
-          resolve(result);
-        })
-        req.on("error", () => {
-        resolve({
-          sslReachable: 0,
-          certificateValid: 0,
-          hstsEnabled: 0,
-          tlsVersion: 0,
-          xFrameOptions: 0,
-          contentSecurityPolicy: 0,
-          xContentTypeOptions: 0,
-        });
-      });
-      req.end();
-    } catch {
-        resolve({
-        sslReachable: 0,
-        certificateValid: 0,
-        hstsEnabled: 0,
-        tlsVersion: 0,
-        xFrameOptions: 0,
-        contentSecurityPolicy: 0,
-        xContentTypeOptions: 0,
-      });
+    const headers = response.headers();
+    const hstsEnabled = headers['strict-transport-security'] ? 1 : 0;
+    const xFrameOptions = headers['x-frame-options'] ? 1 : 0;
+    const contentSecurityPolicy = headers['content-security-policy'] ? 1 : 0;
+    const xContentTypeOptions = headers['x-content-type-options'] ? 1 : 0;
+    
+    return {
+      certificateValid,tlsVersion,hstsEnabled,xFrameOptions,contentSecurityPolicy,xContentTypeOptions
     }
-  });
 }
 
 // Security/Compliance (Security Headers)
@@ -656,12 +611,12 @@ async function checkMFAEnabled(page) {
 
 export default async function securityCompliance(url,page) {
 
-  await page.goto(url, { waitUntil: "networkidle2", timeout: 240000 });
+  const response = await page.goto(url, { waitUntil: "networkidle2", timeout: 240000 });
 
   // Security/Compliance (HTTPS / SSL)
   const checkHTTPSScore = checkHTTPS(url);
-  const checkSSLDetail = await checkSSLDetails(url);
-  const checkSSLScore = checkSSLDetail.sslReachable;
+  const checkSSLDetail = checkSSLDetails(response);
+  const checkSSLScore = response.ok() ? 1 : 0;
   const checkSSLCertificateExpiryScore = checkSSLDetail.certificateValid;
   const checkHSTSScore = checkSSLDetail.hstsEnabled;
   const checkTLSVersionScore = checkSSLDetail.tlsVersion;
@@ -1123,36 +1078,36 @@ if (checkXFrameOptionsScore === 0) {
 }
 
 
-const actualPercentage =  parseFloat((((checkHTTPSScore+checkSSLScore+checkSSLCertificateExpiryScore+checkHSTSScore+checkTLSVersionScore+checkXFrameOptionsScore+checkCSPScore+checkXContentTypeOptionsScore+checkCookiesSecureScore+checkCookiesHttpOnlyScore+cookieConsentScore+privacyPolicyScore+safeBrowsingScore+blacklistScore+malwareScanScore+xssVulnerabilityScore+sqliExposureScore+formsUseHTTPSScore+checkGDPRCCPAScore+checkDataCollectionScore+checkAdminPanelPublicScore+weakDefaultCredsScore+mfaEnabledScore) / 23) * 100).toFixed(0));
+const actualPercentage =  parseFloat((((checkHTTPSScore+checkSSLScore+checkSSLCertificateExpiryScore+checkHSTSScore+checkTLSVersionScore+formsUseHTTPSScore) / 6) * 100).toFixed(0));
 
-  // console.log("HTTPS:", checkHTTPSScore);
-  // console.log("SSL:", checkSSLScore);
-  // console.log("SSL Expiry:", checkSSLCertificateExpiryScore);
-  // console.log("HSTS:", checkHSTSScore);
-  // console.log("TLS:", checkTLSVersionScore);
-  // console.log("X-Frame-Options:", checkXFrameOptionsScore);
-  // console.log("CSP:", checkCSPScore);
-  // console.log("X-Content-Type-Options:", checkXContentTypeOptionsScore);
-  // console.log("Cookies HttpOnly:", checkCookiesHttpOnlyScore);
-  // console.log("Cookies Secure:", checkCookiesSecureScore);
-  // console.log("Cookie Consent (1=present,0=not):", cookieConsentScore);
-  // console.log("Privacy Policy (1=exists,0=not):", privacyPolicyScore);
-  // console.log("Google Safe Browsing (1=safe,0=unsafe):", safeBrowsingScore);
-  // console.log("SQLi Exposure (0=vulnerable,1=safe):", sqliExposureScore);
-  // console.log("Forms Use HTTPS (0=unsafe,1=safe):", formsUseHTTPSScore);
-  // console.log("VirusTotal Blacklist Score (1=safe,0=blacklisted):", blacklistScore);
-  // console.log("Malware Scan (1=safe,0=malicious):", malwareScanScore);
-  // console.log("XSS Vulnerability (0=vulnerable,1=safe):", xssVulnerabilityScore);
-  // console.log("GDPR/CCPA Notice (1=present,0=not):", checkGDPRCCPAScore);
-  // console.log("Data Collection Disclosure (1=found,0=not):", checkDataCollectionScore);
-  // console.log("Admin Panel Publicly Accessible (1=no,0=yes):", checkAdminPanelPublicScore);
-  // console.log("Weak/Default Credentials Indicators (1=no,0=yes):", weakDefaultCredsScore);
-  // console.log("MFA Enabled (1=yes,0=no):", mfaEnabledScore);
-  // console.log(actualPercentage);
-  // console.log(warning);
-  // console.log(passed);
-  // console.log(Total);
-  // console.log(improvements);
+  console.log("HTTPS:", checkHTTPSScore);
+  console.log("SSL:", checkSSLScore);
+  console.log("SSL Expiry:", checkSSLCertificateExpiryScore);
+  console.log("HSTS:", checkHSTSScore);
+  console.log("TLS:", checkTLSVersionScore);
+  console.log("X-Frame-Options:", checkXFrameOptionsScore);
+  console.log("CSP:", checkCSPScore);
+  console.log("X-Content-Type-Options:", checkXContentTypeOptionsScore);
+  console.log("Cookies HttpOnly:", checkCookiesHttpOnlyScore);
+  console.log("Cookies Secure:", checkCookiesSecureScore);
+  console.log("Cookie Consent (1=present,0=not):", cookieConsentScore);
+  console.log("Privacy Policy (1=exists,0=not):", privacyPolicyScore);
+  console.log("Google Safe Browsing (1=safe,0=unsafe):", safeBrowsingScore);
+  console.log("SQLi Exposure (0=vulnerable,1=safe):", sqliExposureScore);
+  console.log("Forms Use HTTPS (0=unsafe,1=safe):", formsUseHTTPSScore);
+  console.log("VirusTotal Blacklist Score (1=safe,0=blacklisted):", blacklistScore);
+  console.log("Malware Scan (1=safe,0=malicious):", malwareScanScore);
+  console.log("XSS Vulnerability (0=vulnerable,1=safe):", xssVulnerabilityScore);
+  console.log("GDPR/CCPA Notice (1=present,0=not):", checkGDPRCCPAScore);
+  console.log("Data Collection Disclosure (1=found,0=not):", checkDataCollectionScore);
+  console.log("Admin Panel Publicly Accessible (1=no,0=yes):", checkAdminPanelPublicScore);
+  console.log("Weak/Default Credentials Indicators (1=no,0=yes):", weakDefaultCredsScore);
+  console.log("MFA Enabled (1=yes,0=no):", mfaEnabledScore);
+  console.log(actualPercentage);
+  console.log(warning);
+  console.log(passed);
+  console.log(Total);
+  console.log(improvements);
 
 return {
     checkHTTPSScore,

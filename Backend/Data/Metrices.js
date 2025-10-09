@@ -75,7 +75,7 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data,tim
           Parameter:'Set 1 if there are no render-blocking CSS/JS resources, otherwise set 0'
         },
         HTTP:{
-          Score: MetricesCalculation_Data.technicalReport.deliveryAndRender.httpScore,
+          Score: MetricesCalculation_Data.technicalReport.deliveryAndRender.httpsScore,
           Parameter:'Set 1 if HTTP/2 is enabled, otherwise set 0 if not enabled'
         },
         Delivery_and_Render_Total_Score: MetricesCalculation_Data.technicalReport.deliveryAndRender.deliveryAndRenderTotal,
