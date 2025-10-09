@@ -195,9 +195,9 @@ export default function On_Page_SEO({ data }) {
         </div>
       </div> */}
       {/* Warnings, Passed, Failed Audits */}
-      <AuditDropdown items={data.On_Page_SEO.Passed} title="Passed Audits" />
-      <AuditDropdown items={data.On_Page_SEO.Warning} title="Warnings" />
-      <AuditDropdown items={data.On_Page_SEO.Improvements} title="Failed Audits" />
+      <AuditDropdown items={data.On_Page_SEO.Passed} title="Passed Audits" darkMode={darkMode} />
+      <AuditDropdown items={data.On_Page_SEO.Warning} title="Warnings" darkMode={darkMode} />
+      <AuditDropdown items={data.On_Page_SEO.Improvements} title="Failed Audits" darkMode={darkMode} />
     </div>
   );
 }

@@ -12,6 +12,7 @@ import AIO from "../Metrices/AIO";
 import Footer from "./Footer";
 import RawData from "../Metrices/RawData";
 import Assets from "../assets/Assets.js";
+
 import { ThemeContext } from "../ThemeContext.jsx"; // ✅ ThemeContext import
 
 export default function DarkCard() {
@@ -201,8 +202,8 @@ export default function DarkCard() {
               <section id="technical-performance" className="scroll-mt-20"><Technical_Performance data={result} /></section>
               <section id="on-page-seo" className="scroll-mt-20"><On_Page_SEO data={result} /></section>
               <section id="accessibility"><Accessibility data={result} /></section>
-              {/* <section id="security" className="scroll-mt-20"><Security_Compilance data={result} /></section>
-              <section id="ux" className="scroll-mt-20"><UX_Content_Structure data={result} /></section>
+              <section id="security" className="scroll-mt-20"><Security_Compilance data={result} /></section>
+              {/* <section id="ux" className="scroll-mt-20"><UX_Content_Structure data={result} /></section>
               <section id="conversion" className="scroll-mt-20"><Conversion_Lead_Flow data={result} /></section>
               <section id="aio" className="scroll-mt-20"><AIO data={result} /></section>
               <section id="Rawdata" className="scroll-mt-20"><RawData data={result} /></section> */}
