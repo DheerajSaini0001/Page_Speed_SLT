@@ -3,6 +3,7 @@ import { ThemeContext } from "../ThemeContext";
 import { Check, TriangleAlert, X } from "lucide-react";
 import CircularProgress from "../Component/CircularProgress";
 import { AlertTriangle } from "lucide-react";
+import AuditDropdown from "../Component/AuditDropdown";
 export default function On_Page_SEO({ data }) {
   
   const { darkMode } = useContext(ThemeContext);
@@ -43,7 +44,7 @@ export default function On_Page_SEO({ data }) {
     >
       <h1 className="responsive text-heading-25 flex items-center justify-center sm:gap-10 text-3xl font-extrabold mb-6">
         On-Page SEO{" "} 
-         <CircularProgress value={data.On_Page_SEO.On_Page_SEO_Score_Total} size={70} stroke={5} />
+         <CircularProgress value={data.On_Page_SEO.Percentage} size={70} stroke={5} />
         
       </h1>
 
@@ -56,9 +57,10 @@ export default function On_Page_SEO({ data }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div className="flex justify-between items-center">
             <span>Title</span>
-            <ScoreBadge score={data.On_Page_SEO.Essentials.Unique_Title.Score} 
-            out={data.On_Page_SEO.Essentials.Unique_Title.Title_Length}
-             des={"characters"}/>
+            {data.On_Page_SEO.Essentials.Title.Title_Exist?(<ScoreBadge score={data.On_Page_SEO.Essentials.Title.Score} 
+            out={data.On_Page_SEO.Essentials.Title.Title_Length}
+             des={"characters"}/>):"No Title Found"}
+            
           </div>
           <div className="flex justify-between items-center">
             <span>Meta Description</span>
@@ -67,32 +69,70 @@ export default function On_Page_SEO({ data }) {
             des={"characters"} />
           </div>
           <div className="flex justify-between items-center">
-            <span>Canonical</span>
-            <ScoreBadge score={data.On_Page_SEO.Essentials.Canonical.Score} 
-            des={data.On_Page_SEO.Essentials.Canonical.Score ? "Self-refercing":
-              "No Self-refercing"
-            } 
+            <span>URL Structure</span>
+            <ScoreBadge score={data.On_Page_SEO.Essentials.URL_Structure.Score} 
+            des={data.On_Page_SEO.Essentials.URL_Structure.Score ? "Good": "Bad"}
+        
             />
           </div>
           <div className="flex justify-between items-center">
+            <span>Canonical tag Existance</span>
+            <ScoreBadge score={data.On_Page_SEO.Essentials.Canonical.Canonical_Exist} 
+            des={data.On_Page_SEO.Essentials.Canonical.Canonical_Exist ? "Exist": "Not Exist"}
+        
+            />
+          </div>
+          <div className="flex justify-between items-center">
+            <span>Self referencing</span>
+            <ScoreBadge score={data.On_Page_SEO.Essentials.Canonical.Score} 
+            des={data.On_Page_SEO.Essentials.Canonical.Score ? "Yes": "No"}
+        
+            />
+          </div>
+          <div className="flex justify-between items-center">
+            <span>Pagination</span>
+            <ScoreBadge score={data.On_Page_SEO.Structure_and_Uniqueness.Pagination_Tags.Score} 
+            des={data.On_Page_SEO.Structure_and_Uniqueness.Pagination_Tags.Score ? "Good": "Bad"}
+        
+            />
+          </div>
+          <div className="flex justify-between items-center">
+            <span>Discriptive Internal Links</span>
+            <ScoreBadge score={data.On_Page_SEO.Media_and_Semantics.Internal_Links.Descriptive_Score} 
+            des={data.On_Page_SEO.Media_and_Semantics.Internal_Links.Descriptive_Score ? "Good": "Bad"}
+            />
+          </div>
+          <div className="flex justify-between items-center">
+            <span>ALT Text Relevance</span>
+            <ScoreBadge score={data.On_Page_SEO.Media_and_Semantics.ALT_Text_Relevance.Score} 
+            des={data.On_Page_SEO.Media_and_Semantics.ALT_Text_Relevance.Score ? "Good ALT Text": "Bad ALT Text"}
+            />
+          </div>
+          <div className="flex justify-between items-center">
+            <span>HTTPS</span>
+            <ScoreBadge score={data.On_Page_SEO.Structure_and_Uniqueness.HTTPS.Score} 
+            des={data.On_Page_SEO.Structure_and_Uniqueness.HTTPS.Score ? "Found https": "No https"}
+            />
+          </div>
+          {/* <div className="flex justify-between items-center">
             <span>H1 tag</span>
             <ScoreBadge score={data.On_Page_SEO.Essentials.H1.Score} out={data.On_Page_SEO.Essentials.H1.H1_Count===0?"No H1 Found" :data.On_Page_SEO.Essentials.H1.H1_Count===1 ? "Exectly One H1":"More than one H1"} />
-          </div>
+          </div> */}
         </div>
-        {(data.On_Page_SEO.Essentials.Unique_Title.Score==0 || data.On_Page_SEO.Essentials.Meta_Description.Score==0 || data.On_Page_SEO.Essentials.Canonical.Score==0 || data.On_Page_SEO.Essentials.H1.Score==0) &&( <hr className="text-black mt-3" />)}
+        {/* {(data.On_Page_SEO.Essentials.Unique_Title.Score==0 || data.On_Page_SEO.Essentials.Meta_Description.Score==0 || data.On_Page_SEO.Essentials.Canonical.Score==0 || data.On_Page_SEO.Essentials.H1.Score==0) &&( <hr className="text-black mt-3" />)} */}
        
-        <div className="p-1 mt-2">
+        {/* <div className="p-1 mt-2">
         {data.On_Page_SEO.Essentials.Unique_Title.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>Length of Title must be in between 30-60 characters</h1>)}
           {data.On_Page_SEO.Essentials.Meta_Description.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>Length of MetaDescription must be less than 165 characters</h1>)}
           {data.On_Page_SEO.Essentials.Canonical.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/>Page URL must be same as Canonical tag href URL</h1>)}
           {data.On_Page_SEO.Essentials.H1.Score==0&&(<h1 className={`flex gap-2 warn`}><AlertTriangle size={20} className="text-red-700"/> {data.On_Page_SEO.Essentials.H1.H1_Count===0?"There must be exactly one H1 " :" There are more than one H1"}</h1>)}
           
           
-        </div>
+        </div> */}
       </div>
 
       {/* Media & Semantics */}
-      <div className={`w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-purple-500 hover:scale-105 transition-transform duration-300 ${cardBg}`}>
+      {/* <div className={`w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-purple-500 hover:scale-105 transition-transform duration-300 ${cardBg}`}>
         <h2 className="text-xl font-bold mb-4">
           Media & Semantics{" "}
          
@@ -121,10 +161,10 @@ export default function On_Page_SEO({ data }) {
           
           
         </div>
-      </div>
+      </div> */}
 
       {/* Structure & Uniqueness */}
-      <div className={`w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-pink-500 hover:scale-105 transition-transform duration-300 ${cardBg}`}>
+      {/* <div className={`w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-pink-500 hover:scale-105 transition-transform duration-300 ${cardBg}`}>
         <h2 className="text-xl font-bold mb-4">
           Structure & Uniqueness{" "}
          
@@ -153,7 +193,11 @@ export default function On_Page_SEO({ data }) {
           
           
         </div>
-      </div>
+      </div> */}
+      {/* Warnings, Passed, Failed Audits */}
+      <AuditDropdown items={data.On_Page_SEO.Passed} title="Passed Audits" />
+      <AuditDropdown items={data.On_Page_SEO.Warning} title="Warnings" />
+      <AuditDropdown items={data.On_Page_SEO.Improvements} title="Failed Audits" />
     </div>
   );
 }

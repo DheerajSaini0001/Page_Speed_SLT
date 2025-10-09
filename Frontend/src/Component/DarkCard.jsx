@@ -199,9 +199,9 @@ export default function DarkCard() {
             <div className="flex-1 lg:ml-64 pb-0 flex-col justify-center pr-4 pt-2 space-y-8">
               <section id="deshboard" className="scroll-mt-20"><Dashboard2 data={result} /></section>
               <section id="technical-performance" className="scroll-mt-20"><Technical_Performance data={result} /></section>
-              {/* <section id="on-page-seo" className="scroll-mt-20"><On_Page_SEO data={result} /></section>
+              <section id="on-page-seo" className="scroll-mt-20"><On_Page_SEO data={result} /></section>
               <section id="accessibility"><Accessibility data={result} /></section>
-              <section id="security" className="scroll-mt-20"><Security_Compilance data={result} /></section>
+              {/* <section id="security" className="scroll-mt-20"><Security_Compilance data={result} /></section>
               <section id="ux" className="scroll-mt-20"><UX_Content_Structure data={result} /></section>
               <section id="conversion" className="scroll-mt-20"><Conversion_Lead_Flow data={result} /></section>
               <section id="aio" className="scroll-mt-20"><AIO data={result} /></section>
