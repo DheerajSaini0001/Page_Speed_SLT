@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { ThemeContext } from "../ThemeContext";
 import { Check, X, AlertTriangle } from "lucide-react";
 import CircularProgress from "../Component/CircularProgress";
+import AuditDropdown from "../Component/AuditDropdown";
 
 export default function UX_Content_Structure({ data }) {
   const { darkMode } = useContext(ThemeContext);
@@ -29,14 +30,7 @@ export default function UX_Content_Structure({ data }) {
     : "bg-gradient-to-br from-blue-200 via-gray-200 to-white";
   const textColor = darkMode ? "text-white" : "text-black";
 
-  // Check if any UX metric failed
-  const hasError =
-    data.UX_and_Content_Structure.Mobile_Friendliness.Score === 0 ||
-    data.UX_and_Content_Structure.Navigation_Depth.Score === 0 ||
-    data.UX_and_Content_Structure.Layout_Shift_On_interactions.Score === 0 ||
-    data.UX_and_Content_Structure.Readability.Score === 0 ||
-    data.UX_and_Content_Structure.Intrusive_Interstitials.Score === 0;
-
+ 
   return (
     <div
       id="UXContentStructure"
@@ -46,7 +40,7 @@ export default function UX_Content_Structure({ data }) {
         UX Content Structure
        
         <CircularProgress
-          value={data.UX_and_Content_Structure.UX_and_Content_Structure_Score_Total}
+          value={data.UX_or_Content_Structure.Percentage}
           size={70}
           stroke={5}
         />
@@ -58,86 +52,177 @@ export default function UX_Content_Structure({ data }) {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div className="flex justify-between items-center">
-            <span className={textColor}>Mobile Friendliness</span>
+            <span className={textColor}>Navigation Clarity</span>
 
             <ScoreBadge
-              score={data.UX_and_Content_Structure.Mobile_Friendliness.Score}
+              score={data.UX_or_Content_Structure.Navigation_Clarity.Score}
               textGood="Mobile friendly"
               textBad="Not mobile friendly"
             />
           </div>
 
           <div className="flex justify-between items-center">
-            <span className={textColor}>Navigation Depth</span>
+            <span className={textColor}>Breadcrumbs</span>
 
             <ScoreBadge
-              score={data.UX_and_Content_Structure.Navigation_Depth.Score}
+              score={data.UX_or_Content_Structure.Breadcrumbs.Score}
               textGood="Navigation depth OK"
               textBad="Navigation depth too deep"
             />
           </div>
 
           <div className="flex justify-between items-center">
-            <span className={textColor}>Layout Shift On Interactions</span>
+            <span className={textColor}> Clickable Logo</span>
 
             <ScoreBadge
-              score={data.UX_and_Content_Structure.Layout_Shift_On_interactions.Score}
+              score={data.UX_or_Content_Structure.Clickable_Logo.Score}
               textGood="Stable layout"
               textBad="Layout shifts detected"
             />
           </div>
 
           <div className="flex justify-between items-center">
-            <span className={textColor}>Readability</span>
+            <span className={textColor}>Mobile Responsiveness</span>
 
             <ScoreBadge
-              score={data.UX_and_Content_Structure.Readability.Score}
-              textGood="Readable content"
-              textBad="Readability issues"
+              score={data.UX_or_Content_Structure.Mobile_Responsiveness.Score}
+              textGood="Responsive design"
+              textBad="Not responsive"
             />
           </div>
 
           <div className="flex justify-between items-center">
-            <span className={textColor}>Intrusive Interstitials</span>
+            <span className={textColor}>Paragraph Length and Spacing</span>
 
             <ScoreBadge
-              score={data.UX_and_Content_Structure.Intrusive_Interstitials.Score}
-              textGood="No intrusive interstitials"
-              textBad="Intrusive interstitials present"
+              score={data.UX_or_Content_Structure.Paragraph_Length_and_Spacing.Score}
+              textGood="Good paragraph length and spacing"
+              textBad="Poor paragraph length and spacing"
+            />
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={textColor}>Font Style and Size Consistency</span>
+
+            <ScoreBadge
+              score={data.UX_or_Content_Structure.Font_Style_and_Size_Consistency.Score}
+              textGood="Consistent font style and size"
+              textBad="Inconsistent font style and size"
+            />
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={textColor}>Contrast and Color Harmony</span>
+
+            <ScoreBadge
+              score={data.UX_or_Content_Structure.Contrast_and_Color_Harmony.Score}
+              textGood="Good contrast and color harmony"
+              textBad="Poor contrast and color harmony"
+            />
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={textColor}>Whitespace Usage</span>
+
+            <ScoreBadge
+              score={data.UX_or_Content_Structure.Whitespace_Usage.Score}
+              textGood="Good whitespace usage"
+              textBad="Poor whitespace usage"
+            />
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={textColor}>Content Relevance</span>
+
+            <ScoreBadge
+              score={data.UX_or_Content_Structure.Content_Relevance.Score}
+              textGood="Relevant content"
+              textBad="Irrelevant content"
+            />
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={textColor}>Call to Action Clarity</span>
+
+            <ScoreBadge
+              score={data.UX_or_Content_Structure.Call_to_Action_Clarity.Score}
+              textGood="Clear call to action"
+              textBad="Unclear call to action"
+            />
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={textColor}>Multimedia Balance</span>
+
+            <ScoreBadge
+              score={data.UX_or_Content_Structure.Multimedia_Balance.Score}
+              textGood="Well-balanced multimedia"
+              textBad="Poor multimedia balance"
+            />
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={textColor}>Internal Linking Quality</span>
+
+            <ScoreBadge
+              score={data.UX_or_Content_Structure.Internal_Linking_Quality.Score}
+              textGood="High-quality internal links"
+              textBad="Low-quality internal links"
+            />
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={textColor}>User Journey Continuity</span>
+
+            <ScoreBadge
+              score={data.UX_or_Content_Structure.User_Journey_Continuity.Score}
+              textGood="Smooth user journey"
+              textBad="Disjointed user journey"
+            />
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={textColor}>Error and Empty State Handling</span>
+
+            <ScoreBadge
+              score={data.UX_or_Content_Structure.Error_and_Empty_State_Handling.Score}
+              textGood="Effective error and empty state handling"
+              textBad="Ineffective error and empty state handling"
+            />
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={textColor}>Interactive Feedback</span>
+
+            <ScoreBadge
+              score={data.UX_or_Content_Structure.Interactive_Feedback.Score}
+              textGood="Effective interactive feedback"
+              textBad="Ineffective interactive feedback"
+            />
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={textColor}>Sticky Navigation</span>
+
+            <ScoreBadge
+              score={data.UX_or_Content_Structure.Sticky_Navigation.Score}
+              textGood="Effective sticky navigation"
+              textBad="Ineffective sticky navigation"
+            />
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={textColor}>Scroll Depth Logic</span>
+
+            <ScoreBadge
+              score={data.UX_or_Content_Structure.Scroll_Depth_Logic.Score}
+              textGood="Effective scroll depth logic"
+              textBad="Ineffective scroll depth logic"
+            />
+          </div>
+          <div className="flex justify-between items-center">
+            <span className={textColor}>Loading Indicators</span>
+
+            <ScoreBadge
+              score={data.UX_or_Content_Structure.Loading_Indicators.Score}
+              textGood="Effective loading indicators"
+              textBad="Ineffective loading indicators"
             />
           </div>
         </div>
-
-        {/* Conditionally show error messages */}
-        {hasError && <hr className="text-black mt-3" />}
-        <div className="p-1 mt-2">
-          {data.UX_and_Content_Structure.Mobile_Friendliness.Score === 0 && (
-            <h1 className={`warn flex gap-2 items-center ${textColor}`}>
-              <AlertTriangle className="text-red-600" size={20} /> Viewport meta tag missing, Body font size less than 16px, Some buttons/links are too small tap targets less than 32px
-            </h1>
-          )}
-          {data.UX_and_Content_Structure.Navigation_Depth.Score === 0 && (
-            <h1 className={`warn flex gap-2 items-center ${textColor}`}>
-              <AlertTriangle className="text-red-600" size={20} /> Navigation depth too deep or inconsistent
-            </h1>
-          )}
-          {data.UX_and_Content_Structure.Layout_Shift_On_interactions.Score === 0 && (
-            <h1 className={`warn flex gap-2 items-center ${textColor}`}>
-              <AlertTriangle className="text-red-600" size={20} /> Layout shifts detected during user interactions
-            </h1>
-          )}
-          {data.UX_and_Content_Structure.Readability.Score === 0 && (
-            <h1 className={`warn flex gap-2 items-center ${textColor}`}>
-              <AlertTriangle className="text-red-600" size={20} /> Readability issues detected: Content too short or difficult to read.
-            </h1>
-          )}
-          {data.UX_and_Content_Structure.Intrusive_Interstitials.Score === 0 && (
-            <h1 className={`warn flex gap-2 items-center ${textColor}`}>
-              <AlertTriangle className="text-red-600" size={20} />Intrusive interstitials present
-            </h1>
-          )}
-        </div>
+        
       </div>
+        <AuditDropdown items={data.UX_or_Content_Structure.Passed} title="Passed Audits" />
+        <AuditDropdown items={data.UX_or_Content_Structure.Warning} title="Warning" />
+        <AuditDropdown items={data.UX_or_Content_Structure.Improvements} title="Failed Audits" />
     </div>
   );
 }
