@@ -61,87 +61,87 @@ export default function Accessibility({ data }) {
             />
           </div>
           <div className="flex justify-between items-center">
-            <span className={`${textColor}`}>Focusable/Keyboard Nav</span>
+            <span className={`${textColor}`}>Focusable Keyboard Nav</span>
             <ScoreBadge
               score={data.Accessibility.Focus_Order.Score}
               out={data.Accessibility.Focus_Order.Score?"Keyboard Accessibility good":"Keyboard Accessibility Bad"}
             />
           </div>
           <div className="flex justify-between items-center">
-            <span className={`${textColor}`}>ARIA/Labelling</span>
+            <span className={`${textColor}`}>Focusable Content</span>
             <ScoreBadge
               score={data.Accessibility.Focusable_Content.Score}
-              out={data.Accessibility.Focusable_Content.Score?"ARIA Compliance":"ARIA issues found"}
+              out={data.Accessibility.Focusable_Content.Score?"Good":"issues found"}
             />
           </div>
           <div className="flex justify-between items-center">
-            <span className={`${textColor}`}>Alt/Text Equivalents</span>
+            <span className={`${textColor}`}>Tab Index</span>
             <ScoreBadge
               score={data.Accessibility.Tab_Index.Score}
-              out={data.Accessibility.Tab_Index.Score?"Alt Attributed Img":"Not all images have alt"}
+              out={data.Accessibility.Tab_Index.Score?"Good":"Bad"}
             />
           </div>
           <div className="flex justify-between items-center">
-            <span className={`${textColor}`}>Skip Links</span>
+            <span className={`${textColor}`}>Interactive Element Affordance</span>
             <ScoreBadge
               score={data.Accessibility.Interactive_Element_Affordance.Score}
-              out={data.Accessibility.Interactive_Element_Affordance.Score?"Skip link not found":"Skip Link available"}
+              out={data.Accessibility.Interactive_Element_Affordance.Score?"Good":"Needs Improvement"}
             />
           </div>
           <div className="flex justify-between items-center">
-            <span className={`${textColor}`}>Skip Links</span>
+            <span className={`${textColor}`}>Label</span>
             <ScoreBadge
               score={data.Accessibility.Label.Score}
-              out={data.Accessibility.Label.Score?"Skip link not found":"Skip Link available"}
+              out={data.Accessibility.Label.Score?"Found":"Not Found"}
             />
           </div>
           <div className="flex justify-between items-center">
-            <span className={`${textColor}`}>Skip Links</span>
+            <span className={`${textColor}`}>Aria Allowed Attribute </span>
             <ScoreBadge
               score={data.Accessibility.Aria_Allowed_Attr.Score}
-              out={data.Accessibility.Aria_Allowed_Attr.Score?"Skip link not found":"Skip Link available"}
+              out={data.Accessibility.Aria_Allowed_Attr.Score?"Found":"Not Found"}
             />
           </div>
           <div className="flex justify-between items-center">
-            <span className={`${textColor}`}>Skip Links</span>
+            <span className={`${textColor}`}>Aria Roles</span>
             <ScoreBadge
               score={data.Accessibility.Aria_Roles.Score}
-              out={data.Accessibility.Aria_Roles.Score?"Skip link not found":"Skip Link available"}
+              out={data.Accessibility.Aria_Roles.Score?"Found":"Not Found"}
             />
           </div>
           <div className="flex justify-between items-center">
-            <span className={`${textColor}`}>Skip Links</span>
+            <span className={`${textColor}`}>Aria Hidden Focus</span>
             <ScoreBadge
               score={data.Accessibility.Aria_Hidden_Focus.Score}
-              out={data.Accessibility.Aria_Hidden_Focus.Score?"Skip link not found":"Skip Link available"}
+              out={data.Accessibility.Aria_Hidden_Focus.Score?"Found":"Not Found"}
             />
           </div>
           <div className="flex justify-between items-center">
-            <span className={`${textColor}`}>Skip Links</span>
+            <span className={`${textColor}`}>Image Alt</span>
             <ScoreBadge
               score={data.Accessibility.Image_Alt.Score}
-              out={data.Accessibility.Image_Alt.Score?"Skip link not found":"Skip Link available"}
+              out={data.Accessibility.Image_Alt.Score?"Found":"Not Found"}
             />
           </div>
           <div className="flex justify-between items-center">
             <span className={`${textColor}`}>Skip Links</span>
             <ScoreBadge
               score={data.Accessibility.Skip_Links.Score}
-              out={data.Accessibility.Skip_Links.Score?"Skip link not found":"Skip Link available"}
+              out={data.Accessibility.Skip_Links.Score?"Found":"Not Found"}
             />
           </div>
           <div className="flex justify-between items-center">
-            <span className={`${textColor}`}>Skip Links</span>
+            <span className={`${textColor}`}>Landmarks</span>
             <ScoreBadge
               score={data.Accessibility.Landmarks.Score}
-              out={data.Accessibility.Landmarks.Score?"Skip link not found":"Skip Link available"}
+              out={data.Accessibility.Landmarks.Score?"Found":"Not Found"}
             />
           </div>
          
         </div>
+      </div>
     <AuditDropdown items={data.Accessibility.Passed} title="Passed Audit" />
     <AuditDropdown items={data.Accessibility.Warning} title="Warnings" />
-      </div>
     </div>
   );
 }
