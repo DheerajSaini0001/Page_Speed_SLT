@@ -108,6 +108,12 @@ export default function On_Page_SEO({ data }) {
             des={data.On_Page_SEO.Media_and_Semantics.ALT_Text_Relevance.Score ? "Good ALT Text": "Bad ALT Text"}
             />
           </div>
+          <div className="flex justify-between items-center">
+            <span>HTTPS</span>
+            <ScoreBadge score={data.On_Page_SEO.Structure_and_Uniqueness.HTTPS.Score} 
+            des={data.On_Page_SEO.Structure_and_Uniqueness.HTTPS.Score ? "Found https": "No https"}
+            />
+          </div>
           {/* <div className="flex justify-between items-center">
             <span>H1 tag</span>
             <ScoreBadge score={data.On_Page_SEO.Essentials.H1.Score} out={data.On_Page_SEO.Essentials.H1.H1_Count===0?"No H1 Found" :data.On_Page_SEO.Essentials.H1.H1_Count===1 ? "Exectly One H1":"More than one H1"} />
