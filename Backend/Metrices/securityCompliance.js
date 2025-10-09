@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import fetch from "node-fetch";
 import { URL } from "url";
 
+
 dotenv.config();
 puppeteer.use(StealthPlugin());
 
@@ -654,6 +655,274 @@ async function checkMFAEnabled(page) {
   }
 }
 
+// Has View port
+async function checkViewportMetaTag(url) {
+  const browser = await puppeteer.launch({ headless: true });
+  const page = await browser.newPage();
+
+  await page.goto(url, { waitUntil: "load", timeout: 60000 });
+
+  // Evaluate in the browser context
+  const hasViewport = await page.evaluate(() => {
+    const meta = document.querySelector('meta[name="viewport"]');
+    if (!meta) return 0; // no viewport tag found
+
+    const content = meta.getAttribute("content") || "";
+    // check for "width=" or "initial-scale="
+    if (content.includes("width=") || content.includes("initial-scale=")) {
+      return 1; // valid
+    } else {
+      return 0; // missing width or scale
+    }
+  });
+
+  await browser.close();
+  return hasViewport;
+}
+
+// Doc Type check 
+async function checkHtmlDoctype(url) {
+  const browser = await puppeteer.launch({ headless: true });
+  const page = await browser.newPage();
+
+  await page.goto(url, { waitUntil: "load", timeout: 60000 });
+
+  // Evaluate in the page context
+  const hasDoctype = await page.evaluate(() => {
+    const dt = document.doctype;
+    if (!dt) return 0; // no doctype
+    // Check if it's <!DOCTYPE html>
+    return dt.name.toLowerCase() === "html" ? 1 : 0;
+  });
+
+  await browser.close();
+  return hasDoctype;
+}
+
+// Properly defines charset
+async function checkCharsetDefined(url) {
+  const browser = await puppeteer.launch({ headless: true });
+  const page = await browser.newPage();
+
+  let hasHeaderCharset = 0;
+
+  // Listen for response headers to detect charset
+  page.on("response", (response) => {
+    const headers = response.headers();
+    const contentType = headers["content-type"];
+    if (contentType && contentType.toLowerCase().includes("charset=")) {
+      hasHeaderCharset = 1;
+    }
+  });
+
+  await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60000 });
+
+  // Check <meta charset> tag in HTML
+  const hasMetaCharset = await page.evaluate(() => {
+    const meta = document.querySelector("meta[charset]");
+    return meta ? 1 : 0;
+  });
+
+  await browser.close();
+
+  // Pass if either HTML or HTTP header defines charset
+  const result = hasMetaCharset || hasHeaderCharset ? 1 : 0;
+  return result;
+}
+
+// No browser errors logged to the console
+async function checkNoBrowserErrors(url) {
+  const browser = await puppeteer.launch({ headless: true });
+  const page = await browser.newPage();
+
+  let hasConsoleErrors = 0;
+
+  // Listen for console messages
+  page.on("console", (msg) => {
+    if (msg.type() === "error") {
+      hasConsoleErrors = 1;
+    }
+  });
+
+  // Also listen for runtime exceptions (JS errors)
+  page.on("pageerror", () => {
+    hasConsoleErrors = 1;
+  });
+
+  await page.goto(url, { waitUntil: "load", timeout: 60000 });
+
+  await browser.close();
+
+  // Return 1 if no errors, 0 if errors found
+  return hasConsoleErrors ? 0 : 1;
+}
+
+// Avoids requesting the geolocation permission on page load
+async function checkGeolocationRequest(url) {
+  const browser = await puppeteer.launch({ headless: true });
+  const page = await browser.newPage();
+
+  let geolocationRequested = 0;
+
+  // Create CDP session to listen to permission requests
+  const client = await page.target().createCDPSession();
+  await client.send("Browser.grantPermissions", {
+    origin: url,
+    permissions: [], // initially no permissions granted
+  });
+
+  client.on("Permission.requested", (event) => {
+    if (event.permissionType === "geolocation") {
+      geolocationRequested = 1; // geolocation requested
+    }
+  });
+
+  // Navigate to the page
+  await page.goto(url, { waitUntil: "load", timeout: 60000 });
+
+  await browser.close();
+
+  // Return 1 if page does NOT request geolocation (pass), 0 if it does
+  return geolocationRequested ? 0 : 1;
+}
+
+// Allows pasting into input fields (no onpaste restrictions)
+async function checkInputPasteAllowed(url) {
+  const browser = await puppeteer.launch({ headless: true });
+  const page = await browser.newPage();
+
+  await page.goto(url, { waitUntil: "load", timeout: 60000 });
+
+  // Evaluate in browser context
+  const allowsPaste = await page.evaluate(() => {
+    const inputs = Array.from(document.querySelectorAll("input, textarea"));
+
+    for (let input of inputs) {
+      // Check for onpaste attribute that blocks pasting
+      const onpaste = input.getAttribute("onpaste");
+      if (onpaste && onpaste.toLowerCase().includes("return false")) {
+        return 0; // Pasting blocked
+      }
+
+      // Programmatically test if paste is blocked
+      let blocked = false;
+
+      const testEvent = new Event("paste", { bubbles: true, cancelable: true });
+      const originalPreventDefault = testEvent.preventDefault.bind(testEvent);
+
+      testEvent.preventDefault = () => {
+        blocked = true; // If preventDefault is called, pasting is blocked
+        originalPreventDefault();
+      };
+
+      input.dispatchEvent(testEvent);
+
+      if (blocked) {
+        return 0; // Pasting blocked via JS listener
+      }
+    }
+
+    return 1; // All inputs allow pasting
+  });
+
+  await browser.close();
+  return allowsPaste;
+}
+// No notification permission requested on page load
+async function checkNotificationRequest(url) {
+  const browser = await puppeteer.launch({ headless: true });
+  const page = await browser.newPage();
+
+  let notificationRequested = 0;
+
+  // Override Notification.requestPermission to detect requests
+  await page.evaluateOnNewDocument(() => {
+    const original = Notification.requestPermission;
+    Notification.requestPermission = function(...args) {
+      window.__notificationRequested = true;
+      return original.apply(this, args);
+    };
+    window.__notificationRequested = false;
+  });
+
+  // Load the page
+  await page.goto(url, { waitUntil: "load", timeout: 60000 });
+
+  // Check if notification was requested
+  const requested = await page.evaluate(() => window.__notificationRequested);
+  if (requested) notificationRequested = 1;
+
+  await browser.close();
+
+  // Return 1 if notifications are NOT requested (pass), 0 if requested
+  return notificationRequested ? 0 : 1;
+}
+
+// No third-party cookies are set during page load
+async function checkThirdPartyCookies(url) {
+  const browser = await puppeteer.launch({ headless: true });
+  const page = await browser.newPage();
+
+  let thirdPartyCookieFound = 0;
+
+  // Parse the origin of the page
+  const pageOrigin = new URL(url).origin;
+
+  // Intercept responses to check Set-Cookie headers
+  page.on("response", async (response) => {
+    const headers = response.headers();
+    if (headers["set-cookie"]) {
+      // Sometimes multiple cookies in one header
+      const cookies = headers["set-cookie"].split(",");
+      for (let cookie of cookies) {
+        // Extract cookie domain if specified
+        const domainMatch = cookie.match(/domain=([^;]+)/i);
+        const cookieDomain = domainMatch ? domainMatch[1] : null;
+
+        if (cookieDomain && !cookieDomain.includes(new URL(pageOrigin).hostname)) {
+          // Cookie domain is different → third-party cookie
+          thirdPartyCookieFound = 1;
+        }
+      }
+    }
+  });
+
+  await page.goto(url, { waitUntil: "load", timeout: 60000 });
+
+  await browser.close();
+
+  // Return 1 if no third-party cookies, 0 if any found
+  return thirdPartyCookieFound ? 0 : 1;
+}
+
+// No deprecated APIs used (based on console warnings)
+async function checkDeprecatedAPIs(url) {
+  const browser = await puppeteer.launch({ headless: true });
+  const page = await browser.newPage();
+
+  let deprecatedAPIUsed = 0;
+
+  // Listen for console warnings
+  page.on("console", (msg) => {
+    if (msg.type() === "warning") {
+      const text = msg.text().toLowerCase();
+      // Some browsers label deprecated APIs in warning messages
+      if (text.includes("deprecated") || text.includes("is deprecated")) {
+        deprecatedAPIUsed = 1;
+      }
+    }
+  });
+
+  await page.goto(url, { waitUntil: "load", timeout: 60000 });
+
+  await browser.close();
+
+  // Return 1 if no deprecated APIs used, 0 if found
+  return deprecatedAPIUsed ? 0 : 1;
+}
+
+
+
 export default async function securityCompliance(url,page) {
 
   await page.goto(url, { waitUntil: "networkidle2", timeout: 240000 });
@@ -695,7 +964,31 @@ export default async function securityCompliance(url,page) {
 
   // Security/Compliance (Vulnerability / Malware Check)
   const xssVulnerabilityScore = await checkXSS(url,page);
+  const checkViewportMetaTagScore = await checkViewportMetaTag(url);
+  console.log("checkViewportMetaTagScore",checkViewportMetaTagScore);
+  const checkHtmlDoctypeScore = await checkHtmlDoctype(url);
+  console.log("checkHtmlDoctypeScore",checkHtmlDoctypeScore);
+  const checkCharsetDefinedScore = await checkCharsetDefined(url);
+  console.log("checkCharsetDefinedScore",checkCharsetDefinedScore);
+  const checkBrowserErrorsScore = await checkNoBrowserErrors(url);
+  console.log("checkBrowserErrorsScore",checkBrowserErrorsScore);
+ 
+  
+const checkGeolocationRequestScore = await checkGeolocationRequest(url);
+console.log("checkGeolocationRequestScore",checkGeolocationRequestScore);
+const checkInputPasteAllowedScore = await checkInputPasteAllowed(url);
+console.log("checkInputPasteAllowedScore",checkInputPasteAllowedScore);
+const checkNotificationRequestScore = await checkNotificationRequest(url);
+console.log("checkNotificationRequestScore",checkNotificationRequestScore);
+const checkThirdPartyCookiesScore = await checkThirdPartyCookies(url);
+console.log("checkThirdPartyCookiesScore",checkThirdPartyCookiesScore);
+const checkDeprecatedAPIsScore = await checkDeprecatedAPIs(url);
+console.log("checkDeprecatedAPIsScore",checkDeprecatedAPIsScore);
 
+
+
+
+  // Total Score Calculation
 const Total = parseFloat((((checkHTTPSScore+checkSSLScore+checkSSLCertificateExpiryScore+checkHSTSScore+checkTLSVersionScore+checkXFrameOptionsScore+checkCSPScore+checkXContentTypeOptionsScore+checkCookiesSecureScore+checkCookiesHttpOnlyScore+cookieConsentScore+privacyPolicyScore+safeBrowsingScore+blacklistScore+malwareScanScore+xssVulnerabilityScore+sqliExposureScore+formsUseHTTPSScore+checkGDPRCCPAScore+checkDataCollectionScore+checkAdminPanelPublicScore+weakDefaultCredsScore+mfaEnabledScore) / 23) * 100).toFixed(0));
 
 // Passed
