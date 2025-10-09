@@ -75,6 +75,7 @@ export default function Technical_Performance({ data }) {
             <ScoreBadge
               score={data.Technical_Performance.Core_Web_Vitals.FCP.Score}
               out={data.Technical_Performance.Core_Web_Vitals.FCP.Value}
+              unit={"Sec"}
               des={data.Technical_Performance.Core_Web_Vitals.FCP.Score ? "Good" : "Poor"}
             />
           </div>
@@ -83,6 +84,7 @@ export default function Technical_Performance({ data }) {
             <ScoreBadge
               score={data.Technical_Performance.Core_Web_Vitals.TTFB.Score}
               out={data.Technical_Performance.Core_Web_Vitals.TTFB.Value}
+              unit={"Sec"}
               des={data.Technical_Performance.Core_Web_Vitals.TTFB.Score ? "Good" : "Poor"}
             />
           </div>
@@ -91,6 +93,7 @@ export default function Technical_Performance({ data }) {
             <ScoreBadge
               score={data.Technical_Performance.Core_Web_Vitals.TBT.Score}
               out={data.Technical_Performance.Core_Web_Vitals.TBT.Value}
+              unit={"Sec"}
               des={data.Technical_Performance.Core_Web_Vitals.TBT.Score ? "Good" : "Poor"}
             />
           </div>
@@ -99,6 +102,7 @@ export default function Technical_Performance({ data }) {
             <ScoreBadge
               score={data.Technical_Performance.Core_Web_Vitals.SI.Score}
               out={data.Technical_Performance.Core_Web_Vitals.SI.Value}
+              unit={"Sec"}
               des={data.Technical_Performance.Core_Web_Vitals.SI.Score ? "Good" : "Poor"}
             />
           </div>
