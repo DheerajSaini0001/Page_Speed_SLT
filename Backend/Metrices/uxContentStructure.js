@@ -877,29 +877,29 @@ const warning = [];
 
 const actualPercentage = parseFloat((((checkMobileResponsivenessScore+checkClickableLogoScore+checkBreadcrumbsScore+checkCallToActionClarityScore+checkUserJourneyContinuityScore+checkInternalLinkingQualityScore+checkContrastAndColorHarmonyScore+checkFontStyleAndSizeConsistencyScore+checkInteractiveFeedbackScore+checkLoadingIndicatorsScore+checkStickyNavigationScore+checkParagraphLengthAndSpacingScore+checkContentRelevanceScore+checkMultimediaBalanceScore)/14)*100).toFixed(0));
 
-    console.log("Navigation Clarity Score:", checkNavigationClarityScore);
-    console.log("Breadcrumbs Score:", checkBreadcrumbsScore);
-    console.log("Clickable Logo Score:", checkClickableLogoScore);
-    console.log("Mobile Responsiveness Score:", checkMobileResponsivenessScore);
-    console.log("Font Style & Size Consistency Score:", checkFontStyleAndSizeConsistencyScore);
-    console.log("Whitespace Usage Score:", checkWhitespaceUsageScore);
-    console.log("Paragraph Length & Spacing Score:", checkParagraphLengthAndSpacingScore);
-    console.log("Contrast & Color Harmony Score:", checkContrastAndColorHarmonyScore);
-    console.log("Content Relevance Score:", checkContentRelevanceScore);
-    console.log("Call to Action Clarity Score:", checkCallToActionClarityScore);
-    console.log("Multimedia Balance Score:", checkMultimediaBalanceScore);
-    console.log("Error & Empty State Score:", checkErrorEmptyStateScore);
-    console.log("Interactive Feedback Score:", checkInteractiveFeedbackScore);
-    console.log("Sticky Navigation Score:", checkStickyNavigationScore);
-    console.log("checkScrollDepthLogic Score",checkScrollDepthLogicScore);
-    console.log("Loading Indicators Score:", checkLoadingIndicatorsScore);
-    console.log("Internal Linking Quality Score:", checkInternalLinkingQualityScore);
-    console.log("User Journey Continuity Score:", checkUserJourneyContinuityScore);
-    console.log(actualPercentage);
-    console.log(warning);
-    console.log(passed);
-    console.log(Total);
-    console.log(improvements);
+    // console.log("Navigation Clarity Score:", checkNavigationClarityScore);
+    // console.log("Breadcrumbs Score:", checkBreadcrumbsScore);
+    // console.log("Clickable Logo Score:", checkClickableLogoScore);
+    // console.log("Mobile Responsiveness Score:", checkMobileResponsivenessScore);
+    // console.log("Font Style & Size Consistency Score:", checkFontStyleAndSizeConsistencyScore);
+    // console.log("Whitespace Usage Score:", checkWhitespaceUsageScore);
+    // console.log("Paragraph Length & Spacing Score:", checkParagraphLengthAndSpacingScore);
+    // console.log("Contrast & Color Harmony Score:", checkContrastAndColorHarmonyScore);
+    // console.log("Content Relevance Score:", checkContentRelevanceScore);
+    // console.log("Call to Action Clarity Score:", checkCallToActionClarityScore);
+    // console.log("Multimedia Balance Score:", checkMultimediaBalanceScore);
+    // console.log("Error & Empty State Score:", checkErrorEmptyStateScore);
+    // console.log("Interactive Feedback Score:", checkInteractiveFeedbackScore);
+    // console.log("Sticky Navigation Score:", checkStickyNavigationScore);
+    // console.log("checkScrollDepthLogic Score",checkScrollDepthLogicScore);
+    // console.log("Loading Indicators Score:", checkLoadingIndicatorsScore);
+    // console.log("Internal Linking Quality Score:", checkInternalLinkingQualityScore);
+    // console.log("User Journey Continuity Score:", checkUserJourneyContinuityScore);
+    // console.log(actualPercentage);
+    // console.log(warning);
+    // console.log(passed);
+    // console.log(Total);
+    // console.log(improvements);
 
 return {
     checkNavigationClarityScore,
