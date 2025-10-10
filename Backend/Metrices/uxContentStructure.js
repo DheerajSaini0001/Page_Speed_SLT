@@ -875,7 +875,7 @@ if (checkUserJourneyContinuityScore === 0) {
 // Warning
 const warning = [];
 
-const actualPercentage = parseFloat((((checkNavigationClarityScore+checkBreadcrumbsScore+checkClickableLogoScore+checkMobileResponsivenessScore+checkParagraphLengthAndSpacingScore+checkFontStyleAndSizeConsistencyScore+checkContrastAndColorHarmonyScore+checkWhitespaceUsageScore+checkContentRelevanceScore+checkCallToActionClarityScore+checkMultimediaBalanceScore+checkInternalLinkingQualityScore+checkUserJourneyContinuityScore+checkErrorEmptyStateScore+checkInteractiveFeedbackScore+checkStickyNavigationScore+checkScrollDepthLogicScore+checkLoadingIndicatorsScore)/18)*100).toFixed(0));
+const actualPercentage = parseFloat((((checkMobileResponsivenessScore+checkClickableLogoScore+checkBreadcrumbsScore+checkCallToActionClarityScore+checkUserJourneyContinuityScore+checkInternalLinkingQualityScore+checkContrastAndColorHarmonyScore+checkFontStyleAndSizeConsistencyScore+checkInteractiveFeedbackScore+checkLoadingIndicatorsScore+checkStickyNavigationScore+checkParagraphLengthAndSpacingScore+checkContentRelevanceScore+checkMultimediaBalanceScore)/14)*100).toFixed(0));
 
     // console.log("Navigation Clarity Score:", checkNavigationClarityScore);
     // console.log("Breadcrumbs Score:", checkBreadcrumbsScore);
