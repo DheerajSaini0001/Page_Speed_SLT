@@ -84,7 +84,7 @@ export default function AboutPage() {
                     <h3 className="text-lg text-gray-100 font-extrabold">Aditya</h3>
                     <p className="text-sm text-gray-100">Senior FullStack Developer</p>
                   </div>
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-10">
+            <div className="grid sm:grid-cols-2 md:grid-cols-2 gap-10">
             
                
                   <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 shadow-lg rounded-2xl p-6 hover:shadow-xl hover:scale-105 transition-transform duration-300">
@@ -101,13 +101,7 @@ export default function AboutPage() {
                     <h3 className="text-lg text-gray-100 font-extrabold">Piyush</h3>
                     <p className="text-sm text-gray-100">FullStack Developer</p>
                   </div>
-                  <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 shadow-lg rounded-2xl p-6 hover:shadow-xl hover:scale-105 transition-transform duration-300">
-                    <div className="w-24 h-24 mx-auto rounded-full overflow-hidden mb-4">
-                      <img src={Assets.Mayank} alt="Mayank" className="w-full h-full object-cover" />
-                    </div>
-                    <h3 className="text-lg text-gray-100 font-extrabold">Mayank</h3>
-                    <p className="text-sm text-gray-100">FullStack Developer</p>
-                  </div>
+                 
               
             
             </div>
