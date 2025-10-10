@@ -42,7 +42,7 @@ export default function Technical_Performance({ data }) {
       </h1>
 
       {/* Core Web Vitals */}
-      <div className={`w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-indigo-500 hover:scale-105 transition-transform duration-300 ${cardBg}`}>
+      <div className={`w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-indigo-500  ${cardBg}`}>
         {/* <h2 className={`text-xl font-bold mb-4 ${textColor}`}>Core Web Vitals</h2> */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div className="flex justify-between items-center">
@@ -121,7 +121,7 @@ export default function Technical_Performance({ data }) {
       </div>
 
       {/* Delivery & Render */}
-      {/* <div className={`w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-purple-500 hover:scale-105 transition-transform duration-300 ${cardBg}`}>
+      {/* <div className={`w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-purple-500  ${cardBg}`}>
         <h2 className={`text-xl font-bold mb-4 ${textColor}`}>Delivery & Render</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
         
@@ -166,7 +166,7 @@ export default function Technical_Performance({ data }) {
       </div> */}
 
       {/* Crawlability & Hygiene */}
-      {/* <div className={`w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-pink-500 hover:scale-105 transition-transform duration-300 ${cardBg}`}>
+      {/* <div className={`w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-pink-500 ${cardBg}`}>
         <h2 className={`text-xl font-bold mb-4 ${textColor}`}>Crawlability & Hygiene</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div className="flex justify-between items-center">

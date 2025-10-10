@@ -40,7 +40,7 @@ export default function Security_Compilance({ data }) {
         
       </h1>
 
-      <div className={`w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-indigo-500 hover:scale-105 transition-transform duration-300 ${cardBg}`}>
+      <div className={`w-full max-w-4xl p-6 rounded-2xl shadow-lg border-l-4 border-indigo-500  ${cardBg}`}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
 
           <div className=" flex justify-between items-center">
