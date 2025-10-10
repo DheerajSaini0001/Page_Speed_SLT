@@ -363,6 +363,42 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data,tim
         Score: MetricesCalculation_Data.securityReport.checkAdminPanelPublicScore,
         Parameter: '1 if admin panel is not publicly accessible, else 0'
       },
+      Viewport_Meta_Tag: {
+        Score: MetricesCalculation_Data.securityReport.checkViewportMetaTagScore,
+        Parameter: '1 if <meta name="viewport" content="width=device-width, initial-scale=1.0"> is present, else 0'
+      },
+      HTML_Doctype: {
+        Score: MetricesCalculation_Data.securityReport.checkHtmlDoctypeScore,
+        Parameter: '1 if <!DOCTYPE html> is declared at document start, else 0'
+      },
+      Character_Encoding: {
+        Score: MetricesCalculation_Data.securityReport.checkCharsetDefinedScore,
+        Parameter: '1 if charset is defined in <meta> or HTTP headers, else 0'
+      },
+      Browser_Console_Errors: {
+        Score: MetricesCalculation_Data.securityReport.checkBrowserErrorsScore,
+        Parameter: '1 if no console or JS errors are detected, else 0'
+      },
+      Geolocation_Request: {
+        Score: MetricesCalculation_Data.securityReport.checkGeolocationRequestScore,
+        Parameter: '1 if geolocation is not requested automatically, else 0'
+      },
+      Input_Paste_Allowed: {
+        Score: MetricesCalculation_Data.securityReport.checkInputPasteAllowedScore,
+        Parameter: '1 if paste is allowed in input fields, else 0'
+      },
+      Notification_Request: {
+        Score: MetricesCalculation_Data.securityReport.checkNotificationRequestScore,
+        Parameter: '1 if no unsolicited notification request is made, else 0'
+      },
+      Third_Party_Cookies: {
+        Score: MetricesCalculation_Data.securityReport.checkThirdPartyCookiesScore,
+        Parameter: '1 if no third-party cookies are detected, else 0'
+      },
+      Deprecated_APIs: {
+        Score: MetricesCalculation_Data.securityReport.checkDeprecatedAPIsScore,
+        Parameter: '1 if no deprecated APIs are used, else 0'
+      },
       Percentage: MetricesCalculation_Data.securityReport.actualPercentage,
       Warning: MetricesCalculation_Data.securityReport.warning,
       Passed:MetricesCalculation_Data.securityReport. passed,

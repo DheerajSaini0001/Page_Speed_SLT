@@ -610,7 +610,7 @@ async function checkMFAEnabled(page) {
   }
 }
 
-
+// Lighthouse
 async function checkViewportMetaTag(page) {
 
   // Evaluate in the browser context
@@ -880,7 +880,7 @@ const passed = [];
 // Improvements
 const improvements = [];
 
-
+// Security/Compliance (HTTPS / SSL)
 if (checkSSLScore === 0) {
   improvements.push({
     metric: "SSL Reachable",
@@ -953,6 +953,7 @@ if (checkTLSVersionScore === 0) {
   });
 }
 
+// Security/Compliance (Security Headers)
 if (checkCookiesSecureScore === 0) {
   improvements.push({
     metric: "Cookies Secure Flag",
@@ -989,6 +990,7 @@ if (checkCookiesHttpOnlyScore === 0) {
   });
 }
 
+// Security/Compliance (Vulnerability / Malware Check)
 if (safeBrowsingScore === 0) {
   improvements.push({
     metric: "Google Safe Browsing",
@@ -1061,6 +1063,25 @@ if (xssVulnerabilityScore === 0) {
   });
 }
 
+if (xssVulnerabilityScore === 0) {
+  improvements.push({
+    metric: "XSS Vulnerability",
+    current: "Vulnerable",
+    recommended: "Sanitize all user inputs",
+    severity: "High 🔴",
+    suggestion: "Implement input validation and output encoding to prevent XSS attacks."
+  });
+} else {
+  passed.push({
+    metric: "XSS Vulnerability",
+    current: "Safe",
+    recommended: "Sanitize all user inputs",
+    severity: "Pass 🟢",
+    suggestion: "No XSS vulnerability detected."
+  });
+}
+
+// Security/Compliance (Privacy & Compliance)
 if (cookieConsentScore === 0) {
   improvements.push({
     metric: "Cookie Consent",
@@ -1151,24 +1172,7 @@ if (checkDataCollectionScore === 0) {
   });
 }
 
-if (checkAdminPanelPublicScore === 0) {
-  improvements.push({
-    metric: "Admin Panel Accessibility",
-    current: "Publicly reachable",
-    recommended: "Restrict access to admin panels",
-    severity: "High 🔴",
-    suggestion: "Protect admin pages with authentication and IP restrictions."
-  });
-} else {
-  passed.push({
-    metric: "Admin Panel Accessibility",
-    current: "Not publicly accessible",
-    recommended: "Restrict access to admin panels",
-    severity: "Pass 🟢",
-    suggestion: "Admin pages are not exposed to the public."
-  });
-}
-
+// Security/Compliance ( Authentication & Access Control)
 if (weakDefaultCredsScore === 0) {
   improvements.push({
     metric: "Weak/Default Credentials",
@@ -1205,27 +1209,192 @@ if (mfaEnabledScore === 0) {
   });
 }
 
-if (xssVulnerabilityScore === 0) {
+if (checkAdminPanelPublicScore === 0) {
   improvements.push({
-    metric: "XSS Vulnerability",
-    current: "Vulnerable",
-    recommended: "Sanitize all user inputs",
+    metric: "Admin Panel Accessibility",
+    current: "Publicly reachable",
+    recommended: "Restrict access to admin panels",
     severity: "High 🔴",
-    suggestion: "Implement input validation and output encoding to prevent XSS attacks."
+    suggestion: "Protect admin pages with authentication and IP restrictions."
   });
 } else {
   passed.push({
-    metric: "XSS Vulnerability",
-    current: "Safe",
-    recommended: "Sanitize all user inputs",
+    metric: "Admin Panel Accessibility",
+    current: "Not publicly accessible",
+    recommended: "Restrict access to admin panels",
     severity: "Pass 🟢",
-    suggestion: "No XSS vulnerability detected."
+    suggestion: "Admin pages are not exposed to the public."
   });
 }
+
+// Lighthouse
+if (checkViewportMetaTagScore === 0) {
+  improvements.push({
+    metric: "Viewport Meta Tag",
+    current: "Missing or invalid",
+    recommended: "Include a responsive viewport meta tag",
+    severity: "High 🔴",
+    suggestion: `Add <meta name="viewport" content="width=device-width, initial-scale=1.0"> in the <head> for better mobile compatibility.`
+  });
+} else {
+  passed.push({
+    metric: "Viewport Meta Tag",
+    current: "Present and valid",
+    recommended: "Maintain responsive configuration",
+    severity: "Pass 🟢",
+    suggestion: "Viewport tag correctly defines width and scale."
+  });
+}
+
+if (checkHtmlDoctypeScore === 0) {
+  improvements.push({
+    metric: "HTML Doctype",
+    current: "Not defined or incorrect",
+    recommended: "Use <!DOCTYPE html>",
+    severity: "Medium 🟠",
+    suggestion: "Ensure the page starts with <!DOCTYPE html> to trigger standards mode."
+  });
+} else {
+  passed.push({
+    metric: "HTML Doctype",
+    current: "Valid",
+    recommended: "Maintain correct doctype declaration",
+    severity: "Pass 🟢",
+    suggestion: "Doctype correctly set to HTML5."
+  });
+}
+
+if (checkCharsetDefinedScore === 0) {
+  improvements.push({
+    metric: "Character Encoding",
+    current: "Undefined",
+    recommended: "Define charset in header or meta",
+    severity: "Medium 🟠",
+    suggestion: "Add <meta charset='UTF-8'> or specify charset in HTTP headers."
+  });
+} else {
+  passed.push({
+    metric: "Character Encoding",
+    current: "Defined",
+    recommended: "Maintain charset definition",
+    severity: "Pass 🟢",
+    suggestion: "Character encoding properly defined."
+  });
+}
+
+if (checkBrowserErrorsScore === 0) {
+  improvements.push({
+    metric: "Browser Console Errors",
+    current: "Errors detected",
+    recommended: "Fix runtime and console issues",
+    severity: "High 🔴",
+    suggestion: "Review console errors and JavaScript exceptions to improve stability."
+  });
+} else {
+  passed.push({
+    metric: "Browser Console Errors",
+    current: "No errors",
+    recommended: "Keep code error-free",
+    severity: "Pass 🟢",
+    suggestion: "No browser or console errors found."
+  });
+}
+
+if (checkGeolocationRequestScore === 0) {
+  improvements.push({
+    metric: "Geolocation Request",
+    current: "Requests user location",
+    recommended: "Avoid unnecessary geolocation prompts",
+    severity: "Medium 🟠",
+    suggestion: "Request geolocation only when required and explain the purpose clearly to users."
+  });
+} else {
+  passed.push({
+    metric: "Geolocation Request",
+    current: "No geolocation request",
+    recommended: "Maintain privacy standards",
+    severity: "Pass 🟢",
+    suggestion: "No unnecessary geolocation permissions requested."
+  });
+}
+
+if (checkInputPasteAllowedScore === 0) {
+  improvements.push({
+    metric: "Input Paste Allowed",
+    current: "Paste restricted",
+    recommended: "Allow paste in input fields unless critical",
+    severity: "Low 🟡",
+    suggestion: "Avoid disabling paste for better user experience unless needed (e.g., OTP fields)."
+  });
+} else {
+  passed.push({
+    metric: "Input Paste Allowed",
+    current: "Allowed",
+    recommended: "Maintain input flexibility",
+    severity: "Pass 🟢",
+    suggestion: "Pasting is allowed in input fields."
+  });
+}
+
+if (checkNotificationRequestScore === 0) {
+  improvements.push({
+    metric: "Notification Request",
+    current: "Requests notifications",
+    recommended: "Request only when necessary",
+    severity: "Low 🟡",
+    suggestion: "Avoid automatic notification permission prompts on page load."
+  });
+} else {
+  passed.push({
+    metric: "Notification Request",
+    current: "No notification requests",
+    recommended: "Maintain minimal permission requests",
+    severity: "Pass 🟢",
+    suggestion: "No unsolicited notification requests detected."
+  });
+}
+
+if (checkThirdPartyCookiesScore === 0) {
+  improvements.push({
+    metric: "Third-Party Cookies",
+    current: "Detected",
+    recommended: "Remove or minimize third-party cookies",
+    severity: "High 🔴",
+    suggestion: "Review dependencies and switch to first-party storage wherever possible."
+  });
+} else {
+  passed.push({
+    metric: "Third-Party Cookies",
+    current: "Not detected",
+    recommended: "Maintain cookie hygiene",
+    severity: "Pass 🟢",
+    suggestion: "No third-party cookies found."
+  });
+}
+
+if (checkDeprecatedAPIsScore === 0) {
+  improvements.push({
+    metric: "Deprecated API Usage",
+    current: "Deprecated APIs used",
+    recommended: "Update to modern API equivalents",
+    severity: "Medium 🟠",
+    suggestion: "Replace deprecated APIs to ensure long-term compatibility."
+  });
+} else {
+  passed.push({
+    metric: "Deprecated API Usage",
+    current: "No deprecated APIs used",
+    recommended: "Maintain updated standards",
+    severity: "Pass 🟢",
+    suggestion: "No deprecated API warnings detected."
+  });
+}
+
 
 // Warning
 const warning = [];
 
+// Security/Compliance (HTTPS / SSL)
 if (checkHTTPSScore === 0) {
   warning.push({
     metric: "HTTPS",
@@ -1244,6 +1413,7 @@ if (checkHTTPSScore === 0) {
   });
 }
 
+// Security/Compliance (Security Headers)
 if (checkXContentTypeOptionsScore === 0) {
   warning.push({
     metric: "X-Content-Type-Options",
@@ -1360,9 +1530,18 @@ return {
     formsUseHTTPSScore,
     checkGDPRCCPAScore,
     checkDataCollectionScore,
+    checkAdminPanelPublicScore,
     weakDefaultCredsScore,
     mfaEnabledScore,
-    checkAdminPanelPublicScore,
+    checkViewportMetaTagScore,
+    checkHtmlDoctypeScore,
+    checkCharsetDefinedScore,
+    checkBrowserErrorsScore,
+    checkGeolocationRequestScore,
+    checkInputPasteAllowedScore,
+    checkNotificationRequestScore,
+    checkThirdPartyCookiesScore,
+    checkDeprecatedAPIsScore,
     actualPercentage,warning,
     passed,
     Total,improvements
