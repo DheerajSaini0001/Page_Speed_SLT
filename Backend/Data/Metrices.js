@@ -485,31 +485,143 @@ export default function Metrices(url, MetricesCalculation_Data, Overall_Data,tim
       Improvements: MetricesCalculation_Data.uxReport.improvements
     },
     Conversion_and_Lead_Flow: {
-      Primary_CTAs:{
-        Score: MetricesCalculation_Data.conversionReport.F.primaryCTA,
-        Parameter:'Check anchor & button tag contain these text ("sign up","contact","buy","start","try","learn more","get","search","lucky")'
+      CTA_and_Forms: {
+        CTA_Visibility: {
+          Score: MetricesCalculation_Data.conversionReport.checkCTAsScore,
+          Parameter: "1 if at least one prominent CTA is present, else 0"
+        },
+        CTA_Clarity: {
+          Score: MetricesCalculation_Data.conversionReport.checkCTAClarityScore,
+          Parameter: "1 if CTA buttons and links have clear, actionable text, else 0"
+        },
+        CTA_Contrast: {
+          Score: MetricesCalculation_Data.conversionReport.checkCTAContrastScore,
+          Parameter: "1 if CTA text has sufficient contrast (≥4.5:1), else 0"
+        },
+        CTA_Crowding: {
+          Score: MetricesCalculation_Data.conversionReport.checkCTACrowdingScore,
+          Parameter: "1 if number of CTAs is limited to prevent confusion, else 0"
+        },
+        CTA_Flow_Alignment: {
+          Score: MetricesCalculation_Data.conversionReport.checkCTAFlowAlignmentScore,
+          Parameter: "1 if CTAs are placed logically along user flow, else 0"
+        },
+        Form_Presence: {
+          Score: MetricesCalculation_Data.conversionReport.checkFormPresenceScore,
+          Parameter: "1 if at least one form is present, else 0"
+        },
+        Form_Length: {
+          Score: MetricesCalculation_Data.conversionReport.checkFormLengthOptimalScore,
+          Parameter: "1 if forms are concise, else 0"
+        },
+        Required_vs_Optional_Fields: {
+          Score: MetricesCalculation_Data.conversionReport.checkRequiredVsOptionalFieldsScore,
+          Parameter: "1 if required vs optional fields are clearly marked, else 0"
+        },
+        Inline_Validation: {
+          Score: MetricesCalculation_Data.conversionReport.checkInlineValidationScore,
+          Parameter: "1 if real-time feedback is provided for user input, else 0"
+        },
+        Submit_Button_Clarity: {
+          Score: MetricesCalculation_Data.conversionReport.checkSubmitButtonClarityScore,
+          Parameter: "1 if submit button text is clear and actionable, else 0"
+        },
+        AutoFocus_Field: {
+          Score: MetricesCalculation_Data.conversionReport.checkAutoFocusFieldScore,
+          Parameter: "1 if first input field is autofocused, else 0"
+        },
+        MultiStep_Form_Progress: {
+          Score: MetricesCalculation_Data.conversionReport.checkMultiStepFormProgressScore,
+          Parameter: "1 if progress indicators exist in multi-step forms, else 0"
+        }
       },
-      Forms:{
-        Score: MetricesCalculation_Data.conversionReport.F.forms,
-        Parameter:'Check form tag contain these fields ("input", "textarea", "select")'
+      Trust_and_SocialProof: {
+        Testimonials: {
+          Score: MetricesCalculation_Data.conversionReport.checkTestimonialsScore,
+          Parameter: "1 if testimonials are visible, else 0"
+        },
+        Reviews: {
+          Score: MetricesCalculation_Data.conversionReport.checkReviewsVisibleScore,
+          Parameter: "1 if reviews/ratings are visible, else 0"
+        },
+        Trust_Badges: {
+          Score: MetricesCalculation_Data.conversionReport.checkTrustBadgesScore,
+          Parameter: "1 if trust/security badges are visible, else 0"
+        },
+        Client_Logos: {
+          Score: MetricesCalculation_Data.conversionReport.checkClientLogosScore,
+          Parameter: "1 if client logos are visible, else 0"
+        },
+        Case_Studies_Accessibility: {
+          Score: MetricesCalculation_Data.conversionReport.checkCaseStudiesAccessibilityScore,
+          Parameter: "1 if case studies are accessible, else 0"
+        }
       },
-      Thank_You_or_Success_State:{
-        Score: MetricesCalculation_Data.conversionReport.F.thankYouState,
-        Parameter:'Check for any anchor tag whose href contains (“thank”, “success”, or “done”)'
+      Lead_Funnel: {
+        Exit_Intent_Triggers: {
+          Score: MetricesCalculation_Data.conversionReport.checkExitIntentTriggersScore,
+          Parameter: "1 if exit-intent triggers exist, else 0"
+        },
+        Lead_Magnets: {
+          Score: MetricesCalculation_Data.conversionReport.checkLeadMagnetsScore,
+          Parameter: "1 if lead magnets are offered, else 0"
+        },
+        Contact_Info_Visibility: {
+          Score: MetricesCalculation_Data.conversionReport.checkContactInfoVisibilityScore,
+          Parameter: "1 if contact info is visible, else 0"
+        },
+        Chatbot_Presence: {
+          Score: MetricesCalculation_Data.conversionReport.checkChatbotPresenceScore,
+          Parameter: "1 if chatbot is present, else 0"
+        }
       },
-      Tracking_Of_Form_Submits_or_Events:{
-        Score: MetricesCalculation_Data.conversionReport.F.tracking,
-        Parameter:'Check for any script tag containing recognizable analytics or tracking code keywords ("gtag", "fbq", "dataLayer.push", "google-analytics", "googletagmanager", "ga(")'
+      UX_and_Interaction: {
+        Interactive_Elements: {
+          Score: MetricesCalculation_Data.conversionReport.checkInteractiveElementsScore,
+          Parameter: "1 if interactive elements are present, else 0"
+        },
+        Personalization: {
+          Score: MetricesCalculation_Data.conversionReport.checkPersonalizationScore,
+          Parameter: "1 if personalized content exists, else 0"
+        },
+        Progress_Indicators: {
+          Score: MetricesCalculation_Data.conversionReport.checkProgressIndicatorsScore,
+          Parameter: "1 if progress indicators are visible, else 0"
+        },
+        Friendly_Error_Handling: {
+          Score: MetricesCalculation_Data.conversionReport.checkFriendlyErrorHandlingScore,
+          Parameter: "1 if error messages are clear and helpful, else 0"
+        },
+        Microcopy_Clarity: {
+          Score: MetricesCalculation_Data.conversionReport.checkMicrocopyClarityScore,
+          Parameter: "1 if labels/placeholders are clear, else 0"
+        },
+        Incentives_Displayed: {
+          Score: MetricesCalculation_Data.conversionReport.checkIncentivesDisplayedScore,
+          Parameter: "1 if offers or incentives are visible, else 0"
+        },
+        Scarcity_Urgency: {
+          Score: MetricesCalculation_Data.conversionReport.checkScarcityUrgencyScore,
+          Parameter: "1 if scarcity or urgency cues are present, else 0"
+        },
+        Smooth_Scrolling: {
+          Score: MetricesCalculation_Data.conversionReport.checkSmoothScrollingScore,
+          Parameter: "1 if smooth scrolling is implemented, else 0"
+        },
+        Mobile_CTA_Adaptation: {
+          Score: MetricesCalculation_Data.conversionReport.checkMobileCTAAdaptationScore,
+          Parameter: "1 if CTAs are mobile-friendly, else 0"
+        },
+        MultiChannel_FollowUp: {
+          Score: MetricesCalculation_Data.conversionReport.checkMultiChannelFollowUpScore,
+          Parameter: "1 if multi-channel follow-up options exist, else 0"
+        }
       },
-      Contact_Info:{
-        Score: MetricesCalculation_Data.conversionReport.F.contactInfo,
-        Parameter:'Check for if any one from these ("phone", "email", "address", "map", "hours") is present or not'
-      },
-      Load_On_CRM_or_Webhook:{
-        Score: MetricesCalculation_Data.conversionReport.F.crmWebhook,
-        Parameter:'Check for presence of a form tag with an action attribute'
-      },
-      Conversion_and_Lead_Flow_Score_Total: MetricesCalculation_Data.conversionReport.F.totalFScore,
+      Percentage: MetricesCalculation_Data.conversionReport.actualPercentage,
+      Warning: MetricesCalculation_Data.conversionReport.warning,
+      Passed: MetricesCalculation_Data.conversionReport.passed,
+      Total: MetricesCalculation_Data.conversionReport.Total,
+      Improvements: MetricesCalculation_Data.conversionReport.improvements
     },
     AIO_Readiness: {
       Entity_and_Organization_Clarity: {

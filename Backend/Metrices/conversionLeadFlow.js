@@ -1,5 +1,7 @@
 import * as cheerio from "cheerio";
 import puppeteer from "puppeteer";
+
+// Conversion & Lead Flow (Call-to-Action (CTA) Effectiveness)
 function checkCTAs($) {
     // Array of common CTA selectors
     const ctaSelectors = [
@@ -43,10 +45,9 @@ function checkCTAs($) {
         }
         totalCTAs += count;
     });
+    const score =  foundCTAs > 0 ? 1 : 0 // 1 if at least one CTA exists
 
-    return {
-        score: foundCTAs > 0 ? 1 : 0 // 1 if at least one CTA exists
-    };
+    return score
 }
 
 function checkCTAClarity($) {
@@ -67,17 +68,12 @@ function checkCTAClarity($) {
         });
     });
 
-    return {
-        score: clearCTAs > 0 ? 1 : 0  // 1 if at least one CTA is clear
-    };
+    const score = clearCTAs > 0 ? 1 : 0  // 1 if at least one CTA is clear
+    return score
 }
 
-async function checkCTAContrast(url) {
+async function checkCTAContrast(page) {
     const ctaSelectors = ['button', 'a', '.cta', '.cta-button', '.btn-primary'];
-
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.goto(url, { waitUntil: 'networkidle2' });
 
     const result = await page.evaluate((selectors) => {
         function rgbStringToArray(str) {
@@ -106,17 +102,14 @@ async function checkCTAContrast(url) {
             if (contrast >= 4.5) highContrastCount++;
         });
 
-        return {
-            score: highContrastCount > 0 ? 1 : 0
-        };
+        const score =  highContrastCount > 0 ? 1 : 0
+        return score
     }, ctaSelectors);
 
-    await browser.close();
     return result;
 }
 
-
-async function checkCTACrowding(url, maxCTAs = 2) {
+async function checkCTACrowding(page, maxCTAs = 2) {
     const ctaSelectors = [
         'button',
         'input[type="button"]',
@@ -130,18 +123,12 @@ async function checkCTACrowding(url, maxCTAs = 2) {
         'a.btn',
         'a.btn-primary'
     ];
-
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.goto(url, { waitUntil: 'networkidle2' });
-
     const result = await page.evaluate((selectors, max) => {
         const totalCTAs = document.querySelectorAll(selectors.join(',')).length;
         const score = totalCTAs <= max ? 1 : 0; // 1 = not crowded, 0 = crowded
         return { totalCTAs, score };
     }, ctaSelectors, maxCTAs);
 
-    await browser.close();
     return result;
 }
 
@@ -179,12 +166,10 @@ function checkCTAFlowAlignment($) {
   }
 }
 
-async function checkFormPresence(url) {
-  const browser = await puppeteer.launch({ headless: true });
-  const page = await browser.newPage();
+// Conversion & Lead Flow (Forms & Lead Capture)
+async function checkFormPresence(page) {
 
   try {
-    await page.goto(url, { waitUntil: "load", timeout: 60000 });
 
     // Evaluate page content for lead capture forms
     const formExists = await page.evaluate(() => {
@@ -205,12 +190,10 @@ async function checkFormPresence(url) {
       return false;
     });
 
-    await browser.close();
     return formExists ? 1 : 0;
 
   } catch (error) {
     console.error("Error checking form presence:", error);
-    await browser.close();
     return 0;
   }
 }
@@ -240,12 +223,8 @@ function checkFormLengthOptimal($) {
   }
 }
 
-async function checkRequiredVsOptionalFields(url) {
-  const browser = await puppeteer.launch({ headless: true });
-  const page = await browser.newPage();
-
+async function checkRequiredVsOptionalFields(page) {
   try {
-    await page.goto(url, { waitUntil: "load", timeout: 60000 });
 
     const distinctionExists = await page.evaluate(() => {
       const forms = document.querySelectorAll("form");
@@ -282,11 +261,9 @@ async function checkRequiredVsOptionalFields(url) {
       return hasRequired && hasOptional;
     });
 
-    await browser.close();
     return distinctionExists ? 1 : 0;
   } catch (error) {
     console.error("Error checking required vs optional fields:", error);
-    await browser.close();
     return 0;
   }
 }
@@ -337,12 +314,9 @@ function checkInlineValidation($) {
   }
 }
 
-async function checkSubmitButtonClarity(url) {
-  const browser = await puppeteer.launch({ headless: true });
-  const page = await browser.newPage();
+async function checkSubmitButtonClarity(page) {
 
   try {
-    await page.goto(url, { waitUntil: "load", timeout: 60000 });
 
     const clarityExists = await page.evaluate(() => {
       // Collect all possible button-like elements
@@ -381,11 +355,9 @@ async function checkSubmitButtonClarity(url) {
       return false;
     });
 
-    await browser.close();
     return clarityExists ? 1 : 0;
   } catch (error) {
     console.error("Error checking submit button clarity:", error);
-    await browser.close();
     return 0;
   }
 }
@@ -402,12 +374,9 @@ function checkAutoFocusField($) {
   }
 }
 
-async function checkMultiStepFormProgress(url) {
-  const browser = await puppeteer.launch({ headless: true });
-  const page = await browser.newPage();
+async function checkMultiStepFormProgress(page) {
 
   try {
-    await page.goto(url, { waitUntil: "load", timeout: 60000 });
 
     const progressExists = await page.evaluate(() => {
       const forms = document.querySelectorAll("form");
@@ -435,16 +404,15 @@ async function checkMultiStepFormProgress(url) {
       return false;
     });
 
-    await browser.close();
     return progressExists ? 1 : 0;
 
   } catch (error) {
     console.error("Error checking multi-step form progress:", error);
-    await browser.close();
     return 0;
   }
 }
 
+// Conversion & Lead Flow (Trust & Social Proof)
 function checkTestimonials($) {
   try {
     // Common keywords for testimonial containers
@@ -468,6 +436,32 @@ function checkTestimonials($) {
     return hasReadableText ? 1 : 0;
   } catch (err) {
     console.error("Error checking testimonials:", err.message);
+    return 0;
+  }
+}
+
+function checkReviewsVisible($) {
+  try {
+    const keywords = ["review", "rating", "stars", "testimonial", "feedback"];
+
+    // Look for elements with class or id containing keywords
+    const reviewElems = $("*").filter((_, el) => {
+      const $el = $(el);
+      const className = ($el.attr("class") || "").toLowerCase();
+      const idName = ($el.attr("id") || "").toLowerCase();
+
+      return keywords.some(kw => className.includes(kw) || idName.includes(kw));
+    });
+
+    // Check if at least one has visible content
+    const hasContent = reviewElems.toArray().some(el => {
+      const text = $(el).text().trim();
+      return text.length > 1; // Minimum text length for visibility
+    });
+
+    return hasContent ? 1 : 0;
+  } catch (err) {
+    console.error("Error checking reviews/ratings:", err.message);
     return 0;
   }
 }
@@ -504,40 +498,9 @@ function checkTrustBadges($) {
   }
 }
 
-function checkReviewsVisible($) {
-  try {
-    const keywords = ["review", "rating", "stars", "testimonial", "feedback"];
-
-    // Look for elements with class or id containing keywords
-    const reviewElems = $("*").filter((_, el) => {
-      const $el = $(el);
-      const className = ($el.attr("class") || "").toLowerCase();
-      const idName = ($el.attr("id") || "").toLowerCase();
-
-      return keywords.some(kw => className.includes(kw) || idName.includes(kw));
-    });
-
-    // Check if at least one has visible content
-    const hasContent = reviewElems.toArray().some(el => {
-      const text = $(el).text().trim();
-      return text.length > 1; // Minimum text length for visibility
-    });
-
-    return hasContent ? 1 : 0;
-  } catch (err) {
-    console.error("Error checking reviews/ratings:", err.message);
-    return 0;
-  }
-}
-
-
-
-async function checkClientLogos(url) {
-  const browser = await puppeteer.launch({ headless: true });
-  const page = await browser.newPage();
+async function checkClientLogos(page) {
 
   try {
-    await page.goto(url, { waitUntil: "load", timeout: 60000 });
 
     const logosExist = await page.evaluate(() => {
       // Common client/logo container selectors
@@ -582,22 +545,17 @@ async function checkClientLogos(url) {
       return false;
     });
 
-    await browser.close();
     return logosExist ? 1 : 0;
 
   } catch (error) {
     console.error("Error checking client logos:", error);
-    await browser.close();
     return 0;
   }
 }
 
-async function checkCaseStudiesAccessibility(url) {
-  const browser = await puppeteer.launch({ headless: true });
-  const page = await browser.newPage();
+async function checkCaseStudiesAccessibility(page) {
 
   try {
-    await page.goto(url, { waitUntil: "load", timeout: 60000 });
 
     const accessible = await page.evaluate(() => {
       const keywords = [
@@ -633,25 +591,21 @@ async function checkCaseStudiesAccessibility(url) {
       return false;
     });
 
-    await browser.close();
     return accessible ? 1 : 0;
 
   } catch (error) {
     console.error("Error checking case studies accessibility:", error);
-    await browser.close();
     return 0;
   }
 }
 
-async function checkExitIntentTriggers(url) {
-  const browser = await puppeteer.launch({ headless: true });
-  const page = await browser.newPage();
+// Conversion & Lead Flow (Lead Funnel Flow)
+async function checkExitIntentTriggers(page) {
 
   // Helper for delay
   const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
   try {
-    await page.goto(url, { waitUntil: "load", timeout: 60000 });
 
     // Give the page some time to load scripts
     await delay(2000);
@@ -689,29 +643,18 @@ async function checkExitIntentTriggers(url) {
       return false;
     });
 
-    await browser.close();
     return popupDetected ? 1 : 0;
 
   } catch (error) {
     console.error("Error checking exit-intent triggers:", error);
-    await browser.close();
     return 0;
   }
 }
 
-
-async function checkLeadMagnets(url) {
-  const browser = await puppeteer.launch({ headless: true });
-  const page = await browser.newPage();
-
-  // Helper for delay
-  const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+async function checkLeadMagnets(page) {
 
   try {
-    await page.goto(url, { waitUntil: "load", timeout: 60000 });
 
-    // Wait a bit for dynamic content
-    await delay(2000);
 
     const leadMagnetExists = await page.evaluate(() => {
       const keywords = [
@@ -747,17 +690,13 @@ async function checkLeadMagnets(url) {
       return false;
     });
 
-    await browser.close();
     return leadMagnetExists ? 1 : 0;
 
   } catch (error) {
     console.error("Error checking lead magnets:", error);
-    await browser.close();
     return 0;
   }
 }
-
-
 
 function checkContactInfoVisibility($) {
   try {
@@ -804,12 +743,9 @@ function checkChatbotPresence($) {
   }
 }
 
-async function checkInteractiveElements(url) {
-  const browser = await puppeteer.launch({ headless: true });
-  const page = await browser.newPage();
-
+// Conversion & Lead Flow (User Engagement & Interaction)
+async function checkInteractiveElements(page) {
   try {
-    await page.goto(url, { waitUntil: "load", timeout: 60000 });
 
     const interactiveExists = await page.evaluate(() => {
       // 1️⃣ Check for tooltips via attributes
@@ -841,12 +777,10 @@ async function checkInteractiveElements(url) {
       return false;
     });
 
-    await browser.close();
     return interactiveExists ? 1 : 0;
 
   } catch (error) {
     console.error("Error checking interactive elements:", error);
-    await browser.close();
     return 0;
   }
 }
@@ -993,6 +927,7 @@ function checkIncentivesDisplayed($) {
   }
 }
 
+// Conversion & Lead Flow (Misc / Optional Extras for Conversion)
 function checkScarcityUrgency($) {
   try {
     const keywords = ["limited stock", "only", "left", "hurry", "ends in", "countdown", "sale ends"];
@@ -1082,130 +1017,694 @@ function checkMultiChannelFollowUp($) {
 
 export default async function conversionLeadFlow(url,page) {
 
-      await page.goto(url, {waitUntil: "networkidle2",timeout: 240000});
-      await page.waitForSelector("body", { timeout: 240000 });
-      const htmlData = await page.content();
-      const $ = cheerio.load(htmlData);
-  const report = {};
+  await page.goto(url, {waitUntil: "networkidle2",timeout: 240000});
+  await page.waitForSelector("body", { timeout: 240000 });
+  const htmlData = await page.content();
+  const $ = cheerio.load(htmlData);
 
+  // Conversion & Lead Flow (Call-to-Action (CTA) Effectiveness)
   const checkCTAsScore=checkCTAs($)
-  console.log("CTA Visibility Score:", checkCTAsScore);
-
-
   const checkCTAClarityScore=checkCTAClarity($);
-  console.log("CTA Clarity Score:", checkCTAClarityScore);
-  
-  const checkCTAContrastScore=await checkCTAContrast(url);
-  console.log("CTA Contrast Score:", checkCTAContrastScore);
-
-  const checkCTACrowdingScore=await checkCTACrowding(url);
-  console.log("CTA Crowding Score:", checkCTACrowdingScore);
-
+  const checkCTAContrastScore=await checkCTAContrast(page);
+  const checkCTACrowdings=await checkCTACrowding(page);
+  const checkCTACrowdingTotal= checkCTACrowdings.totalCTAs;
+  const checkCTACrowdingScore=checkCTACrowdings.score;
   const checkCTAFlowAlignmentScore=checkCTAFlowAlignment($);
-    console.log("CTA Flow Alignment Score:", checkCTAFlowAlignmentScore);
 
-  const checkFormPresenceScore=await checkFormPresence(url);
-  console.log("Form Presence Score:", checkFormPresenceScore);
-
-  
-   let checkFormLengthOptimalScore;
-   let checkRequiredVsOptionalFieldsScore
-   let checkInlineValidationScore
-   let checkSubmitButtonClarityScore
-   let checkAutoFocusFieldScore
-   let checkMultiStepFormProgressScore
+  // Conversion & Lead Flow (Forms & Lead Capture)
+  const checkFormPresenceScore=await checkFormPresence(page);
+  let checkFormLengthOptimalScore;
+  let checkRequiredVsOptionalFieldsScore
+  let checkInlineValidationScore
+  let checkSubmitButtonClarityScore
+  let checkAutoFocusFieldScore
+  let checkMultiStepFormProgressScore
 
   if(checkFormPresenceScore===0){
-checkFormLengthOptimalScore=1;
-checkRequiredVsOptionalFieldsScore=1;
-checkInlineValidationScore=1;
-checkSubmitButtonClarityScore=1;
-checkAutoFocusFieldScore=1;
-checkMultiStepFormProgressScore=1;
+  checkFormLengthOptimalScore=1;
+  checkRequiredVsOptionalFieldsScore=1;
+  checkInlineValidationScore=1;
+  checkSubmitButtonClarityScore=1;
+  checkAutoFocusFieldScore=1;
+  checkMultiStepFormProgressScore=1;
   }
-else{
+  else{
+  checkFormLengthOptimalScore=checkFormLengthOptimal($);
+  checkRequiredVsOptionalFieldsScore=await checkRequiredVsOptionalFields(page);
+  checkInlineValidationScore=checkInlineValidation($);
+  checkSubmitButtonClarityScore=await checkSubmitButtonClarity(page);
+  checkAutoFocusFieldScore=checkAutoFocusField($);
+  checkMultiStepFormProgressScore=await checkMultiStepFormProgress(page);
+  }
 
-checkFormLengthOptimalScore=checkFormLengthOptimal($);
-checkRequiredVsOptionalFieldsScore=await checkRequiredVsOptionalFields(url);
-checkInlineValidationScore=checkInlineValidation($);
-checkSubmitButtonClarityScore=await checkSubmitButtonClarity(url);
-checkAutoFocusFieldScore=checkAutoFocusField($);
-checkMultiStepFormProgressScore=await checkMultiStepFormProgress(url);
+  // Conversion & Lead Flow (Trust & Social Proof)
+  const checkTestimonialsScore=checkTestimonials($);
+  const checkReviewsVisibleScore=checkReviewsVisible($);
+  const checkTrustBadgesScore=checkTrustBadges($);
+  const checkClientLogosScore=await checkClientLogos(page);
+  const checkCaseStudiesAccessibilityScore=await checkCaseStudiesAccessibility(page);
+  
+  // Conversion & Lead Flow (Lead Funnel Flow)
+  const checkExitIntentTriggersScore=await checkExitIntentTriggers(page);
+  const checkLeadMagnetsScore=await checkLeadMagnets(page);
+  const checkContactInfoVisibilityScore=checkContactInfoVisibility($);
+  const checkChatbotPresenceScore=checkChatbotPresence($);
+
+  // Conversion & Lead Flow (User Engagement & Interaction)
+  const checkInteractiveElementsScore=await checkInteractiveElements(page);
+  const checkPersonalizationScore=checkPersonalization($);
+  const checkProgressIndicatorsScore=checkProgressIndicators($);
+  const checkFriendlyErrorHandlingScore=checkFriendlyErrorHandling($);
+  const checkMicrocopyClarityScore=checkMicrocopyClarity($);
+  const checkIncentivesDisplayedScore=checkIncentivesDisplayed($);  
+  
+  // Conversion & Lead Flow (Misc / Optional Extras for Conversion)
+  const checkScarcityUrgencyScore=checkScarcityUrgency($);
+  const checkSmoothScrollingScore=checkSmoothScrolling($);
+  const checkMobileCTAAdaptationScore=checkMobileCTAAdaptation($);
+  const checkMultiChannelFollowUpScore=checkMultiChannelFollowUp($);
+  
+  const Total = parseFloat((((checkCTAsScore+checkCTAClarityScore+checkCTAContrastScore+checkCTACrowdingScore+checkCTAFlowAlignmentScore+checkFormPresenceScore+checkFormLengthOptimalScore+checkRequiredVsOptionalFieldsScore+checkInlineValidationScore+checkSubmitButtonClarityScore+checkAutoFocusFieldScore+checkMultiStepFormProgressScore+checkTestimonialsScore+checkReviewsVisibleScore+checkTrustBadgesScore+checkClientLogosScore+checkCaseStudiesAccessibilityScore+checkExitIntentTriggersScore+checkLeadMagnetsScore+checkContactInfoVisibilityScore+checkChatbotPresenceScore+checkInteractiveElementsScore+checkPersonalizationScore+checkProgressIndicatorsScore+checkFriendlyErrorHandlingScore+checkMicrocopyClarityScore+checkIncentivesDisplayedScore+checkScarcityUrgencyScore+checkSmoothScrollingScore+checkMobileCTAAdaptationScore+checkMultiChannelFollowUpScore)/31)*100).toFixed(0));
+  
+  // Passed
+  const passed = [];
+  
+  // Improvements
+  const improvements = [];
+
+// Conversion & Lead Flow (Call-to-Action (CTA) Effectiveness)
+if (checkCTAsScore === 0) {
+  improvements.push({
+    metric: "CTA Visibility",
+    current: "No visible CTAs",
+    recommended: "At least one prominent CTA should be present",
+    severity: "High 🟠",
+    suggestion: "Add a clear and visible CTA to guide user action."
+  });
+} else {
+  passed.push({
+    metric: "CTA Visibility",
+    current: "CTA visible",
+    recommended: "At least one prominent CTA should be present",
+    severity: "✅ Passed",
+    suggestion: "CTA presence is good and visible."
+  });
 }
 
+if (checkCTAClarityScore === 0) {
+  improvements.push({
+    metric: "CTA Clarity",
+    current: "Unclear CTA text",
+    recommended: "Use actionable text like 'Buy', 'Sign Up', 'Download'",
+    severity: "High 🟠",
+    suggestion: "Ensure CTA buttons and links have clear, actionable text."
+  });
+} else {
+  passed.push({
+    metric: "CTA Clarity",
+    current: "Clear CTA text",
+    recommended: "Use actionable text like 'Buy', 'Sign Up', 'Download'",
+    severity: "✅ Passed",
+    suggestion: "CTA text is clear and actionable."
+  });
+}
 
+if (checkCTAContrastScore === 0) {
+  improvements.push({
+    metric: "CTA Contrast",
+    current: "Low contrast CTA",
+    recommended: "CTA text should have sufficient contrast (≥ 4.5:1)",
+    severity: "Medium 🟡",
+    suggestion: "Ensure CTA text is readable against its background."
+  });
+} else {
+  passed.push({
+    metric: "CTA Contrast",
+    current: "Good contrast",
+    recommended: "CTA text should have sufficient contrast (≥ 4.5:1)",
+    severity: "✅ Passed",
+    suggestion: "CTA contrast is sufficient."
+  });
+}
 
-console.log("Form Length Optimal Score:", checkFormLengthOptimalScore);
-console.log("Required vs Optional Fields Score:", checkRequiredVsOptionalFieldsScore);
-console.log("Inline Validation Score:", checkInlineValidationScore);
-console.log("Submit Button Clarity Score:", checkSubmitButtonClarityScore);
-console.log("AutoFocus Field Score:", checkAutoFocusFieldScore);
-console.log("Multi-Step Form Progress Score:", checkMultiStepFormProgressScore);
+if (checkCTACrowdingScore === 0) {
+  improvements.push({
+    metric: "CTA Crowding",
+    current: "Too many CTAs on page",
+    recommended: "Limit number of CTAs to prevent confusion",
+    severity: "Medium 🟡",
+    suggestion: "Reduce the number of CTAs to make user focus easier."
+  });
+} else {
+  passed.push({
+    metric: "CTA Crowding",
+    current: "CTA count optimal",
+    recommended: "Limit number of CTAs to prevent confusion",
+    severity: "✅ Passed",
+    suggestion: "CTA placement is well-spaced."
+  });
+}
 
+if (checkCTAFlowAlignmentScore === 0) {
+  improvements.push({
+    metric: "CTA Flow Alignment",
+    current: "CTA not aligned with user flow",
+    recommended: "Place CTAs at logical points in the user journey",
+    severity: "Medium 🟡",
+    suggestion: "Adjust CTA placement to match user engagement flow."
+  });
+} else {
+  passed.push({
+    metric: "CTA Flow Alignment",
+    current: "CTA aligned with flow",
+    recommended: "Place CTAs at logical points in the user journey",
+    severity: "✅ Passed",
+    suggestion: "CTA placement follows user journey."
+  });
+}
 
-const checkTestimonialsScore=checkTestimonials($);
-console.log("Testimonials Score:", checkTestimonialsScore);
+// Conversion & Lead Flow (Forms & Lead Capture)
+if (checkFormPresenceScore === 0) {
+  improvements.push({
+    metric: "Form Presence",
+    current: "No lead capture form detected",
+    recommended: "Include at least one form for user input",
+    severity: "High 🟠",
+    suggestion: "Add a lead capture form to collect user details."
+  });
+} else {
+  passed.push({
+    metric: "Form Presence",
+    current: "Form exists",
+    recommended: "Include at least one form for user input",
+    severity: "✅ Passed",
+    suggestion: "Lead form is present and detectable."
+  });
+}
 
-const checkReviewsVisibleScore=checkReviewsVisible($);
-console.log("Reviews/ Ratings Visible Score:", checkReviewsVisibleScore);
+if (checkFormLengthOptimalScore === 0) {
+  improvements.push({
+    metric: "Form Length",
+    current: "Form too long or missing",
+    recommended: "Forms should be concise for better conversions",
+    severity: "Medium 🟡",
+    suggestion: "Simplify forms to include only essential fields."
+  });
+} else {
+  passed.push({
+    metric: "Form Length",
+    current: "Optimal length",
+    recommended: "Forms should be concise for better conversions",
+    severity: "✅ Passed",
+    suggestion: "Form length is optimal."
+  });
+}
 
-const checkTrustBadgesScore=checkTrustBadges($);
-console.log("Trust Badges Score:", checkTrustBadgesScore);
+if (checkRequiredVsOptionalFieldsScore === 0) {
+  improvements.push({
+    metric: "Required vs Optional Fields",
+    current: "No distinction between required and optional fields",
+    recommended: "Clearly mark required and optional fields",
+    severity: "Medium 🟡",
+    suggestion: "Update form fields to indicate which are required."
+  });
+} else {
+  passed.push({
+    metric: "Required vs Optional Fields",
+    current: "Properly marked",
+    recommended: "Clearly mark required and optional fields",
+    severity: "✅ Passed",
+    suggestion: "Form fields clearly indicate required vs optional."
+  });
+}
 
-const checkClientLogosScore=await checkClientLogos(url);
-console.log("Client Logos Score:", checkClientLogosScore);
+if (checkInlineValidationScore === 0) {
+  improvements.push({
+    metric: "Inline Validation",
+    current: "No inline validation",
+    recommended: "Provide real-time feedback for user input",
+    severity: "Medium 🟡",
+    suggestion: "Add inline validation to guide users while filling forms."
+  });
+} else {
+  passed.push({
+    metric: "Inline Validation",
+    current: "Inline validation present",
+    recommended: "Provide real-time feedback for user input",
+    severity: "✅ Passed",
+    suggestion: "Inline validation is working correctly."
+  });
+}
 
-const checkCaseStudiesAccessibilityScore=await checkCaseStudiesAccessibility(url);
-console.log("Case Studies Accessibility Score:", checkCaseStudiesAccessibilityScore);
+if (checkSubmitButtonClarityScore === 0) {
+  improvements.push({
+    metric: "Submit Button Clarity",
+    current: "Unclear submit button",
+    recommended: "Use actionable text like 'Submit', 'Sign Up', 'Get Started'",
+    severity: "Medium 🟡",
+    suggestion: "Update submit button to clearly indicate action."
+  });
+} else {
+  passed.push({
+    metric: "Submit Button Clarity",
+    current: "Clear",
+    recommended: "Use actionable text like 'Submit', 'Sign Up', 'Get Started'",
+    severity: "✅ Passed",
+    suggestion: "Submit button text is clear."
+  });
+}
 
-const checkExitIntentTriggersScore=await checkExitIntentTriggers(url);
-console.log("Exit-Intent Triggers Score:", checkExitIntentTriggersScore);
+if (checkAutoFocusFieldScore === 0) {
+  improvements.push({
+    metric: "AutoFocus Field",
+    current: "No autofocus set",
+    recommended: "Focus on first input field for user convenience",
+    severity: "Low 🟢",
+    suggestion: "Add autofocus to the first form field."
+  });
+} else {
+  passed.push({
+    metric: "AutoFocus Field",
+    current: "Autofocus present",
+    recommended: "Focus on first input field for user convenience",
+    severity: "✅ Passed",
+    suggestion: "Autofocus is set correctly."
+  });
+}
 
-const checkLeadMagnetsScore=await checkLeadMagnets(url);
-console.log("Lead Magnets Score:", checkLeadMagnetsScore);
+if (checkMultiStepFormProgressScore === 0) {
+  improvements.push({
+    metric: "Multi-Step Form Progress",
+    current: "No progress indicator",
+    recommended: "Show progress in multi-step forms",
+    severity: "Medium 🟡",
+    suggestion: "Add progress indicators to guide users through the form."
+  });
+} else {
+  passed.push({
+    metric: "Multi-Step Form Progress",
+    current: "Progress indicator present",
+    recommended: "Show progress in multi-step forms",
+    severity: "✅ Passed",
+    suggestion: "Multi-step forms show progress correctly."
+  });
+}
 
-const checkContactInfoVisibilityScore=checkContactInfoVisibility($);
-console.log("Contact Info Visibility Score:", checkContactInfoVisibilityScore);
+// Conversion & Lead Flow (Trust & Social Proof)
+if (checkTestimonialsScore === 0) {
+  improvements.push({
+    metric: "Testimonials",
+    current: "No testimonials visible",
+    recommended: "Include user testimonials or feedback",
+    severity: "Medium 🟡",
+    suggestion: "Add client testimonials to build trust."
+  });
+} else {
+  passed.push({
+    metric: "Testimonials",
+    current: "Testimonials visible",
+    recommended: "Include user testimonials or feedback",
+    severity: "✅ Passed",
+    suggestion: "Testimonials are present and readable."
+  });
+}
 
-const checkChatbotPresenceScore=checkChatbotPresence($);
-console.log("Chatbot/ Live Chat Presence Score:", checkChatbotPresenceScore);
+if (checkReviewsVisibleScore === 0) {
+  improvements.push({
+    metric: "Reviews / Ratings",
+    current: "No reviews or ratings",
+    recommended: "Display user reviews or ratings",
+    severity: "Medium 🟡",
+    suggestion: "Add visible reviews to improve credibility."
+  });
+} else {
+  passed.push({
+    metric: "Reviews / Ratings",
+    current: "Reviews visible",
+    recommended: "Display user reviews or ratings",
+    severity: "✅ Passed",
+    suggestion: "Reviews are visible and credible."
+  });
+}
 
-const checkInteractiveElementsScore=await checkInteractiveElements(url);
-console.log("Interactive Elements Score:", checkInteractiveElementsScore);
+if (checkTrustBadgesScore === 0) {
+  improvements.push({
+    metric: "Trust Badges",
+    current: "No trust badges",
+    recommended: "Display security/trust badges",
+    severity: "Medium 🟡",
+    suggestion: "Add SSL, payment, or certified badges for credibility."
+  });
+} else {
+  passed.push({
+    metric: "Trust Badges",
+    current: "Trust badges visible",
+    recommended: "Display security/trust badges",
+    severity: "✅ Passed",
+    suggestion: "Trust badges are properly displayed."
+  });
+}
 
-const checkPersonalizationScore=checkPersonalization($);
-console.log("Personalization Score:", checkPersonalizationScore);
+if (checkClientLogosScore === 0) {
+  improvements.push({
+    metric: "Client Logos",
+    current: "No client logos",
+    recommended: "Display logos of notable clients",
+    severity: "Low 🟢",
+    suggestion: "Add client logos to show credibility."
+  });
+} else {
+  passed.push({
+    metric: "Client Logos",
+    current: "Client logos visible",
+    recommended: "Display logos of notable clients",
+    severity: "✅ Passed",
+    suggestion: "Client logos are displayed."
+  });
+}
 
-const checkProgressIndicatorsScore=checkProgressIndicators($);
-console.log("Progress Indicators Score:", checkProgressIndicatorsScore);
+if (checkCaseStudiesAccessibilityScore === 0) {
+  improvements.push({
+    metric: "Case Studies Accessibility",
+    current: "No accessible case studies",
+    recommended: "Provide accessible case studies or success stories",
+    severity: "Low 🟢",
+    suggestion: "Add case studies linked from visible text/buttons."
+  });
+} else {
+  passed.push({
+    metric: "Case Studies Accessibility",
+    current: "Case studies accessible",
+    recommended: "Provide accessible case studies or success stories",
+    severity: "✅ Passed",
+    suggestion: "Case studies are accessible."
+  });
+}
 
-const checkFriendlyErrorHandlingScore=checkFriendlyErrorHandling($);
-console.log("Friendly Error Handling Score:", checkFriendlyErrorHandlingScore);
+// Conversion & Lead Flow (Lead Funnel Flow)
+if (checkExitIntentTriggersScore === 0) {
+  improvements.push({
+    metric: "Exit Intent Triggers",
+    current: "No exit-intent detected",
+    recommended: "Implement exit-intent popups for engagement",
+    severity: "Low 🟢",
+    suggestion: "Add exit-intent popups to retain users."
+  });
+} else {
+  passed.push({
+    metric: "Exit Intent Triggers",
+    current: "Exit-intent present",
+    recommended: "Implement exit-intent popups for engagement",
+    severity: "✅ Passed",
+    suggestion: "Exit-intent popups are functioning."
+  });
+}
 
-const checkMicrocopyClarityScore=checkMicrocopyClarity($);
-console.log("Microcopy Clarity Score:", checkMicrocopyClarityScore);
+if (checkLeadMagnetsScore === 0) {
+  improvements.push({
+    metric: "Lead Magnets",
+    current: "No lead magnets found",
+    recommended: "Offer guides, templates, or free trials",
+    severity: "Medium 🟡",
+    suggestion: "Add lead magnets to encourage conversions."
+  });
+} else {
+  passed.push({
+    metric: "Lead Magnets",
+    current: "Lead magnets present",
+    recommended: "Offer guides, templates, or free trials",
+    severity: "✅ Passed",
+    suggestion: "Lead magnets are available."
+  });
+}
 
-const checkIncentivesDisplayedScore=checkIncentivesDisplayed($);    
-console.log("Incentives Displayed Score:", checkIncentivesDisplayedScore);
+if (checkContactInfoVisibilityScore === 0) {
+  improvements.push({
+    metric: "Contact Info Visibility",
+    current: "No contact info visible",
+    recommended: "Display contact information prominently",
+    severity: "Medium 🟡",
+    suggestion: "Ensure email and phone number are visible."
+  });
+} else {
+  passed.push({
+    metric: "Contact Info Visibility",
+    current: "Contact info visible",
+    recommended: "Display contact information prominently",
+    severity: "✅ Passed",
+    suggestion: "Contact info is visible and accessible."
+  });
+}
 
-const checkScarcityUrgencyScore=checkScarcityUrgency($);
-console.log("Scarcity/ Urgency Score:", checkScarcityUrgencyScore);
+if (checkChatbotPresenceScore === 0) {
+  improvements.push({
+    metric: "Chatbot Presence",
+    current: "No chatbot found",
+    recommended: "Provide live chat support for engagement",
+    severity: "Low 🟢",
+    suggestion: "Add a chatbot or live chat widget."
+  });
+} else {
+  passed.push({
+    metric: "Chatbot Presence",
+    current: "Chatbot present",
+    recommended: "Provide live chat support for engagement",
+    severity: "✅ Passed",
+    suggestion: "Chatbot is functioning."
+  });
+}
 
-const checkSmoothScrollingScore=checkSmoothScrolling($);
-console.log("Smooth Scrolling Score:", checkSmoothScrollingScore);
+// Conversion & Lead Flow (User Engagement & Interaction)
+if (checkInteractiveElementsScore === 0) {
+  improvements.push({
+    metric: "Interactive Elements",
+    current: "No interactive elements",
+    recommended: "Include sliders, carousels, or tooltips",
+    severity: "Low 🟢",
+    suggestion: "Add interactive elements to improve engagement."
+  });
+} else {
+  passed.push({
+    metric: "Interactive Elements",
+    current: "Interactive elements present",
+    recommended: "Include sliders, carousels, or tooltips",
+    severity: "✅ Passed",
+    suggestion: "Interactive elements are present."
+  });
+}
 
-const checkMobileCTAAdaptationScore=checkMobileCTAAdaptation($);
-console.log("Mobile CTA Adaptation Score:", checkMobileCTAAdaptationScore);
+if (checkPersonalizationScore === 0) {
+  improvements.push({
+    metric: "Personalization",
+    current: "No personalization detected",
+    recommended: "Use dynamic content or recommendations",
+    severity: "Low 🟢",
+    suggestion: "Add personalized content or product suggestions."
+  });
+} else {
+  passed.push({
+    metric: "Personalization",
+    current: "Personalization active",
+    recommended: "Use dynamic content or recommendations",
+    severity: "✅ Passed",
+    suggestion: "Personalized content is working."
+  });
+}
 
-const checkMultiChannelFollowUpScore=checkMultiChannelFollowUp($);
-console.log("Multi-Channel Follow-Up Prompts Score:", checkMultiChannelFollowUpScore);
+if (checkProgressIndicatorsScore === 0) {
+  improvements.push({
+    metric: "Progress Indicators",
+    current: "No progress indicators",
+    recommended: "Show progress in forms or tasks",
+    severity: "Low 🟢",
+    suggestion: "Add progress indicators for multi-step interactions."
+  });
+} else {
+  passed.push({
+    metric: "Progress Indicators",
+    current: "Progress indicators present",
+    recommended: "Show progress in forms or tasks",
+    severity: "✅ Passed",
+    suggestion: "Progress indicators are visible."
+  });
+}
 
-// Collect all the scores in an array
-const allScores = [
-  checkCTAsScore.score,
-  checkCTAClarityScore.score,
-  checkCTAContrastScore.score,
-  checkCTACrowdingScore.score,
+if (checkFriendlyErrorHandlingScore === 0) {
+  improvements.push({
+    metric: "Friendly Error Handling",
+    current: "Error messages not clear",
+    recommended: "Provide clear and helpful error messages",
+    severity: "Medium 🟡",
+    suggestion: "Improve error messages to guide users."
+  });
+} else {
+  passed.push({
+    metric: "Friendly Error Handling",
+    current: "Error messages clear",
+    recommended: "Provide clear and helpful error messages",
+    severity: "✅ Passed",
+    suggestion: "Error handling is user-friendly."
+  });
+}
+
+if (checkMicrocopyClarityScore === 0) {
+  improvements.push({
+    metric: "Microcopy Clarity",
+    current: "Unclear microcopy",
+    recommended: "Provide helpful labels, placeholders, or helper text",
+    severity: "Medium 🟡",
+    suggestion: "Improve microcopy for better user guidance."
+  });
+} else {
+  passed.push({
+    metric: "Microcopy Clarity",
+    current: "Microcopy clear",
+    recommended: "Provide helpful labels, placeholders, or helper text",
+    severity: "✅ Passed",
+    suggestion: "Microcopy is clear and informative."
+  });
+}
+
+if (checkIncentivesDisplayedScore === 0) {
+  improvements.push({
+    metric: "Incentives Displayed",
+    current: "No incentives visible",
+    recommended: "Display offers, discounts, or free trials prominently",
+    severity: "Low 🟢",
+    suggestion: "Add visible incentives to motivate users."
+  });
+} else {
+  passed.push({
+    metric: "Incentives Displayed",
+    current: "Incentives visible",
+    recommended: "Display offers, discounts, or free trials prominently",
+    severity: "✅ Passed",
+    suggestion: "Incentives are properly displayed."
+  });
+}
+
+// Conversion & Lead Flow (Misc / Optional Extras for Conversion)
+if (checkScarcityUrgencyScore === 0) {
+  improvements.push({
+    metric: "Scarcity / Urgency",
+    current: "No scarcity or urgency cues",
+    recommended: "Use countdowns or limited stock messages",
+    severity: "Low 🟢",
+    suggestion: "Add scarcity or urgency cues to encourage action."
+  });
+} else {
+  passed.push({
+    metric: "Scarcity / Urgency",
+    current: "Scarcity / urgency cues present",
+    recommended: "Use countdowns or limited stock messages",
+    severity: "✅ Passed",
+    suggestion: "Scarcity / urgency cues are working."
+  });
+}
+
+if (checkSmoothScrollingScore === 0) {
+  improvements.push({
+    metric: "Smooth Scrolling",
+    current: "No smooth scrolling detected",
+    recommended: "Implement smooth scrolling for anchors",
+    severity: "Low 🟢",
+    suggestion: "Add smooth scrolling to improve UX."
+  });
+} else {
+  passed.push({
+    metric: "Smooth Scrolling",
+    current: "Smooth scrolling present",
+    recommended: "Implement smooth scrolling for anchors",
+    severity: "✅ Passed",
+    suggestion: "Scrolling is smooth."
+  });
+}
+
+if (checkMobileCTAAdaptationScore === 0) {
+  improvements.push({
+    metric: "Mobile CTA Adaptation",
+    current: "CTAs not adapted for mobile",
+    recommended: "Ensure CTA buttons are large and tappable on mobile",
+    severity: "Medium 🟡",
+    suggestion: "Optimize CTA buttons for mobile devices."
+  });
+} else {
+  passed.push({
+    metric: "Mobile CTA Adaptation",
+    current: "CTAs mobile-adapted",
+    recommended: "Ensure CTA buttons are large and tappable on mobile",
+    severity: "✅ Passed",
+    suggestion: "CTA buttons are mobile-friendly."
+  });
+}
+
+if (checkMultiChannelFollowUpScore === 0) {
+  improvements.push({
+    metric: "Multi-Channel Follow-Up",
+    current: "No multi-channel follow-up detected",
+    recommended: "Provide options like email, phone, or WhatsApp follow-up",
+    severity: "Low 🟢",
+    suggestion: "Add multi-channel follow-up links or buttons."
+  });
+} else {
+  passed.push({
+    metric: "Multi-Channel Follow-Up",
+    current: "Follow-up options present",
+    recommended: "Provide options like email, phone, or WhatsApp follow-up",
+    severity: "✅ Passed",
+    suggestion: "Multi-channel follow-up is available."
+  });
+}
+
+  // Warning
+  const warning = [];
+
+  const actualPercentage = parseFloat((((checkCTAsScore+checkCTAClarityScore+checkCTAContrastScore+checkCTACrowdingScore+checkCTAFlowAlignmentScore+checkFormPresenceScore+checkFormLengthOptimalScore+checkRequiredVsOptionalFieldsScore+checkInlineValidationScore+checkSubmitButtonClarityScore+checkAutoFocusFieldScore+checkMultiStepFormProgressScore+checkTestimonialsScore+checkReviewsVisibleScore+checkTrustBadgesScore+checkClientLogosScore+checkCaseStudiesAccessibilityScore+checkExitIntentTriggersScore+checkLeadMagnetsScore+checkContactInfoVisibilityScore+checkChatbotPresenceScore+checkInteractiveElementsScore+checkPersonalizationScore+checkProgressIndicatorsScore+checkFriendlyErrorHandlingScore+checkMicrocopyClarityScore+checkIncentivesDisplayedScore+checkScarcityUrgencyScore+checkSmoothScrollingScore+checkMobileCTAAdaptationScore+checkMultiChannelFollowUpScore)/31)*100).toFixed(0));
+  
+  // console.log("CTA Visibility Score:", checkCTAsScore);
+  // console.log("CTA Clarity Score:", checkCTAClarityScore);
+  // console.log("CTA Contrast Score:", checkCTAContrastScore);
+  // console.log("CTA Crowding Total:", checkCTACrowdingTotal);
+  // console.log("CTA Crowding Score:", checkCTACrowdingScore);
+  // console.log("CTA Flow Alignment Score:", checkCTAFlowAlignmentScore);
+  // console.log("Form Presence Score:", checkFormPresenceScore);
+  // console.log("Form Length Optimal Score:", checkFormLengthOptimalScore);
+  // console.log("Required vs Optional Fields Score:", checkRequiredVsOptionalFieldsScore);
+  // console.log("Inline Validation Score:", checkInlineValidationScore);
+  // console.log("Submit Button Clarity Score:", checkSubmitButtonClarityScore);
+  // console.log("AutoFocus Field Score:", checkAutoFocusFieldScore);
+  // console.log("Multi-Step Form Progress Score:", checkMultiStepFormProgressScore);
+  // console.log("Testimonials Score:", checkTestimonialsScore);
+  // console.log("Reviews/ Ratings Visible Score:", checkReviewsVisibleScore);
+  // console.log("Trust Badges Score:", checkTrustBadgesScore);
+  // console.log("Client Logos Score:", checkClientLogosScore);
+  // console.log("Case Studies Accessibility Score:", checkCaseStudiesAccessibilityScore);
+  // console.log("Exit-Intent Triggers Score:", checkExitIntentTriggersScore);
+  // console.log("Lead Magnets Score:", checkLeadMagnetsScore);
+  // console.log("Contact Info Visibility Score:", checkContactInfoVisibilityScore);
+  // console.log("Chatbot/ Live Chat Presence Score:", checkChatbotPresenceScore);
+  // console.log("Interactive Elements Score:", checkInteractiveElementsScore);
+  // console.log("Personalization Score:", checkPersonalizationScore);
+  // console.log("Progress Indicators Score:", checkProgressIndicatorsScore);
+  // console.log("Friendly Error Handling Score:", checkFriendlyErrorHandlingScore);
+  // console.log("Microcopy Clarity Score:", checkMicrocopyClarityScore);
+  // console.log("Incentives Displayed Score:", checkIncentivesDisplayedScore);
+  // console.log("Scarcity/ Urgency Score:", checkScarcityUrgencyScore);
+  // console.log("Smooth Scrolling Score:", checkSmoothScrollingScore);
+  // console.log("Mobile CTA Adaptation Score:", checkMobileCTAAdaptationScore);
+  // console.log("Multi-Channel Follow-Up Prompts Score:", checkMultiChannelFollowUpScore);
+  // console.log(actualPercentage);
+  // console.log(warning);
+  // console.log(passed);
+  // console.log(Total);
+  // console.log(improvements);
+
+  return {
+  checkCTAsScore,
+  checkCTAClarityScore,
+  checkCTAContrastScore,
+  checkCTACrowdingTotal,
+  checkCTACrowdingScore,
   checkCTAFlowAlignmentScore,
   checkFormPresenceScore,
   checkFormLengthOptimalScore,
@@ -1232,20 +1731,9 @@ const allScores = [
   checkScarcityUrgencyScore,
   checkSmoothScrollingScore,
   checkMobileCTAAdaptationScore,
-  checkMultiChannelFollowUpScore
-];
-
-// Sum all the scores
-const totalScore = allScores.reduce((acc, score) => acc + score, 0);
-
-// Calculate percentage
-const maxScorePerMetric = 1; // Assuming each metric is out of 1
-const percentageScore = (totalScore / allScores.length) * 100;
-
-console.log("Total Score:", totalScore);
-console.log("Overall Percentage:", percentageScore.toFixed(2) + "%");
-
-
-
-  return report;
+  checkMultiChannelFollowUpScore,
+  actualPercentage,warning,
+  passed,
+  Total,improvements
+  }
 }
